@@ -1,0 +1,12 @@
+:host {
+  width: 100%;
+  max-width: 25rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 25rem;
+  width: 100%;
+}

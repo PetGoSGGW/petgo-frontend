@@ -29,6 +29,7 @@
     "@angular/core": "^20.2.0",
     "@angular/forms": "^20.2.0",
     "@angular/material": "^20.2.10",
+    "@angular/material-luxon-adapter": "^20.2.10",
     "@angular/platform-browser": "^20.2.0",
     "@angular/router": "^20.2.0",
     "aws-amplify": "^6.6.6",

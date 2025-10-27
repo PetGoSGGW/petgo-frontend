@@ -1,6 +1,6 @@
 <main>
   <h1>PetGO</h1>
-  <button (click)="createTodo()">+ new</button>
+  <button mat-button (click)="createTodo()">+ new</button>
   <ul>
     <li *ngFor="let todo of todos">
       {{ todo.content }}

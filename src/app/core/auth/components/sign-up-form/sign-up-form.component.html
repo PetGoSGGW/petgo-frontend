@@ -1,0 +1,82 @@
+<form class="form">
+  <mat-form-field>
+    @let emailTouched = form.controls.email.touched;
+    @let emailErrors = form.controls.email.errors;
+
+    <mat-label>Adres e-mail</mat-label>
+    <input matInput [formControl]="form.controls.email" />
+
+    @if (emailTouched && emailErrors?.['required']) {
+      <mat-error>Podaj adres e-mail.</mat-error>
+    } @else if (emailTouched && emailErrors?.['email']) {
+      <mat-error>Wprowadź poprawny adres e-mail.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    @let passwordTouched = form.controls.password.touched;
+    @let passwordErrors = form.controls.password.errors;
+
+    <mat-label>Hasło</mat-label>
+    <input matInput [formControl]="form.controls.password" [type]="hide() ? 'password' : 'text'" />
+    <button
+      matIconButton
+      matSuffix
+      (click)="showHide($event)"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide()"
+    >
+      <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+
+    @if (passwordTouched && passwordErrors?.['required']) {
+      <mat-error>Podaj hasło.</mat-error>
+    } @else if (passwordErrors?.['minlength']) {
+      <mat-error>Haslo powinno miec co najmniej 8</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    @let confirmPasswordTouched = form.controls.confirmPassword.touched;
+    @let confirmPasswordErrors = form.controls.confirmPassword.errors;
+
+    <mat-label>Potwierdzenie hasło</mat-label>
+    <input
+      matInput
+      [formControl]="form.controls.confirmPassword"
+      [type]="hide() ? 'password' : 'text'"
+    />
+    <button
+      matIconButton
+      matSuffix
+      (click)="showHide($event)"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide()"
+    >
+      <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+
+    @if (confirmPasswordTouched && confirmPasswordErrors?.['required']) {
+      <mat-error>Podaj potwierdzenie hasła.</mat-error>
+    } @else if (form.errors?.['passwordMismatch']) {
+      <mat-error>Hasła się różnią</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    @let birthTouched = form.controls.birth.touched;
+    @let birthErrors = form.controls.birth.errors;
+
+    <mat-label>Data urodzenia</mat-label>
+    <input matInput [matDatepicker]="picker" [formControl]="form.controls.birth" />
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+
+    @if (birthTouched && birthErrors?.['required']) {
+      <mat-error>Podaj swoją datę urodzenia.</mat-error>
+    }
+  </mat-form-field>
+
+  <button matButton="tonal" type="button" (click)="signUp()">Zarejestruj sie</button>
+</form>
