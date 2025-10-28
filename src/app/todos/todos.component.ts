@@ -14,18 +14,18 @@ const client = generateClient<Schema>();
   styleUrl: './todos.component.css',
 })
 export class TodosComponent implements OnInit {
-  todos: {
+  protected todos: {
     content: string | null;
     readonly id: string;
     readonly createdAt: string;
     readonly updatedAt: string;
   }[] = [];
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.listTodos();
   }
 
-  listTodos() {
+  protected listTodos(): void {
     try {
       client.models.Todo.observeQuery().subscribe({
         next: ({ items }) => {
@@ -33,17 +33,19 @@ export class TodosComponent implements OnInit {
         },
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('error fetching todos', error);
     }
   }
 
-  createTodo() {
+  protected createTodo(): void {
     try {
       client.models.Todo.create({
         content: window.prompt('Todo content'),
       });
       this.listTodos();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('error creating todos', error);
     }
   }

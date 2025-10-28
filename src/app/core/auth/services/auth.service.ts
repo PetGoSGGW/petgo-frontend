@@ -6,7 +6,7 @@ export class AuthService {
 
   public isAuthenticated = this._isAuthenticated.asReadonly();
 
-  public setAuthentication(session: boolean) {
+  public setAuthentication(session: boolean): void {
     this._isAuthenticated.set(session);
   }
 }

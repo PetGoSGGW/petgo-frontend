@@ -12,6 +12,4 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   imports: [RouterOutlet],
 })
-export class AppComponent {
-  title = 'xD';
-}
+export class AppComponent {}
