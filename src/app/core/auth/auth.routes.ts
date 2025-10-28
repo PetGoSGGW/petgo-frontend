@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { AuthApiService } from './services/auth-api.service';
-
 export const authRoutes: Routes = [
   {
     path: '',
@@ -8,7 +7,10 @@ export const authRoutes: Routes = [
     children: [
       {
         path: 'logowanie',
-        redirectTo: 'rejestracja',
+        loadComponent: () =>
+          import('./components/log-in-form/log-in-form').then(
+            (c) => c.LogInFormComponent,
+      )
       },
       {
         path: 'rejestracja',

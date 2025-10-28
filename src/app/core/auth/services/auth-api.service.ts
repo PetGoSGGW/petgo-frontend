@@ -10,4 +10,10 @@ export class AuthApiService {
   public signUp(body: { email: string; password: string; birth: string }) {
     return this.http.post(`${this.apiUrl}/sign-up`, body);
   }
+
+  public logIn(body: { email: string; password: string }) {
+    
+    return this.http.post(`${this.apiUrl}/log-in`, body);
+  }
+
 }
