@@ -9,7 +9,6 @@ import {
   FormBuilder,
   ReactiveFormsModule,
   ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -113,7 +112,7 @@ export class SignUpFormComponent {
         next: () => {
           console.log('Sign up');
         },
-        error: (error: unknown) => {
+        error: () => {
           this.error.set('unknown');
         },
       });

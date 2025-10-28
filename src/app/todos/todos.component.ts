@@ -14,7 +14,12 @@ const client = generateClient<Schema>();
   styleUrl: './todos.component.css',
 })
 export class TodosComponent implements OnInit {
-  todos: any[] = [];
+  todos: {
+    content: string | null;
+    readonly id: string;
+    readonly createdAt: string;
+    readonly updatedAt: string;
+  }[] = [];
 
   ngOnInit(): void {
     this.listTodos();
@@ -23,7 +28,7 @@ export class TodosComponent implements OnInit {
   listTodos() {
     try {
       client.models.Todo.observeQuery().subscribe({
-        next: ({ items, isSynced }) => {
+        next: ({ items }) => {
           this.todos = items;
         },
       });

@@ -2,7 +2,7 @@
 const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
-const prettierPlugin = require('eslint-plugin-prettier');
+const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
 module.exports = tseslint.config(
   {
@@ -12,11 +12,9 @@ module.exports = tseslint.config(
       ...tseslint.configs.recommended,
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
+      eslintPluginPrettierRecommended,
     ],
     processor: angular.processInlineTemplates,
-    plugins: {
-      prettier: prettierPlugin,
-    },
     rules: {
       '@angular-eslint/directive-selector': [
         'error',
@@ -38,9 +36,10 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.html'],
-    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: {
-      'prettier/prettier': ['error', { parser: 'angular' }],
-    },
+    extends: [
+      ...angular.configs.templateRecommended,
+      ...angular.configs.templateAccessibility,
+      eslintPluginPrettierRecommended,
+    ],
   },
 );
