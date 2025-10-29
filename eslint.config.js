@@ -2,7 +2,7 @@
 const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
-const prettierPlugin = require('eslint-plugin-prettier');
+const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
 module.exports = tseslint.config(
   {
@@ -12,11 +12,9 @@ module.exports = tseslint.config(
       ...tseslint.configs.recommended,
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
+      eslintPluginPrettierRecommended,
     ],
     processor: angular.processInlineTemplates,
-    plugins: {
-      prettier: prettierPlugin,
-    },
     rules: {
       '@angular-eslint/directive-selector': [
         'error',
@@ -34,13 +32,38 @@ module.exports = tseslint.config(
           style: 'kebab-case',
         },
       ],
+      '@typescript-eslint/explicit-member-accessibility': [
+        'error',
+        {
+          accessibility: 'explicit',
+          overrides: {
+            constructors: 'no-public',
+          },
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'error',
+
+      'no-console': 'warn',
+      'prefer-const': 'error',
+      'arrow-body-style': ['error', 'as-needed'],
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      'object-shorthand': ['error', 'always'],
+      'prefer-destructuring': [
+        'error',
+        {
+          array: true,
+          object: true,
+        },
+      ],
     },
   },
   {
     files: ['**/*.html'],
-    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: {
-      'prettier/prettier': ['error', { parser: 'angular' }],
-    },
+    extends: [
+      ...angular.configs.templateRecommended,
+      ...angular.configs.templateAccessibility,
+      eslintPluginPrettierRecommended,
+    ],
   },
 );

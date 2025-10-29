@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "prepare": "husky"
   },
   "prettier": {
     "printWidth": 100,
@@ -29,6 +30,7 @@
     "@angular/core": "^20.2.0",
     "@angular/forms": "^20.2.0",
     "@angular/material": "^20.2.10",
+    "@angular/material-luxon-adapter": "^20.2.10",
     "@angular/platform-browser": "^20.2.0",
     "@angular/router": "^20.2.0",
     "aws-amplify": "^6.6.6",
@@ -49,6 +51,7 @@
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
