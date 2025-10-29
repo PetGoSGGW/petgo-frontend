@@ -22,6 +22,6 @@ export const authRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'rejestracja',
+    redirectTo: 'logowanie',
   },
 ];

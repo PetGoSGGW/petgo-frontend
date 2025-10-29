@@ -113,10 +113,12 @@ export class SignUpFormComponent {
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: () => {
-          this.router.navigate(['/']);
+        next: async () => {
+          // TODO: set session
+          await this.router.navigate(['/']);
         },
         error: () => {
+          // TODO: implement error interceptor
           this.error.set('unknown');
         },
       });

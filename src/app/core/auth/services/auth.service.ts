@@ -9,4 +9,6 @@ export class AuthService {
   public setAuthentication(session: boolean): void {
     this._isAuthenticated.set(session);
   }
+
+  // TODO: implement saving, getting and removing session from local storage or cookies
 }
