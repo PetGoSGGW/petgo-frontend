@@ -59,74 +59,75 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
 ## Folder structure
+
 petgo-front/
 ├── .angular/
 ├── .vscode/
 ├── node_modules/
 ├── src/
-│   ├── app/
-│   │   ├── core/
-│   │   │   ├── auth/
-│   │   │   │   ├── auth.service.ts
-│   │   │   │   └── auth.guard.ts
-│   │   │   └── core.module.ts
-│   │   ├── features/
-│   │   │   ├── dashboard/
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── dashboard-card/
-│   │   │   │   │   │   ├── dashboard-card.component.css
-│   │   │   │   │   │   ├── dashboard-card.component.html
-│   │   │   │   │   │   ├── dashboard-card.component.spec.ts
-│   │   │   │   │   │   └── dashboard-card.component.ts
-│   │   │   │   │   └── dashboard-summary/
-│   │   │   │   │       ├── dashboard-summary.component.css
-│   │   │   │   │       ├── dashboard-summary.component.html
-│   │   │   │   │       ├── dashboard-summary.component.spec.ts
-│   │   │   │   │       └── dashboard-summary.component.ts
-│   │   │   │   ├── services/
-│   │   │   │   │   └── dashboard.service.ts
-│   │   │   │   ├── pipes/
-│   │   │   │   │   └── dashboard-status.pipe.ts
-│   │   │   │   ├── dashboard-routing.module.ts
-│   │   │   │   ├── dashboard.component.css
-│   │   │   │   ├── dashboard.component.html
-│   │   │   │   ├── dashboard.component.spec.ts
-│   │   │   │   ├── dashboard.component.ts
-│   │   │   │   └── dashboard.module.ts
-│   │   │   └── products/
-│   │   │       ├── components/
-│   │   │       │   ├── product-list/
-│   │   │       │   └── product-detail/
-│   │   │       ├── services/
-│   │   │       │   └── product.service.ts
-│   │   │       ├── products-routing.module.ts
-│   │   │       ├── products.component.ts
-│   │   │       └── products.module.ts
-│   │   ├── shared/
-│   │   │   ├── components/
-│   │   │   │   ├── header/
-│   │   │   │   ├── footer/
-│   │   │   │   └── button/
-│   │   │   ├── directives/
-│   │   │   │   └── highlight.directive.ts
-│   │   │   ├── pipes/
-│   │   │   │   └── currency-format.pipe.ts
-│   │   │   └── shared.module.ts
-│   │   ├── app.component.css
-│   │   ├── app.component.html
-│   │   ├── app.component.spec.ts
-│   │   ├── app.component.ts
-│   │   └── app.module.ts
-│   ├── assets/
-│   ├── environments/
-│   │   ├── environment.prod.ts
-│   │   └── environment.ts
-│   ├── favicon.ico
-│   ├── index.html
-│   ├── main.ts
-│   ├── polyfills.ts
-│   ├── styles.css
-│   └── test.ts
+│ ├── app/
+│ │ ├── core/
+│ │ │ ├── auth/
+│ │ │ │ ├── auth.service.ts
+│ │ │ │ └── auth.guard.ts
+│ │ │ └── core.module.ts
+│ │ ├── features/
+│ │ │ ├── dashboard/
+│ │ │ │ ├── components/
+│ │ │ │ │ ├── dashboard-card/
+│ │ │ │ │ │ ├── dashboard-card.component.css
+│ │ │ │ │ │ ├── dashboard-card.component.html
+│ │ │ │ │ │ ├── dashboard-card.component.spec.ts
+│ │ │ │ │ │ └── dashboard-card.component.ts
+│ │ │ │ │ └── dashboard-summary/
+│ │ │ │ │ ├── dashboard-summary.component.css
+│ │ │ │ │ ├── dashboard-summary.component.html
+│ │ │ │ │ ├── dashboard-summary.component.spec.ts
+│ │ │ │ │ └── dashboard-summary.component.ts
+│ │ │ │ ├── services/
+│ │ │ │ │ └── dashboard.service.ts
+│ │ │ │ ├── pipes/
+│ │ │ │ │ └── dashboard-status.pipe.ts
+│ │ │ │ ├── dashboard-routing.module.ts
+│ │ │ │ ├── dashboard.component.css
+│ │ │ │ ├── dashboard.component.html
+│ │ │ │ ├── dashboard.component.spec.ts
+│ │ │ │ ├── dashboard.component.ts
+│ │ │ │ └── dashboard.module.ts
+│ │ │ └── products/
+│ │ │ ├── components/
+│ │ │ │ ├── product-list/
+│ │ │ │ └── product-detail/
+│ │ │ ├── services/
+│ │ │ │ └── product.service.ts
+│ │ │ ├── products-routing.module.ts
+│ │ │ ├── products.component.ts
+│ │ │ └── products.module.ts
+│ │ ├── shared/
+│ │ │ ├── components/
+│ │ │ │ ├── header/
+│ │ │ │ ├── footer/
+│ │ │ │ └── button/
+│ │ │ ├── directives/
+│ │ │ │ └── highlight.directive.ts
+│ │ │ ├── pipes/
+│ │ │ │ └── currency-format.pipe.ts
+│ │ │ └── shared.module.ts
+│ │ ├── app.component.css
+│ │ ├── app.component.html
+│ │ ├── app.component.spec.ts
+│ │ ├── app.component.ts
+│ │ └── app.module.ts
+│ ├── assets/
+│ ├── environments/
+│ │ ├── environment.prod.ts
+│ │ └── environment.ts
+│ ├── favicon.ico
+│ ├── index.html
+│ ├── main.ts
+│ ├── polyfills.ts
+│ ├── styles.css
+│ └── test.ts
 ├── angular.json
 ├── karma.conf.js
 ├── package.json
