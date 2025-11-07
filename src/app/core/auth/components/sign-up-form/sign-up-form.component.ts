@@ -47,6 +47,7 @@ export class SignUpFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly authApiService = inject(AuthApiService);
+  private readonly router = inject(Router);
 
   protected form = this.fb.group(
     {
@@ -63,7 +64,7 @@ export class SignUpFormComponent {
   protected loading = signal(false);
   protected error = signal<string | null>(null);
 
-  protected showHide(event: MouseEvent) {
+  protected showHide(event: MouseEvent): void {
     event.stopPropagation();
     event.preventDefault();
     this.hide.set(!this.hide());
@@ -95,25 +96,29 @@ export class SignUpFormComponent {
     };
   }
 
-  protected signUp() {
+  protected signUp(): void {
     this.form.markAllAsTouched();
 
     if (this.form.invalid) return;
 
     const { email, password, birth } = this.form.value;
 
+    if (!email || !password || !birth) return;
+
     this.authApiService
       .signUp({
-        email: email!,
-        password: password!,
-        birth: birth!,
+        email: email.trim(),
+        password: password.trim(),
+        birth: birth.trim(),
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: () => {
-          console.log('Sign up');
+        next: async () => {
+          // TODO: set session
+          await this.router.navigate(['/']);
         },
-        error: (error: unknown) => {
+        error: () => {
+          // TODO: implement error interceptor
           this.error.set('unknown');
         },
       });
