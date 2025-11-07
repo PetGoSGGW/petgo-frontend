@@ -9,6 +9,7 @@ import {
   FormBuilder,
   ReactiveFormsModule,
   ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -20,7 +21,6 @@ import {
 } from '@angular/material/datepicker';
 import { AuthApiService } from '../../services/auth-api.service';
 import { finalize } from 'rxjs';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up-form',

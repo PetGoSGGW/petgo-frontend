@@ -1,0 +1,47 @@
+<form class="form" [formGroup]="form" (ngSubmit)="logIn()">
+  
+  <mat-form-field>
+    @let emailTouched = form.controls.email.touched;
+    @let emailErrors = form.controls.email.errors;
+
+    <mat-label>Adres e-mail</mat-label>
+    <input matInput [formControl]="form.controls.email" />
+
+    @if (emailTouched && emailErrors?.['required']) {
+      <mat-error>Podaj adres e-mail.</mat-error>
+    } @else if (emailTouched && emailErrors?.['email']) {
+      <mat-error>Wprowadź poprawny adres e-mail.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    @let passwordTouched = form.controls.password.touched;
+    @let passwordErrors = form.controls.password.errors;
+
+    <mat-label>Hasło</mat-label>
+    <input matInput [formControl]="form.controls.password" [type]="hide() ? 'password' : 'text'" />
+    <button
+      matIconButton
+      matSuffix
+      (click)="showHide($event)"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide()"
+    >
+      <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+
+    @if (passwordTouched && passwordErrors?.['required']) {
+      <mat-error>Podaj hasło.</mat-error>
+    } @else if (passwordErrors?.['minlength']) {
+      <mat-error>Haslo powinno miec co najmniej 8</mat-error>
+    }
+  </mat-form-field>
+
+  @if (error()) {
+    <mat-error class="form-error">{{ error() }}</mat-error>
+  }
+
+  <button matButton="tonal" type="submit" [disabled]="loading()">
+    {{ loading() ? 'Ładowanie...' : 'Zaloguj się' }}
+  </button>
+</form>
