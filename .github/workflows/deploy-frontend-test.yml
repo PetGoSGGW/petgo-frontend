@@ -19,8 +19,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "."
-          target: "/opt/petgo-frontend"
+          source: '.'
+          target: '/opt/petgo-frontend'
 
       - name: SSH deploy commands
         uses: appleboy/ssh-action@v1.0.3
