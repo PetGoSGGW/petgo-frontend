@@ -70,7 +70,6 @@ petgo-front/
 │ │ │ ├── auth/
 │ │ │ │ ├── auth.service.ts
 │ │ │ │ └── auth.guard.ts
-│ │ │ └── core.module.ts
 │ │ ├── features/
 │ │ │ ├── dashboard/
 │ │ │ │ ├── components/
@@ -88,21 +87,18 @@ petgo-front/
 │ │ │ │ │ └── dashboard.service.ts
 │ │ │ │ ├── pipes/
 │ │ │ │ │ └── dashboard-status.pipe.ts
-│ │ │ │ ├── dashboard-routing.module.ts
+│ │ │ │ ├── dashboard.routes.ts
 │ │ │ │ ├── dashboard.component.css
 │ │ │ │ ├── dashboard.component.html
-│ │ │ │ ├── dashboard.component.spec.ts
-│ │ │ │ ├── dashboard.component.ts
-│ │ │ │ └── dashboard.module.ts
+│ │ │ │ └── dashboard.component.ts
 │ │ │ └── products/
 │ │ │ ├── components/
 │ │ │ │ ├── product-list/
 │ │ │ │ └── product-detail/
 │ │ │ ├── services/
 │ │ │ │ └── product.service.ts
-│ │ │ ├── products-routing.module.ts
-│ │ │ ├── products.component.ts
-│ │ │ └── products.module.ts
+│ │ │ ├── products.routes.ts
+│ │ │ └── products.component.ts
 │ │ ├── shared/
 │ │ │ ├── components/
 │ │ │ │ ├── header/
@@ -116,8 +112,7 @@ petgo-front/
 │ │ ├── app.component.css
 │ │ ├── app.component.html
 │ │ ├── app.component.spec.ts
-│ │ ├── app.component.ts
-│ │ └── app.module.ts
+│ │ └── app.component.ts
 │ ├── assets/
 │ ├── environments/
 │ │ ├── environment.prod.ts
