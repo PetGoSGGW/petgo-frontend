@@ -10,10 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy project to server
+      # 🔹 Kopiowanie projektu na serwer
+      - name: Copy project files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -21,7 +22,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "."
           target: "/opt/petgo-frontend"
+          rm: true   # usuwa poprzednie pliki przed uploadem
 
+      # 🔹 Wykonanie poleceń na serwerze po przesłaniu kodu
       - name: SSH deploy commands
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -30,9 +33,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /opt/petgo-frontend
-            git reset --hard
-            git clean -fd
-            git pull
-            npm ci
-            # restart usługi Angulara
+            npm ci --legacy-peer-deps
             sudo systemctl restart petgo-frontend
