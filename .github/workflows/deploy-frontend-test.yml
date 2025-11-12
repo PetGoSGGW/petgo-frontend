@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      #Kopiowanie projektu na serwer
+      # Kopiowanie projektu na serwer
       - name: Copy project files to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -22,9 +22,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "."
           target: "/opt/petgo-frontend"
-          rm: true   #usuwa poprzednie pliki przed uploadem
+          rm: true # usuwa poprzednie pliki przed uploadem
 
-      #Wykonanie poleceń na serwerze po przesłaniu kodu
+      # Wykonanie poleceń na serwerze po przesłaniu kodu
       - name: SSH deploy commands
         uses: appleboy/ssh-action@v1.0.3
         with:
