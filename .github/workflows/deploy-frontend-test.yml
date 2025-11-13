@@ -14,6 +14,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check runner user
+        run: |
+          echo "Current user:"
+          whoami
+          echo "Home directory:"
+          echo $HOME
+          echo "Environment PATH:"
+          echo $PATH
+          
       - name: Update repository and install dependencies
         run: |
           echo "Fetching latest code from branch 'test'..."
