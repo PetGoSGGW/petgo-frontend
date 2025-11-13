@@ -14,41 +14,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug runner info
-        run: |
-          echo "Running as user: $(whoami)"
-          echo "Home directory: $HOME"
-          echo "PATH: $PATH"
-
       - name: Update repository
         run: |
           cd /opt/petgo-frontend
-          echo "Fetching latest code from branch 'test'..."
           git fetch origin test
           git reset --hard origin/test
 
       - name: Install dependencies
         run: |
           cd /opt/petgo-frontend
-          echo "Installing npm dependencies..."
           npm ci --prefer-offline --no-audit --no-fund --legacy-peer-deps
 
       - name: Build Angular app
         run: |
           cd /opt/petgo-frontend
-          echo "Building Angular app..."
           npm run build --if-present
 
-      - name: Restart Angular service via localhost SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 127.0.0.1
-          username: petgo
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            echo "Restarting petgo-frontend service..."
-            sudo systemctl restart petgo-frontend
-            sudo systemctl status petgo-frontend --no-pager
+      - name: Restart Angular service
+        run: /home/petgo/restart-frontend.sh
 
       - name: Deployment confirmation
         run: echo "Frontend deployed successfully on TEST environment!"
