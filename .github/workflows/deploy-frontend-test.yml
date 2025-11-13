@@ -7,33 +7,31 @@ on:
 
 jobs:
   deploy:
-    name: Deploy frontend to test server
+    name: Deploy to test environment
     runs-on: [self-hosted, petgo-runner]
 
     steps:
-      - name: Print environment info
-        run: |
-          echo "Running on self-hosted runner:"
-          hostname
-          pwd
-
-      - name: Navigate to project folder
-        run: cd /opt/petgo-frontend
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Update repository and install dependencies
         run: |
-          cd /opt/petgo-frontend
           echo "Fetching latest code from branch 'test'..."
+          cd /opt/petgo-frontend
           git fetch origin test
           git reset --hard origin/test
-          echo "Installing dependencies..."
-          npm ci --legacy-peer-deps
+
+          echo "Installing dependencies (if needed)..."
+          npm ci --prefer-offline --no-audit --no-fund --legacy-peer-deps
+
+      - name: Build Angular app
+        run: |
+          echo "Building Angular app..."
+          cd /opt/petgo-frontend
+          npm run build --if-present
 
       - name: Restart Angular service
         run: |
           echo "Restarting petgo-frontend service..."
-          sudo systemctl restart petgo-frontend
-          sudo systemctl status petgo-frontend --no-pager
-
-      - name: Confirm successful deployment
-        run: echo "Frontend deployed successfully on test environment!"
+          sudo -n /usr/bin/systemctl restart petgo-frontend
+          sudo -n /usr/bin/systemctl status petgo-frontend --no-pager
