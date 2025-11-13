@@ -39,11 +39,16 @@ jobs:
           echo "Building Angular app..."
           npm run build --if-present
 
-      - name: Restart Angular service
-        run: |
-          echo "Restarting petgo-frontend service..."
-          sudo -n /usr/bin/systemctl restart petgo-frontend
-          sudo -n /usr/bin/systemctl status petgo-frontend --no-pager
+      - name: Restart Angular service via localhost SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 127.0.0.1
+          username: petgo
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "Restarting petgo-frontend service..."
+            sudo systemctl restart petgo-frontend
+            sudo systemctl status petgo-frontend --no-pager
 
       - name: Deployment confirmation
         run: echo "Frontend deployed successfully on TEST environment!"
