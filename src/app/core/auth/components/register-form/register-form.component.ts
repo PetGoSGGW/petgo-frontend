@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { MatHint, MatInput, MatSuffix } from '@angular/material/input';
+import { MatInput, MatSuffix } from '@angular/material/input';
 import { MatFormField } from '@angular/material/form-field';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatLabel } from '@angular/material/input';
@@ -13,19 +13,21 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { MatIcon } from '@angular/material/icon';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerToggle,
-} from '@angular/material/datepicker';
 import { AuthApiService } from '../../services/auth-api.service';
 import { finalize } from 'rxjs';
 import { Router } from '@angular/router';
+import {
+  MatStep,
+  MatStepLabel,
+  MatStepper,
+  MatStepperNext,
+  MatStepperPrevious,
+} from '@angular/material/stepper';
 
 @Component({
-  selector: 'app-sign-up-form',
-  templateUrl: './sign-up-form.component.html',
-  styleUrl: './sign-up-form.component.css',
+  selector: 'app-register-form',
+  templateUrl: './register-form.component.html',
+  styleUrl: './register-form.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatInput,
@@ -37,37 +39,53 @@ import { Router } from '@angular/router';
     MatSuffix,
     MatIconButton,
     ReactiveFormsModule,
-    MatDatepicker,
-    MatDatepickerToggle,
-    MatDatepickerInput,
-    MatHint,
+
+    MatStepper,
+    MatStep,
+    MatStepperNext,
+    MatStepperPrevious,
+    MatStepLabel,
   ],
 })
-export class SignUpFormComponent {
+export class RegisterFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly authApiService = inject(AuthApiService);
   private readonly router = inject(Router);
 
-  protected form = this.fb.group(
+  protected personalDetailsForm = this.fb.group({
+    firstName: this.fb.control<string>('', [Validators.required]),
+    lastName: this.fb.control<string>('', [Validators.required]),
+    username: this.fb.control<string>('', [Validators.required]),
+  });
+
+  protected accountForm = this.fb.group(
     {
       email: this.fb.control<string>('', [Validators.required, Validators.email]),
       password: this.fb.control<string>('', [Validators.required, Validators.minLength(8)]),
       confirmPassword: this.fb.control<string>('', [Validators.required]),
-      birth: this.fb.control<string | null>(null, [Validators.required]),
     },
 
     { validators: this.canMatchPasswordValidator('password', 'confirmPassword') },
   );
 
-  protected hide = signal(true);
+  protected hidePassword = signal(true);
+  protected hidePasswordConfirmation = signal(true);
   protected loading = signal(false);
   protected error = signal<string | null>(null);
 
-  protected showHide(event: MouseEvent): void {
+  protected showHide(event: MouseEvent, field: 'password' | 'password-confirmation'): void {
     event.stopPropagation();
     event.preventDefault();
-    this.hide.set(!this.hide());
+
+    switch (field) {
+      case 'password':
+        this.hidePassword.update((hide) => !hide);
+        break;
+      case 'password-confirmation':
+        this.hidePasswordConfirmation.update((hide) => !hide);
+        break;
+    }
   }
 
   protected canMatchPasswordValidator(
@@ -96,25 +114,31 @@ export class SignUpFormComponent {
     };
   }
 
-  protected signUp(): void {
-    this.form.markAllAsTouched();
+  protected register(): void {
+    this.accountForm.markAllAsTouched();
+    this.personalDetailsForm.markAllAsTouched();
 
-    if (this.form.invalid) return;
+    if (this.accountForm.invalid) return;
 
-    const { email, password, birth } = this.form.value;
+    const { email, password } = this.accountForm.value;
 
-    if (!email || !password || !birth) return;
+    const { lastName, firstName, username } = this.personalDetailsForm.value;
+
+    if (!email || !password || !lastName || !firstName || !username) return;
 
     this.authApiService
-      .signUp({
+      .register({
         email: email.trim(),
         password: password.trim(),
-        birth: birth.trim(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        username: username.trim(),
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: async () => {
           // TODO: set session
+          this.authService.setAuthentication(true);
           await this.router.navigate(['/']);
         },
         error: () => {
@@ -122,7 +146,5 @@ export class SignUpFormComponent {
           this.error.set('unknown');
         },
       });
-
-    this.authService.setAuthentication(true);
   }
 }
