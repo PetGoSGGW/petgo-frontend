@@ -1,0 +1,140 @@
+<div class="pet-details-page">
+  @if (pet(); as currentPet) {
+    <div class="pet-layout">
+      <mat-card class="pet-card main-card">
+        <div class="pet-header">
+          <div class="pet-photo-wrapper">
+            @if (getFirstPhotoUrl(); as mainPhoto) {
+              <img class="pet-photo-main" [src]="mainPhoto" [alt]="currentPet.name" />
+            } @else {
+              <div class="pet-photo-placeholder">
+                <mat-icon>pets</mat-icon>
+              </div>
+            }
+          </div>
+
+          <div class="pet-main-info">
+            <h2 class="pet-name">
+              {{ currentPet.name }}
+            </h2>
+            <mat-chip-set>
+              <mat-chip color="primary" selected>
+                <mat-icon>category</mat-icon>
+                <span>{{ currentPet.breed }}</span>
+              </mat-chip>
+              <mat-chip>
+                <mat-icon>calendar_today</mat-icon>
+                <span>{{ currentPet.age }}</span>
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+
+        @if (currentPet.description) {
+          <mat-divider></mat-divider>
+          <div class="pet-description">
+            <h3>Opis</h3>
+            <p>
+              {{ currentPet.description }}
+            </p>
+          </div>
+        }
+
+        @if (currentPet.photos.length > 1) {
+          <mat-divider></mat-divider>
+          <div class="pet-photos-extra">
+            <h3>Zdjęcia</h3>
+            <div class="photos-row">
+              @for (photo of currentPet.photos; track photo; let idx = $index) {
+                @if (idx > 0) {
+                  <img
+                    class="pet-photo-thumb"
+                    [src]="photo"
+                    [alt]="currentPet.name + ' zdjęcie ' + (idx + 1)"
+                  />
+                }
+              }
+            </div>
+          </div>
+        }
+      </mat-card>
+      <mat-card class="pet-card reviews-card">
+        <h3>Opinie</h3>
+        <p class="public-info">
+          Uwaga: wszystkie dodane opinie są
+          <strong>widoczne publicznie</strong>
+          dla innych użytkowników.
+        </p>
+
+        @if (reviews().length === 0) {
+          <p class="no-reviews">
+            Ten pupil nie ma jeszcze opinii. Bądź pierwszą osobą, która coś napisze!
+          </p>
+        } @else {
+          <mat-list>
+            @for (review of reviews(); track review.id) {
+              <mat-list-item class="review-item">
+                <div class="review-item-container">
+                  <div class="review-content">
+                    <div class="review-header">
+                      <span class="author">{{ review.authorName }}</span>
+                      <span class="date">
+                        {{ review.createdAt | date: 'shortDate' }}
+                      </span>
+                    </div>
+                    <p class="text">
+                      {{ review.text }}
+                    </p>
+                  </div>
+
+                  <button
+                    mat-icon-button
+                    matTooltip="Zgłoś opinię do weryfikacji"
+                    (click)="onReportReview(review.id)"
+                    [disabled]="review.reported"
+                  >
+                    <mat-icon [class.reported]="review.reported"> flag </mat-icon>
+                  </button>
+                </div>
+              </mat-list-item>
+            }
+          </mat-list>
+        }
+
+        <mat-divider class="reviews-divider"></mat-divider>
+
+        <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form" novalidate>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Dodaj opinię o tym pupilu</mat-label>
+            <textarea
+              matInput
+              rows="4"
+              formControlName="text"
+              placeholder="Napisz kilka słów o swoim doświadczeniu..."
+            ></textarea>
+            @if (textControl.touched && textControl.invalid) {
+              <mat-error> Opinia jest wymagana (min. 5 znaków). </mat-error>
+            }
+          </mat-form-field>
+
+          <p class="public-hint">
+            💡 Twoja opinia będzie
+            <strong>widoczna dla wszystkich</strong>
+            użytkowników.
+          </p>
+
+          <div class="review-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="reviewForm.invalid">
+              <span>Dodaj opinię</span>
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  } @else {
+    <mat-card class="pet-card">
+      <h2>Pupil nie istnieje</h2>
+      <p>Nie znaleziono pupila o podanym identyfikatorze.</p>
+    </mat-card>
+  }
+</div>
