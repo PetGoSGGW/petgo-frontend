@@ -120,13 +120,13 @@
   margin: 0 0 16px;
 }
 
-.review-item{
-    padding: 2rem 0;
+.review-item {
+  padding: 2rem 0;
 }
 
 .review-item-container {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .review-content {
