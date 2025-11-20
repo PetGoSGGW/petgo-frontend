@@ -13,8 +13,8 @@ export const authRoutes: Routes = [
       {
         path: 'rejestracja',
         loadComponent: () =>
-          import('./components/sign-up-form/sign-up-form.component').then(
-            (c) => c.SignUpFormComponent,
+          import('./components/register-form/register-form.component').then(
+            (c) => c.RegisterFormComponent,
           ),
       },
     ],

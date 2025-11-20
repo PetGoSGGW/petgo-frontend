@@ -1,0 +1,37 @@
+name: Deploy frontend to TEST
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  deploy:
+    name: Deploy to test environment
+    runs-on: [self-hosted, petgo-runner]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update repository
+        run: |
+          cd /opt/petgo-frontend
+          git fetch origin test
+          git reset --hard origin/test
+
+      - name: Install dependencies
+        run: |
+          cd /opt/petgo-frontend
+          npm ci --prefer-offline --no-audit --no-fund --legacy-peer-deps
+
+      - name: Build Angular app
+        run: |
+          cd /opt/petgo-frontend
+          npm run build --if-present
+
+      - name: Restart Angular service
+        run: /home/petgo/restart-frontend.sh
+
+      - name: Deployment confirmation
+        run: echo "Frontend deployed successfully on TEST environment!"
