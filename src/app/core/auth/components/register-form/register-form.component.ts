@@ -114,7 +114,7 @@ export class RegisterFormComponent {
     };
   }
 
-  protected register(): void {
+  protected async register(): Promise<void> {
     this.accountForm.markAllAsTouched();
     this.personalDetailsForm.markAllAsTouched();
 
@@ -136,9 +136,10 @@ export class RegisterFormComponent {
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: async () => {
+        next: async (user) => {
           // TODO: set session
           this.authService.setAuthentication(true);
+          this.authService.setUser(user);
           await this.router.navigate(['/']);
         },
         error: () => {
