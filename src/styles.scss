@@ -1,18 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@use './styles/_theme-colors.scss' as theme-colors;
 
-@use './custom-theme.scss';
-
-:root {
-  --header-height: 2.5rem;
-  --default-padding: 1rem;
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: theme-colors.$primary-palette,
+        tertiary: theme-colors.$tertiary-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
 }
 
-html,
-body {
-  height: 100%;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --header-height: 3.25rem;
+  --default-padding: 1rem;
 }
 
 body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-  padding: 0 1rem;
+  overflow-x: hidden;
+  min-height: 100svh;
+  height: 100%;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
 }

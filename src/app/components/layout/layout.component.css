@@ -1,0 +1,22 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.aside {
+  display: none;
+}
+
+main {
+  padding: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .wrapper {
+    grid-template-columns: 18rem 1fr;
+  }
+
+  .aside {
+    display: flex;
+  }
+}
