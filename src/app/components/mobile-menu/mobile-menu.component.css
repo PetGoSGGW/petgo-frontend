@@ -1,0 +1,56 @@
+.sidebar {
+  height: 100svh;
+  width: 100%;
+  max-width: 26rem;
+  border: none;
+}
+
+.sidebar::backdrop {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+[popover] {
+  transform: translateX(-100%);
+  transition:
+    transform 0.3s ease-in-out,
+    display 0.3s allow-discrete;
+}
+
+[popover]:popover-open {
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
+  margin-left: 0;
+
+  @starting-style {
+    transform: translateX(-100%);
+  }
+}
+
+.popover-close-btn {
+  align-self: flex-end;
+}
+
+.nav {
+  padding: 1rem;
+
+  & > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    list-style-type: none;
+
+    & > li {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@media (min-width: 996px) {
+  .open-menu-button {
+    display: none;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}

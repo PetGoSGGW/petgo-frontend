@@ -2,6 +2,10 @@
 
 @use './custom-theme.scss';
 
+* {
+  box-sizing: border-box;
+}
+
 :root {
   --header-height: 2.5rem;
   --default-padding: 1rem;
