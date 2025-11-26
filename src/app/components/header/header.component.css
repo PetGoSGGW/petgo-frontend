@@ -4,8 +4,7 @@ header {
   gap: 1rem;
   height: var(--header-height);
   padding: 0 1rem;
-  /* background-color: var(--mat-sys-primary-container); */
-
+  align-items: center;
   background-color: var(--mat-sys-surface-dim);
   position: sticky;
   top: 0;
@@ -30,7 +29,6 @@ nav {
 }
 
 img {
-  max-width: 256px;
   width: 100%;
 }
 

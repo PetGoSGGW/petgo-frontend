@@ -3,6 +3,15 @@
   width: 100%;
   max-width: 26rem;
   border: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-close-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.5rem 1rem 0.5rem;
 }
 
 .sidebar::backdrop {
@@ -28,6 +37,8 @@
 
 .popover-close-btn {
   align-self: flex-end;
+  width: 44px;
+  height: 44px;
 }
 
 .nav {
@@ -43,6 +54,10 @@
       font-size: 1.5rem;
     }
   }
+}
+
+img {
+  width: 100%;
 }
 
 @media (min-width: 996px) {

@@ -14,7 +14,7 @@ import {
 import { AuthService } from '../../services/auth.service';
 import { MatIcon } from '@angular/material/icon';
 import { AuthApiService } from '../../services/auth-api.service';
-import { finalize } from 'rxjs';
+import { finalize, of } from 'rxjs';
 import { Router } from '@angular/router';
 import {
   MatStep,
@@ -126,20 +126,21 @@ export class RegisterFormComponent {
 
     if (!email || !password || !lastName || !firstName || !username) return;
 
-    this.authApiService
-      .register({
-        email: email.trim(),
-        password: password.trim(),
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        username: username.trim(),
-      })
+    // this.authApiService
+    //   .register({
+    //     email: email.trim(),
+    //     password: password.trim(),
+    //     firstName: firstName.trim(),
+    //     lastName: lastName.trim(),
+    //     username: username.trim(),
+    //   })
+    of(null)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: async (user) => {
+        next: async () => {
           // TODO: set session
           this.authService.setAuthentication(true);
-          this.authService.setUser(user);
+          // this.authService.setUser(user);
           await this.router.navigate(['/']);
         },
         error: () => {

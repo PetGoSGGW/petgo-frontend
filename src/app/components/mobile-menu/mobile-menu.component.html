@@ -9,21 +9,22 @@
 </button>
 
 <div id="sidebar" popover class="sidebar">
-  <button
-    matIconButton
-    aria-label="Zamknij menu"
-    popovertarget="sidebar"
-    popovertargetaction="hide"
-    class="popover-close-btn"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
-
+  <div class="sidebar-close-button">
+    <a routerLink="/" aria-label="PetGo">
+      <img src="logo.svg" alt="PetGo" />
+    </a>
+    <button
+      matIconButton
+      aria-label="Zamknij menu"
+      popovertarget="sidebar"
+      popovertargetaction="hide"
+      class="popover-close-btn"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-divider />
   <nav class="nav">
-    <ul class="">
-      <li class="">
-        <a href="/">Strona główna</a>
-      </li>
-    </ul>
+    <app-navigation-list />
   </nav>
 </div>
