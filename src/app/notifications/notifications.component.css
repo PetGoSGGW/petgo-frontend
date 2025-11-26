@@ -1,0 +1,74 @@
+.notifications-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 2rem 0 2rem 0;
+  color: #333;
+
+}
+
+.notifications-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.notification-card {
+  padding: 10px;
+  width: 70%;
+  max-width: 900px;
+  cursor: pointer;
+  text-align: center;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+
+  mat-card-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  mat-card-subtitle {
+    color: #666;
+  }
+
+  mat-card-content {
+    margin-top: 0.5rem;
+  }
+
+  .delete-button {
+    background-color: #1e88e5 !important;
+    color: white !important;
+    margin-top: 1rem;
+  }
+}
+
+.clear-button {
+  background-color: #1e88e5 !important;
+  color: white !important;
+  margin-bottom: 1.5rem;
+}
+
+.no-notifications {
+  color: #666;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
