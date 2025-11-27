@@ -7,6 +7,7 @@ export const routes: Routes = [
   },
   {
     path: 'notifications',
-    loadChildren: () => import('./notifications/notifications.routes').then((r) => r.notificationsRoutes)
+    loadChildren: () =>
+      import('./notifications/notifications.routes').then((r) => r.notificationsRoutes),
   },
 ];
