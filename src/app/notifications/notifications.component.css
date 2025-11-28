@@ -13,7 +13,6 @@
   text-align: center;
   margin: 2rem 0 2rem 0;
   color: #333;
-
 }
 
 .notifications-container {
@@ -34,7 +33,9 @@
   color: #000000;
   border-radius: 16px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
 
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
