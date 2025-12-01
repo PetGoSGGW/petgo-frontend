@@ -1,0 +1,39 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--header-height);
+  padding: 0 1rem;
+  align-items: center;
+  background-color: var(--mat-sys-surface-dim);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+nav {
+  & > ul {
+    list-style-type: none;
+  }
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-username {
+  display: none;
+}
+
+img {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .profile-username {
+    display: flex;
+  }
+}

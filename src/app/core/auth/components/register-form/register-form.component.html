@@ -1,0 +1,124 @@
+<mat-stepper #stepper [linear]="true">
+  <mat-step [stepControl]="accountForm">
+    <form class="form" [formGroup]="accountForm">
+      <ng-template matStepLabel>Dane podstawowe</ng-template>
+      <mat-form-field>
+        @let emailTouched = accountForm.controls.email.touched;
+        @let emailErrors = accountForm.controls.email.errors;
+
+        <mat-label>Adres e-mail</mat-label>
+        <input matInput formControlName="email" />
+
+        @if (emailTouched && emailErrors?.['required']) {
+          <mat-error>Podaj adres e-mail.</mat-error>
+        } @else if (emailTouched && emailErrors?.['email']) {
+          <mat-error>Wprowadź poprawny adres e-mail.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        @let passwordTouched = accountForm.controls.password.touched;
+        @let passwordErrors = accountForm.controls.password.errors;
+
+        <mat-label>Hasło</mat-label>
+        <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" />
+        <button
+          matIconButton
+          matSuffix
+          (click)="showHide($event, 'password')"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hidePassword()"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+
+        @if (passwordTouched && passwordErrors?.['required']) {
+          <mat-error>Podaj hasło.</mat-error>
+        } @else if (passwordErrors?.['minlength']) {
+          <mat-error>Haslo powinno miec co najmniej 8</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        @let confirmPasswordTouched = accountForm.controls.confirmPassword.touched;
+        @let confirmPasswordErrors = accountForm.controls.confirmPassword.errors;
+
+        <mat-label>Potwierdzenie hasło</mat-label>
+        <input
+          matInput
+          formControlName="confirmPassword"
+          [type]="hidePasswordConfirmation() ? 'password' : 'text'"
+        />
+        <button
+          matIconButton
+          matSuffix
+          (click)="showHide($event, 'password-confirmation')"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hidePasswordConfirmation()"
+        >
+          <mat-icon>{{ hidePasswordConfirmation() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+
+        @if (confirmPasswordTouched && confirmPasswordErrors?.['required']) {
+          <mat-error>Podaj potwierdzenie hasła.</mat-error>
+        } @else if (accountForm.errors?.['passwordMismatch']) {
+          <mat-error>Hasła się różnią</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        class="next-button"
+        matButton="tonal"
+        matStepperNext
+        (click)="accountForm.markAllAsTouched()"
+      >
+        Dalej
+      </button>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="personalDetailsForm">
+    <form class="form" [formGroup]="personalDetailsForm">
+      <ng-template matStepLabel>Dane personalne</ng-template>
+      <mat-form-field>
+        @let firstNameTouched = personalDetailsForm.controls.firstName.touched;
+        @let firstNameErrors = personalDetailsForm.controls.firstName.errors;
+
+        <mat-label>Imię</mat-label>
+        <input matInput type="text" formControlName="firstName" />
+
+        @if (firstNameTouched && firstNameErrors?.['required']) {
+          <mat-error>Podaj swoje imię.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        @let lastNameTouched = personalDetailsForm.controls.lastName.touched;
+        @let lastNameErrors = personalDetailsForm.controls.lastName.errors;
+
+        <mat-label>Nazwisko</mat-label>
+        <input matInput type="text" formControlName="lastName" />
+
+        @if (lastNameTouched && lastNameErrors?.['required']) {
+          <mat-error>Podaj swoje nazwisko.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        @let usernameTouched = personalDetailsForm.controls.username.touched;
+        @let usernameErrors = personalDetailsForm.controls.username.errors;
+
+        <mat-label>Pseudonim</mat-label>
+        <input matInput type="text" formControlName="username" />
+
+        @if (usernameTouched && usernameErrors?.['required']) {
+          <mat-error>Podaj swój pseudonim.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="buttons">
+        <button matButton="outlined" matStepperPrevious>Powrót</button>
+        <button matButton="tonal" (click)="register()">Zarejestruj się</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>
