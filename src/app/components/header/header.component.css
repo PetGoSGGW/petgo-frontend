@@ -18,6 +18,12 @@ nav {
   }
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .profile {
   display: flex;
   align-items: center;
@@ -32,8 +38,14 @@ img {
   width: 100%;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 48rem) {
   .profile-username {
     display: flex;
+  }
+}
+
+@media (min-width: 64rem) {
+  .header-left {
+    gap: 0;
   }
 }

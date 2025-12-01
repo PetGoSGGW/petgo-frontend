@@ -16,6 +16,6 @@ export class AuthApiService {
     lastName: string;
     username: string;
   }): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, body);
+    return this.http.post<User>(`${this.apiUrl}/auth/register`, body);
   }
 }

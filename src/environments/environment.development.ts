@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'https://api.petgo.com.pl/api',
+  apiUrl: 'https://test.petgo.com.pl/api',
 };
