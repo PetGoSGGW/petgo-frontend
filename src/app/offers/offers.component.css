@@ -1,0 +1,90 @@
+.search-box {
+  width: 60%;
+  margin: 20px auto 20px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.card {
+  width: 50%;
+  min-width: 350px;
+  
+  background: #f7f9f4;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e2e2e2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile {
+  display: flex;
+  align-items: stretch;
+  gap: 15px;
+}
+
+.avatar {
+  width: 80px;       
+  height: 100%;      
+  object-fit: cover; 
+  border-radius: 8px;
+}
+
+.username {
+  color: #777;
+  font-size: 14px;
+}
+
+.rating .star {
+  color: #ccc;
+  font-size: 18px;
+}
+
+.rating .filled {
+  color: #ffbf00;
+}
+
+.reserve-btn {
+  background-color: #37b34a;
+  color: white;
+  padding: 10px;
+  width: 140px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  align-self: center;
+}

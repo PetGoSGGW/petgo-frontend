@@ -1,0 +1,44 @@
+<div class="search-box">
+  <input type="text" placeholder="Szukaj miejscowości..." />
+</div>
+
+<div class="cards-container">
+  @for (n of nannies; track n) {
+    <div class="card">
+      <div class="columns">
+        <div class="left">
+          <div class="profile">
+            <img src="/assets/user-avatar.png" alt="avatar" class="avatar" />
+
+            <div class="profile-info">
+              <h3>{{ n.name }}</h3>
+              <span class="username">{{ '@' + n.username }}</span>
+
+              <div class="rating">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <span class="star" [class.filled]="star <= n.rating">★</span>
+                }
+                <span class="reviews">({{ n.reviews }})</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="details">
+            <p>📍 Odległość: {{ n.distance }} km</p>
+            <p>💲 Stawka: {{ n.rate }} zł/h</p>
+            <p>🎂 Wiek: {{ n.age }} lat</p>
+          </div>
+        </div>
+
+        <div class="right">
+          <h4>Lokalizacja</h4>
+          <p>Miejscowość: {{ n.city }}</p>
+          <p>Ulica: {{ n.street }}</p>
+          <p>Kod pocztowy: {{ n.postal }}</p>
+        </div>
+      </div>
+
+      <button class="reserve-btn" (click)="reserve(n.name)">Zarezerwuj</button>
+    </div>
+  }
+</div>
