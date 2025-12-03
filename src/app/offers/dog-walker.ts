@@ -1,4 +1,4 @@
-interface DogWalker {
+export interface DogWalker {
   name: string;
   username: string;
   rating: number;

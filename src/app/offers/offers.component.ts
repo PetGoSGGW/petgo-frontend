@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OffersService } from './offers.service';
+import { DogWalker } from './dog-walker';
 
 @Component({
   selector: 'app-offers',
@@ -12,12 +13,12 @@ import { OffersService } from './offers.service';
 export class OffersComponent implements OnInit {
   private readonly offersService = inject(OffersService);
   private dogWalkers: DogWalker[] = [];
-  protected search: string = '';
+  protected search = '';
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.offersService.getDogWalkers().subscribe({
-      next: data => this.dogWalkers = data,
-      error: err => console.error('Nie można pobrać wyprowadzaczy', err)
+      next: (data) => (this.dogWalkers = data),
+      error: (err) => console.error('Nie można pobrać wyprowadzaczy', err),
     });
   }
 
@@ -27,8 +28,6 @@ export class OffersComponent implements OnInit {
 
   protected filteredDogWalkers() {
     if (!this.search) return this.dogWalkers;
-    return this.dogWalkers.filter(n =>
-      n.city.toLowerCase().includes(this.search.toLowerCase())
-    );
+    return this.dogWalkers.filter((n) => n.city.toLowerCase().includes(this.search.toLowerCase()));
   }
 }

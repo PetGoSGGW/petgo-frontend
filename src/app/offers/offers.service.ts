@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { DogWalker } from './dog-walker';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class OffersService {
 
   public getDogWalkers(): Observable<DogWalker[]> {
     const mockData: DogWalker[] = [
-        {
+      {
         name: 'Julia',
         username: 'julia',
         rating: 4,
@@ -22,8 +23,8 @@ export class OffersService {
         city: 'Warszawa',
         street: 'ul. Długa 10',
         postal: '00-886',
-        },
-        {
+      },
+      {
         name: 'Kasia',
         username: 'kasia',
         rating: 4,
@@ -34,7 +35,7 @@ export class OffersService {
         city: 'Warszawa',
         street: 'ul. Długa 5',
         postal: '00-110',
-        },
+      },
     ];
 
     // return this.http.get<DogWalker[]>(`${this.apiUrl}`);
