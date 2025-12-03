@@ -1,54 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-interface Nanny {
-  name: string;
-  username: string;
-  rating: number;
-  reviews: number;
-  distance: number;
-  rate: number;
-  age: number;
-  city: string;
-  street: string;
-  postal: string;
-}
+import { FormsModule } from '@angular/forms';
+import { OffersService } from './offers.service';
 
 @Component({
   selector: 'app-offers',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './offers.component.html',
   styleUrl: './offers.component.css',
 })
-export class OffersComponent {
-  protected readonly nannies: Nanny[] = [
-    {
-      name: 'Julia',
-      username: 'julia',
-      rating: 4,
-      reviews: 201,
-      distance: 0.9,
-      rate: 40,
-      age: 22,
-      city: 'Warszawa',
-      street: 'ul. Długa 10',
-      postal: '00-886',
-    },
-    {
-      name: 'Kasia',
-      username: 'kasia',
-      rating: 4,
-      reviews: 123,
-      distance: 1.2,
-      rate: 35,
-      age: 26,
-      city: 'Warszawa',
-      street: 'ul. Długa 5',
-      postal: '00-110',
-    },
-  ];
+export class OffersComponent implements OnInit {
+  private readonly offersService = inject(OffersService);
+  private dogWalkers: DogWalker[] = [];
+  protected search: string = '';
+
+  ngOnInit(): void {
+    this.offersService.getDogWalkers().subscribe({
+      next: data => this.dogWalkers = data,
+      error: err => console.error('Nie można pobrać wyprowadzaczy', err)
+    });
+  }
 
   protected reserve(name: string): void {
     alert(`Zarezerwowano: ${name}`);
+  }
+
+  protected filteredDogWalkers() {
+    if (!this.search) return this.dogWalkers;
+    return this.dogWalkers.filter(n =>
+      n.city.toLowerCase().includes(this.search.toLowerCase())
+    );
   }
 }

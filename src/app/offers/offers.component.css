@@ -23,7 +23,7 @@
 .card {
   width: 50%;
   min-width: 350px;
-  
+
   background: #f7f9f4;
   border-radius: 12px;
   padding: 16px;
@@ -58,9 +58,9 @@
 }
 
 .avatar {
-  width: 80px;       
-  height: 100%;      
-  object-fit: cover; 
+  width: 80px;
+  height: 100%;
+  object-fit: cover;
   border-radius: 8px;
 }
 
@@ -87,4 +87,11 @@
   border: none;
   cursor: pointer;
   align-self: center;
+}
+
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  padding: 20px;
+  color: #666;
 }
