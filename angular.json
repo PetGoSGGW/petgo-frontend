@@ -21,7 +21,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/custom-theme.scss", "src/styles.scss"]
+            "styles": ["src/styles/tokens.scss", "src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -63,7 +63,8 @@
               "buildTarget": "pet-go-front:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "allowedHosts": "test.petgo.com.pl"
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"

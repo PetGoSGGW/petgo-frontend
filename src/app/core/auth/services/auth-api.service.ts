@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { Observable } from 'rxjs';
+import { Session } from '../models/session.model';
 
 @Injectable()
 export class AuthApiService {
@@ -14,7 +15,7 @@ export class AuthApiService {
     firstName: string;
     lastName: string;
     username: string;
-  }): Observable<unknown> {
-    return this.http.post(`${this.apiUrl}/register`, body);
+  }): Observable<Session> {
+    return this.http.post<Session>(`${this.apiUrl}/auth/register`, { ...body, role: 'USER' });
   }
 }
