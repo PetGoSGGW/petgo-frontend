@@ -1,21 +1,18 @@
 <header>
-  <app-mobile-menu />
+  <div class="header-left">
+    <app-mobile-menu />
 
-  <h1 class="logo">
-    <a routerLink="/" aria-label="PetGo">
-      <img src="logo.svg" alt="PetGo" />
-    </a>
-  </h1>
+    <h1 class="logo">
+      <a routerLink="/" aria-label="PetGo">
+        <img src="logo.svg" alt="PetGo" />
+      </a>
+    </h1>
+  </div>
 
   <div class="profile">
-    <div class="profile-username">{{ user()?.username }}</div>
+    <div class="profile-username">{{ email() }}</div>
 
-    <button
-      matIconButton
-      aria-label="wyloguj się"
-      (click)="authService.logout()"
-      matTooltip="Wyloguj się"
-    >
+    <button matIconButton aria-label="wyloguj się" (click)="logout()" matTooltip="Wyloguj się">
       <mat-icon>logout</mat-icon>
     </button>
   </div>

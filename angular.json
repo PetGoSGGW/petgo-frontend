@@ -63,7 +63,8 @@
               "buildTarget": "pet-go-front:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "allowedHosts": "test.petgo.com.pl"
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"

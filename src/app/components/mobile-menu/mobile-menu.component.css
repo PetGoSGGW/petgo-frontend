@@ -1,7 +1,7 @@
 .sidebar {
   height: 100svh;
   width: 100%;
-  max-width: 26rem;
+  max-width: 80vw;
   border: none;
   display: flex;
   flex-direction: column;
@@ -60,7 +60,13 @@ img {
   width: 100%;
 }
 
-@media (min-width: 996px) {
+@media (min-width: 48rem) {
+  .sidebar {
+    max-width: 26rem;
+  }
+}
+
+@media (min-width: 64rem) {
   .open-menu-button {
     display: none;
   }

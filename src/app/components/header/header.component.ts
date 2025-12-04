@@ -5,6 +5,7 @@ import { MobileMenuComponent } from '../mobile-menu/mobile-menu.component';
 import { AuthService } from '../../core/auth/services/auth.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +15,13 @@ import { MatTooltip } from '@angular/material/tooltip';
   imports: [MobileMenuComponent, RouterLink, MatIcon, MatIconButton, MatTooltip],
 })
 export class HeaderComponent {
-  protected authService = inject(AuthService);
+  private authService = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
 
-  protected user = this.authService.user;
+  protected email = this.authService.email;
+
+  protected logout(): void {
+    this.authService.logout();
+    this.snackBar.open('Zostałeś wylogowany');
+  }
 }

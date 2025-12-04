@@ -10,7 +10,7 @@ ul {
 a {
   text-decoration: none;
   color: var(--mat-sys-on-surface);
-  font-size: 2rem;
+  font-size: 1.75rem;
   padding: 0.3rem 1rem;
   border-radius: 1rem;
   width: 100%;
@@ -22,7 +22,7 @@ a.active-link {
   color: var(--mat-sys-on-primary);
 }
 
-@media (min-width: 560px) {
+@media (min-width: 35rem) {
   a {
     font-size: 1.15rem;
   }
