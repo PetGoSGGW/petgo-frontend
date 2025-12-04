@@ -1,0 +1,42 @@
+:host {
+  width: 100%;
+  max-width: 30rem;
+}
+
+.form {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.next-button {
+  align-self: flex-end;
+  width: fit-content;
+}
+
+.welcome {
+  padding-left: 24px;
+  padding-right: 24px;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+
+  & > h2 {
+    font-size: 2rem;
+  }
+}
+
+.login-text {
+  & > a {
+    font-weight: bold;
+    color: black;
+  }
+}

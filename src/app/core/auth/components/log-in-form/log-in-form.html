@@ -1,5 +1,12 @@
-<form class="form" [formGroup]="form" (ngSubmit)="logIn()">
-  
+<div class="welcome">
+  <h2>Witaj ponownie!</h2>
+
+  <p class="register-text">
+    Jeśli nie masz konta to <a routerLink="/autoryzacja/rejestracja">zarejestruj się</a>!
+  </p>
+</div>
+
+<form class="form" [formGroup]="form" (ngSubmit)="login()">
   <mat-form-field>
     @let emailTouched = form.controls.email.touched;
     @let emailErrors = form.controls.email.errors;
@@ -32,14 +39,8 @@
 
     @if (passwordTouched && passwordErrors?.['required']) {
       <mat-error>Podaj hasło.</mat-error>
-    } @else if (passwordErrors?.['minlength']) {
-      <mat-error>Haslo powinno miec co najmniej 8</mat-error>
     }
   </mat-form-field>
-
-  @if (error()) {
-    <mat-error class="form-error">{{ error() }}</mat-error>
-  }
 
   <button matButton="tonal" type="submit" [disabled]="loading()">
     {{ loading() ? 'Ładowanie...' : 'Zaloguj się' }}

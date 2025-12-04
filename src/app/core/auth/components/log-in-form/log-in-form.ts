@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 
-//Material
-import { MatInput, MatLabel, MatError, MatHint, MatSuffix } from '@angular/material/input';
+import { MatInput, MatLabel, MatError, MatSuffix } from '@angular/material/input';
 import { MatFormField } from '@angular/material/form-field';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 
 import { AuthService } from '../../services/auth.service';
 import { AuthApiService } from '../../services/auth-api.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-log-in-form',
@@ -30,7 +30,7 @@ import { AuthApiService } from '../../services/auth-api.service';
     MatIcon,
     MatSuffix,
     MatIconButton,
-    MatHint,
+    RouterLink,
   ],
 })
 export class LogInFormComponent {
@@ -38,46 +38,46 @@ export class LogInFormComponent {
   private readonly authService = inject(AuthService);
   private readonly authApiService = inject(AuthApiService);
   private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected form = this.fb.group({
     email: this.fb.control<string>('', [Validators.required, Validators.email]),
-    password: this.fb.control<string>('', [Validators.required, Validators.minLength(8)]),
+    password: this.fb.control<string>('', Validators.required),
   });
 
-  protected hide = signal(true);
-  protected loading = signal(false);
-  protected error = signal<string | null>(null);
+  protected readonly hide = signal(true);
+  protected readonly loading = signal(false);
 
-  protected showHide(event: MouseEvent) {
+  protected showHide(event: MouseEvent): void {
     event.stopPropagation();
     event.preventDefault();
     this.hide.set(!this.hide());
   }
-  protected logIn() {
+  protected login(): void {
     this.form.markAllAsTouched();
+
     if (this.form.invalid || this.loading()) return;
 
     this.loading.set(true);
-    this.error.set(null);
 
     const { email, password } = this.form.value;
 
     this.authApiService
-      .logIn({
-        email: email!,
-        password: password!,
+      .login({
+        email: email ?? '',
+        password: password ?? '',
       })
-      .pipe(
-        finalize(() => this.loading.set(false))
-      )
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: () => {
-          console.log('Zalogowano pomyślnie');
-          this.authService.setAuthentication(true);
+        next: async (session) => {
+          this.authService.saveSession(session);
+
+          await this.router.navigate(['/']);
+
+          this.snackBar.open('Zalogowano pomyślnie');
         },
-        error: (err: unknown) => {
-          console.error(err);
-          this.error.set('Niepoprawny e-mail lub hasło.');
+        error: () => {
+          this.snackBar.open('Niepoprawny e-mail lub hasło.');
         },
       });
   }

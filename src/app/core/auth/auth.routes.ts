@@ -8,15 +8,13 @@ export const authRoutes: Routes = [
       {
         path: 'logowanie',
         loadComponent: () =>
-          import('./components/log-in-form/log-in-form').then(
-            (c) => c.LogInFormComponent,
-      )
+          import('./components/log-in-form/log-in-form').then((c) => c.LogInFormComponent),
       },
       {
         path: 'rejestracja',
         loadComponent: () =>
-          import('./components/sign-up-form/sign-up-form.component').then(
-            (c) => c.SignUpFormComponent,
+          import('./components/register-form/register-form.component').then(
+            (c) => c.RegisterFormComponent,
           ),
       },
     ],
