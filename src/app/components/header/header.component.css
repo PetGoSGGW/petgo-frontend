@@ -40,7 +40,7 @@ img {
 
 @media (min-width: 48rem) {
   .profile-username {
-    display: flex;
+    display: block;
   }
 }
 
