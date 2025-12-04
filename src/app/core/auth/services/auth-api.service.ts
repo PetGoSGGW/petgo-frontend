@@ -18,4 +18,8 @@ export class AuthApiService {
   }): Observable<Session> {
     return this.http.post<Session>(`${this.apiUrl}/auth/register`, { ...body, role: 'USER' });
   }
+
+  public login(body: { email: string; password: string }): Observable<Session> {
+    return this.http.post<Session>(`${this.apiUrl}/auth/login`, body);
+  }
 }

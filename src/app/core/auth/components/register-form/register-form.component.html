@@ -1,3 +1,11 @@
+<div class="welcome">
+  <h2>Witaj!</h2>
+
+  <p class="login-text">
+    Jeśli masz już konto to <a routerLink="/autoryzacja/logowanie">zaloguj się</a>!
+  </p>
+</div>
+
 <mat-stepper #stepper [linear]="true">
   <mat-step [stepControl]="accountForm">
     <form class="form" [formGroup]="accountForm">
@@ -117,7 +125,9 @@
 
       <div class="buttons">
         <button matButton="outlined" matStepperPrevious>Powrót</button>
-        <button matButton="tonal" (click)="register()">Zarejestruj się</button>
+        <button matButton="tonal" (click)="register()" [disabled]="loading()">
+          {{ loading() ? 'Ładowanie' : 'Zarejestruj się' }}
+        </button>
       </div>
     </form>
   </mat-step>

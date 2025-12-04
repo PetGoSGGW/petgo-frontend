@@ -9,9 +9,13 @@ export const authInterceptor: HttpInterceptorFn = (
 ): Observable<HttpEvent<unknown>> => {
   const { accessToken, tokenType } = inject(AuthService);
 
-  const clonedRequest = request.clone({
-    headers: request.headers.set('Authorization', `${tokenType} ${accessToken}`),
-  });
+  if (!['login', 'register'].some((url) => request.url.includes(url))) {
+    const clonedRequest = request.clone({
+      headers: request.headers.set('Authorization', `${tokenType} ${accessToken}`),
+    });
 
-  return next(clonedRequest);
+    return next(clonedRequest);
+  }
+
+  return next(request);
 };
