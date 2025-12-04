@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MobileMenuComponent } from '../mobile-menu/mobile-menu.component';
@@ -19,10 +19,6 @@ export class HeaderComponent {
   private snackBar = inject(MatSnackBar);
 
   protected email = this.authService.email;
-
-  constructor() {
-    effect(() => console.log(this.email()));
-  }
 
   protected logout(): void {
     this.authService.logout();

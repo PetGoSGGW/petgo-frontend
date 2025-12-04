@@ -9,8 +9,6 @@ export const authInterceptor: HttpInterceptorFn = (
 ): Observable<HttpEvent<unknown>> => {
   const { accessToken, tokenType } = inject(AuthService);
 
-  console.log(['login', 'register'].some((url) => request.url.includes(url)));
-
   if (!['login', 'register'].some((url) => request.url.includes(url))) {
     const clonedRequest = request.clone({
       headers: request.headers.set('Authorization', `${tokenType} ${accessToken}`),

@@ -20,7 +20,6 @@ export class AuthService {
     const session = localStorage.getItem(this._localStorageKey().session);
 
     if (session) {
-      console.log(JSON.parse(session));
       this._session.set(JSON.parse(session));
     }
   }
