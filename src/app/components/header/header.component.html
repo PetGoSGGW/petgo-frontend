@@ -10,7 +10,7 @@
   </div>
 
   <div class="profile">
-    <div class="profile-username">{{ user()?.username }}</div>
+    <div class="profile-username">{{ email() }}</div>
 
     <button matIconButton aria-label="wyloguj się" (click)="logout()" matTooltip="Wyloguj się">
       <mat-icon>logout</mat-icon>

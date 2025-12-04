@@ -18,7 +18,7 @@ export class HeaderComponent {
   private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
 
-  protected user = this.authService.user;
+  protected email = this.authService.email;
 
   protected logout(): void {
     this.authService.logout();

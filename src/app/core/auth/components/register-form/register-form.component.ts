@@ -71,10 +71,9 @@ export class RegisterFormComponent {
     { validators: this.canMatchPasswordValidator('password', 'confirmPassword') },
   );
 
-  protected hidePassword = signal(true);
-  protected hidePasswordConfirmation = signal(true);
-  protected loading = signal(false);
-  protected error = signal<string | null>(null);
+  protected readonly hidePassword = signal(true);
+  protected readonly hidePasswordConfirmation = signal(true);
+  protected readonly loading = signal(false);
 
   protected showHide(event: MouseEvent, field: 'password' | 'password-confirmation'): void {
     event.stopPropagation();
@@ -138,18 +137,15 @@ export class RegisterFormComponent {
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: async (user) => {
-          // TODO: set session
-          this.authService.setAuthentication(true);
-          this.authService.setUser(user);
+        next: async (session) => {
+          this.authService.saveSession(session);
+
           await this.router.navigate(['/']);
+
           this.snackBar.open('Zostałeś zarejestrowany');
         },
         error: () => {
-          // TODO: implement error interceptor
-          this.error.set('unknown');
-
-          this.snackBar.open('Zostałeś zarejestrowany');
+          this.snackBar.open('Błąd podczas rejestracji');
         },
       });
   }
