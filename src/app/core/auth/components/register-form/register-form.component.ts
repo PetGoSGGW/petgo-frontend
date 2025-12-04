@@ -115,7 +115,7 @@ export class RegisterFormComponent {
     };
   }
 
-  protected async register(): Promise<void> {
+  protected register(): void {
     this.accountForm.markAllAsTouched();
     this.personalDetailsForm.markAllAsTouched();
 
