@@ -65,7 +65,7 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "allowedHosts": "test.petgo.com.pl"
+            "allowedHosts": ["test.petgo.com.pl"]
           }
         },
         "extract-i18n": {
