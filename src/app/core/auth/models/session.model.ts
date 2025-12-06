@@ -1,4 +1,9 @@
+import { Role } from './role.model';
+
 export interface Session {
   accessToken: string;
-  refreshToken: string;
+  tokenType: string;
+  userId: number;
+  email: string;
+  role: Role;
 }

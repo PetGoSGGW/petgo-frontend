@@ -46,6 +46,7 @@ module.exports = tseslint.config(
 
       'no-console': 'warn',
       'prefer-const': 'error',
+      '@angular-eslint/prefer-signals': 'error',
       'arrow-body-style': ['error', 'as-needed'],
       '@typescript-eslint/explicit-function-return-type': 'warn',
       'object-shorthand': ['error', 'always'],

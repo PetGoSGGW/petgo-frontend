@@ -26,6 +26,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
-      - run: npx ng build
+      - run: npx ng build --progress=false
       - run: npx ng lint
       - run: npx prettier . --check
