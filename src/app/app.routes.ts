@@ -12,6 +12,11 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((r) => r.homeRoutes),
       },
+      {
+        path: 'users/:id',
+        loadChildren: () =>
+          import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
+      },
     ],
   },
   {

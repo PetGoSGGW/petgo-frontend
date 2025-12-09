@@ -1,0 +1,164 @@
+<div class="user-details-page">
+  @if (user(); as currentUser) {
+    <div class="details-layout">
+      <mat-card class="content-card main-info-card">
+        <div class="user-header">
+          <div class="user-photo-wrapper">
+            @if (getAvatarUrl(); as avatar) {
+              <img class="user-photo-main" [src]="avatar" [alt]="currentUser.name" />
+            } @else {
+              <div class="user-photo-placeholder">
+                <mat-icon>person</mat-icon>
+              </div>
+            }
+          </div>
+
+          <div class="user-main-text">
+            <h2 class="user-name">
+              {{ currentUser.name }}
+              <mat-icon [ngClass]="currentUser.isActive ? 'active-user' : 'not-active-user'"
+                >radio_button_checked</mat-icon
+              >
+            </h2>
+
+            <mat-chip-set>
+              <mat-chip class="info-chip">
+                <mat-icon>place</mat-icon>
+                <span>{{ currentUser.location }}</span>
+              </mat-chip>
+              <mat-chip class="info-chip">
+                <mat-icon>elderly</mat-icon>
+                <span>wiek: {{ currentUser.age }}</span>
+              </mat-chip>
+              <mat-chip class="info-chip">
+                <mat-icon>history</mat-icon>
+                <span>{{ currentUser.experience }} lata stażu</span>
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="user-description">
+          <h3>O mnie</h3>
+          <p>{{ currentUser.description }}</p>
+        </div>
+
+        @if (currentUser.photos.length > 1) {
+          <mat-divider></mat-divider>
+          <div class="user-gallery">
+            <h3>Galeria ze spacerów</h3>
+            <div class="photos-row">
+              @for (photo of currentUser.photos; track photo; let idx = $index) {
+                @if (idx > 0) {
+                  <img
+                    class="gallery-thumb"
+                    [src]="photo"
+                    [alt]="currentUser.name + ' spacer ' + idx"
+                  />
+                }
+              }
+            </div>
+          </div>
+        }
+      </mat-card>
+
+      <div class="right-column">
+        <mat-card class="content-card reviews-card">
+          <div class="reviews-title-row">
+            <h3>Opinie ({{ reviews().length }})</h3>
+            <div class="rating-badge">
+              <mat-icon>star</mat-icon>
+              {{ score() }}
+            </div>
+          </div>
+
+          <p class="public-info">
+            Uwaga: wszystkie dodane opinie są
+            <strong>widoczne publicznie</strong>
+            dla innych użytkowników.
+          </p>
+
+          <mat-list>
+            @for (review of reviews(); track review.id) {
+              <mat-list-item class="review-item">
+                <div class="review-item-container">
+                  <div class="review-content">
+                    <div class="review-header">
+                      <span class="author">{{ review.author }}</span>
+                      <div class="star-rating-display">
+                        @for (i of [1, 2, 3, 4, 5]; track i) {
+                          <mat-icon class="star-icon-small">
+                            {{ getRatingForReview(review.rating, i) }}
+                          </mat-icon>
+                        }
+                      </div>
+                      <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
+                    </div>
+                    <p class="text">{{ review.text }}</p>
+                  </div>
+
+                  <button
+                    mat-icon-button
+                    matTooltip="Zgłoś opinię"
+                    (click)="onReportReview(review.id)"
+                    [disabled]="review.reported"
+                  >
+                    <mat-icon [class.reported]="review.reported">flag</mat-icon>
+                  </button>
+                </div>
+              </mat-list-item>
+            }
+          </mat-list>
+
+          <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form">
+            <div class="rating-input-container">
+              <span>Twoja ocena:</span>
+
+              <div class="interactive-stars" (mouseleave)="onStarLeave()">
+                @for (star of stars; track star) {
+                  <mat-icon
+                    class="star-btn"
+                    [class.active]="
+                      (hoverRating() ?? reviewForm.controls.rating.value) >= star - 0.5
+                    "
+                    (mousemove)="onStarHover($event, star)"
+                    (click)="onStarClick()"
+                  >
+                    {{ getStarIcon(star) }}
+                  </mat-icon>
+                }
+
+                <span class="rating-value-label">
+                  {{ hoverRating() ?? reviewForm.controls.rating.value }} / 5
+                </span>
+              </div>
+
+              <input type="hidden" formControlName="rating" />
+            </div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Dodaj opinię o użytkowniku</mat-label>
+              <textarea
+                matInput
+                rows="3"
+                formControlName="text"
+                placeholder="Jak przebiegł spacer?..."
+              ></textarea>
+              @if (textControl.touched && textControl.invalid) {
+                <mat-error>Treść opinii jest wymagana.</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="form-footer">
+              <span class="hint">💡 Twoja opinia będzie widoczna dla wszystkich użytkowników</span>
+              <button matButton="filled" type="submit" [disabled]="reviewForm.invalid">
+                Dodaj opinię
+              </button>
+            </div>
+          </form>
+        </mat-card>
+      </div>
+    </div>
+  }
+</div>
