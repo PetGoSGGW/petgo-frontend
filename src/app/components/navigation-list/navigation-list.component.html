@@ -1,4 +1,8 @@
 <ul>
-  <li><a routerLink="/" routerLinkActive="active-link">Strona główna</a></li>
+  <li>
+    <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+      Strona główna
+    </a>
+  </li>
   <li><a routerLink="/oferty" routerLinkActive="active-link">Oferty</a></li>
 </ul>

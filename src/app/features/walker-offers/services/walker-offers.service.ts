@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { DogWalker } from './dog-walker';
+import { WalkerOffer } from '../models/walker-offer.model';
+import { environment } from '../../../../environments/environment.development';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class OffersService {
+@Injectable()
+export class WalkerOffersService {
   private readonly http = inject(HttpClient);
-  private apiUrl = ''; // placeholder for now
+  private readonly apiUrl = environment.apiUrl;
 
-  public getDogWalkers(): Observable<DogWalker[]> {
-    const mockData: DogWalker[] = [
+  public getOffers(search: string): Observable<WalkerOffer[]> {
+    const mockData: WalkerOffer[] = [
       {
+        id: 1,
         name: 'Julia',
         username: 'julia',
         rating: 4,
@@ -25,6 +25,7 @@ export class OffersService {
         postal: '00-886',
       },
       {
+        id: 2,
         name: 'Kasia',
         username: 'kasia',
         rating: 4,
@@ -36,9 +37,10 @@ export class OffersService {
         street: 'ul. Długa 5',
         postal: '00-110',
       },
-    ];
+    ].filter((walker) => walker.name.toLowerCase().includes(search.toLowerCase()));
 
-    // return this.http.get<DogWalker[]>(`${this.apiUrl}`);
+    console.log(mockData);
+
     return of(mockData);
   }
 }

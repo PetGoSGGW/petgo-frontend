@@ -12,6 +12,11 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((r) => r.homeRoutes),
       },
+      {
+        path: 'oferty',
+        loadChildren: () =>
+          import('./features/walker-offers/walker-offers.routes').then((r) => r.offersRoutes),
+      },
     ],
   },
   {
@@ -19,8 +24,6 @@ export const routes: Routes = [
     loadChildren: () => import('./core/auth/auth.routes').then((r) => r.authRoutes),
   },
   {
-    path: 'offers',
-    loadChildren: () => import('./offers/offers.routes').then((r) => r.offersRoutes),
     path: '**',
     redirectTo: '/',
   },

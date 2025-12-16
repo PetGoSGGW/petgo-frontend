@@ -1,4 +1,5 @@
-export interface DogWalker {
+export interface WalkerOffer {
+  id: number;
   name: string;
   username: string;
   rating: number;
