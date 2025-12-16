@@ -339,3 +339,60 @@
   margin-right: 10px;
   color: #f57c00;
 }
+
+.user-pets-section {
+  padding: 16px 20px;
+}
+
+.user-pets-section h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #212121;
+}
+
+.pets-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Responsywne kafelki */
+  gap: 12px;
+}
+
+.pet-card-mini {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.pet-card-mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.pet-mini-photo {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  background-color: #e3f2fd;
+}
+
+.pet-mini-info {
+  padding: 8px 10px;
+}
+
+.pet-name {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  color: #334155;
+  margin-bottom: 2px;
+}
+
+.pet-details {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+}

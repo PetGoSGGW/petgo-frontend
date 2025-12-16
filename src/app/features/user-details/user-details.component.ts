@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +22,15 @@ interface UserProfile {
   experience: number;
   description: string;
   photos: string[];
+}
+
+interface Pet {
+  id: string;
+  ownerId: string; // Klucz obcy do użytkownika
+  name: string;
+  breed: string;
+  age: number;
+  photoUrl: string;
 }
 
 interface UserReview {
@@ -82,6 +91,46 @@ export const MOCK_USERS: UserProfile[] = [
     ],
   },
 ];
+
+export const MOCK_PETS: Pet[] = [
+  {
+    id: '1',
+    ownerId: '1', // Anna Nowak
+    name: 'Burek',
+    breed: 'Mieszaniec',
+    age: 3,
+    photoUrl:
+      'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: '2',
+    ownerId: '1', // Anna Nowak (drugi pies)
+    name: 'Luna',
+    breed: 'Beagle',
+    age: 2,
+    photoUrl:
+      'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: '3',
+    ownerId: '2', // Piotr Lewandowicz
+    name: 'Azor',
+    breed: 'Husky',
+    age: 5,
+    photoUrl:
+      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: '4',
+    ownerId: '3', // Katarzyna Wójcik
+    name: 'Fafik',
+    breed: 'Terier',
+    age: 8,
+    photoUrl:
+      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=300&q=80',
+  },
+];
+
 @Component({
   selector: 'app-user-details',
   imports: [
@@ -97,6 +146,7 @@ export const MOCK_USERS: UserProfile[] = [
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
+    RouterLink,
   ],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
@@ -106,6 +156,12 @@ export class UserDetailsComponent {
   private readonly snackBar = inject(MatSnackBar);
 
   public readonly user = signal<UserProfile | null>(null);
+
+  public readonly userPets = computed(() => {
+    const currentUser = this.user();
+    if (!currentUser) return [];
+    return MOCK_PETS.filter((pet) => pet.ownerId === currentUser.id);
+  });
 
   public readonly reviews = signal<UserReview[]>([
     {

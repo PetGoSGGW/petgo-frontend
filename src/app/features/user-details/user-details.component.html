@@ -45,19 +45,19 @@
           <p>{{ currentUser.description }}</p>
         </div>
 
-        @if (currentUser.photos.length > 1) {
+        @if (userPets().length > 0) {
           <mat-divider></mat-divider>
-          <div class="user-gallery">
-            <h3>Galeria ze spacerów</h3>
-            <div class="photos-row">
-              @for (photo of currentUser.photos; track photo; let idx = $index) {
-                @if (idx > 0) {
-                  <img
-                    class="gallery-thumb"
-                    [src]="photo"
-                    [alt]="currentUser.name + ' spacer ' + idx"
-                  />
-                }
+          <div class="user-pets-section">
+            <h3>Moje psy</h3>
+            <div class="pets-list">
+              @for (pet of userPets(); track pet.id) {
+                <div class="pet-card-mini" [routerLink]="['/pets', pet.id]">
+                  <img [src]="pet.photoUrl" [alt]="pet.name" class="pet-mini-photo" />
+                  <div class="pet-mini-info">
+                    <span class="pet-name">{{ pet.name }}</span>
+                    <span class="pet-details">{{ pet.breed }}, {{ pet.age }} lat</span>
+                  </div>
+                </div>
               }
             </div>
           </div>
