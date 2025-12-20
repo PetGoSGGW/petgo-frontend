@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { MatIcon } from '@angular/material/icon';
 import { AuthApiService } from '../../services/auth-api.service';
 import { finalize } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   MatStep,
   MatStepLabel,
@@ -40,7 +40,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatSuffix,
     MatIconButton,
     ReactiveFormsModule,
-
+    RouterLink,
     MatStepper,
     MatStep,
     MatStepperNext,
@@ -115,7 +115,7 @@ export class RegisterFormComponent {
     };
   }
 
-  protected async register(): Promise<void> {
+  protected register(): void {
     this.accountForm.markAllAsTouched();
     this.personalDetailsForm.markAllAsTouched();
 
@@ -126,6 +126,8 @@ export class RegisterFormComponent {
     const { lastName, firstName, username } = this.personalDetailsForm.value;
 
     if (!email || !password || !lastName || !firstName || !username) return;
+
+    this.loading.set(true);
 
     this.authApiService
       .register({

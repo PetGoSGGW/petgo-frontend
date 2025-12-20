@@ -64,7 +64,9 @@
             }
           },
           "defaultConfiguration": "development",
-          "allowedHosts": "test.petgo.com.pl"
+          "options": {
+            "allowedHosts": ["test.petgo.com.pl"]
+          }
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
@@ -92,6 +94,7 @@
     }
   },
   "cli": {
-    "schematicCollections": ["angular-eslint"]
+    "schematicCollections": ["angular-eslint"],
+    "analytics": false
   }
 }

@@ -40,7 +40,13 @@ img {
 
 @media (min-width: 48rem) {
   .profile-username {
-    display: flex;
+    display: block;
+  }
+}
+
+@media (min-width: 64rem) {
+  .header-left {
+    gap: 0;
   }
 }
 
