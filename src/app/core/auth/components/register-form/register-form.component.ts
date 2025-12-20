@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { MatIcon } from '@angular/material/icon';
 import { AuthApiService } from '../../services/auth-api.service';
 import { finalize } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   MatStep,
   MatStepLabel,
@@ -23,6 +23,7 @@ import {
   MatStepperNext,
   MatStepperPrevious,
 } from '@angular/material/stepper';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register-form',
@@ -39,7 +40,7 @@ import {
     MatSuffix,
     MatIconButton,
     ReactiveFormsModule,
-
+    RouterLink,
     MatStepper,
     MatStep,
     MatStepperNext,
@@ -52,6 +53,7 @@ export class RegisterFormComponent {
   private readonly authService = inject(AuthService);
   private readonly authApiService = inject(AuthApiService);
   private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected personalDetailsForm = this.fb.group({
     firstName: this.fb.control<string>('', [Validators.required]),
@@ -69,10 +71,9 @@ export class RegisterFormComponent {
     { validators: this.canMatchPasswordValidator('password', 'confirmPassword') },
   );
 
-  protected hidePassword = signal(true);
-  protected hidePasswordConfirmation = signal(true);
-  protected loading = signal(false);
-  protected error = signal<string | null>(null);
+  protected readonly hidePassword = signal(true);
+  protected readonly hidePasswordConfirmation = signal(true);
+  protected readonly loading = signal(false);
 
   protected showHide(event: MouseEvent, field: 'password' | 'password-confirmation'): void {
     event.stopPropagation();
@@ -126,6 +127,8 @@ export class RegisterFormComponent {
 
     if (!email || !password || !lastName || !firstName || !username) return;
 
+    this.loading.set(true);
+
     this.authApiService
       .register({
         email: email.trim(),
@@ -136,14 +139,15 @@ export class RegisterFormComponent {
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: async () => {
-          // TODO: set session
-          this.authService.setAuthentication(true);
+        next: async (session) => {
+          this.authService.saveSession(session);
+
           await this.router.navigate(['/']);
+
+          this.snackBar.open('Zostałeś zarejestrowany');
         },
         error: () => {
-          // TODO: implement error interceptor
-          this.error.set('unknown');
+          this.snackBar.open('Błąd podczas rejestracji');
         },
       });
   }
