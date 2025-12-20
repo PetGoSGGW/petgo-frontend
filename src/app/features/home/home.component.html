@@ -1,1 +1,17 @@
-<p>Home page</p>
+<div>
+  @if (dogs.isLoading()) {
+    <mat-progress-spinner />
+  } @else if (dogs.error()) {
+    <span>Błąd</span>
+  } @else if (dogs.hasValue()) {
+    @for (dog of dogs.value(); track dog.dogId) {
+      <span>{{ dog.name }}</span>
+    } @empty {
+      <div>
+        <span>Wygląda na to, że nie masz żadnego dodanego pupila!</span>
+        <mat-icon></mat-icon>
+        <button matButton="tonal">Dodaj pupila</button>
+      </div>
+    }
+  }
+</div>
