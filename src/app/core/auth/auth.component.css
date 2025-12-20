@@ -33,7 +33,7 @@
   width: 100%;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 80rem) {
   .auth {
     display: grid;
     height: auto;
