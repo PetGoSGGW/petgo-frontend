@@ -20,7 +20,7 @@
       </mat-list>
     </mat-card-content>
     <mat-card-actions align="end">
-      <button mat-raised-button color="primary" (click)="openMail()">Skontaktuj się z nami</button>
+      <a matButton="tonal" [href]="'mailto:' + this.contactEmail()">Skontaktuj się z nami</a>
     </mat-card-actions>
   </mat-card>
 
@@ -60,7 +60,7 @@
         <div class="file-field">
           <label for="screenshotInput" class="file-label">Zrzut ekranu (opcjonalnie)</label>
           <div class="file-row">
-            <button mat-stroked-button type="button" (click)="fileInput.click()">
+            <button matButton="outlined" type="button" (click)="fileInput.click()">
               Wybierz plik
             </button>
             <input
@@ -81,16 +81,15 @@
         </div>
 
         <div class="actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting()">
+          <button matButton="tonal" type="submit" [disabled]="isSubmitting()">
             @if (isSubmitting()) {
               <mat-progress-spinner
                 mode="indeterminate"
                 diameter="18"
                 strokeWidth="3"
               ></mat-progress-spinner>
-              <span class="btn-label">Wysyłanie…</span>
             } @else {
-              <span class="btn-label">Wyślij zgłoszenie</span>
+              Wyślij zgłoszenie
             }
           </button>
         </div>

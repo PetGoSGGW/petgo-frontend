@@ -12,6 +12,11 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((r) => r.homeRoutes),
       },
+      {
+        path: 'kontakt',
+        loadChildren: () =>
+          import('./features/contact/contact.routes').then((r) => r.contactRoutes),
+      },
     ],
   },
   {
@@ -19,11 +24,7 @@ export const routes: Routes = [
     loadChildren: () => import('./core/auth/auth.routes').then((r) => r.authRoutes),
   },
   {
-    path: 'contact',
-    loadChildren: () => import('./features/contact/contact.routes').then((r) => r.contactRoutes),
-  },
-  {
     path: '**',
     redirectTo: '/',
-  }
+  },
 ];

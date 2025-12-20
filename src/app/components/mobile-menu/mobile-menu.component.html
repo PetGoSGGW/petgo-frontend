@@ -14,6 +14,7 @@
       <img src="logo.svg" alt="PetGo" />
     </a>
     <button
+      #closeButton
       matIconButton
       aria-label="Zamknij menu"
       popovertarget="sidebar"
@@ -25,6 +26,6 @@
   </div>
   <mat-divider />
   <nav class="nav">
-    <app-navigation-list />
+    <app-navigation-list (clicked)="closeButton._elementRef.nativeElement.click()" />
   </nav>
 </div>
