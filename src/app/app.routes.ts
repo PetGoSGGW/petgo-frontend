@@ -12,6 +12,11 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((r) => r.homeRoutes),
       },
+      {
+        path: 'kontakt',
+        loadChildren: () =>
+          import('./features/contact/contact.routes').then((r) => r.contactRoutes),
+      },
     ],
   },
   {
