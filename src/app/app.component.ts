@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-// !! Waits for amplify_outputs file !!
-// import { Amplify } from 'aws-amplify';
-// import outputs from '../../amplify_outputs.json';
+import { Amplify } from 'aws-amplify';
+import outputs from '../../amplify_outputs.json';
+import { environment } from '../environments/environment.development';
 
-// Amplify.configure(outputs);
+if (environment.production) {
+  Amplify.configure(outputs);
+}
 
 @Component({
   selector: 'app-root',
