@@ -1,0 +1,23 @@
+:host {
+  width: 100%;
+  max-width: 30rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  width: 100%;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 680px) {
+  .row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}

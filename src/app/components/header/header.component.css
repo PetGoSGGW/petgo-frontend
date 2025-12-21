@@ -49,3 +49,9 @@ img {
     gap: 0;
   }
 }
+
+@media (min-width: 64rem) {
+  .header-left {
+    gap: 0;
+  }
+}
