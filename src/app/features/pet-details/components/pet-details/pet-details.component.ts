@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,18 +13,15 @@ import { MatListModule } from '@angular/material/list';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonToggle } from '@angular/material/button-toggle';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-interface Pet {
-  id: string;
-  name: string;
-  breed: string;
-  age: string;
-  description: string;
-  photos: string[];
-}
+import { MatDialog, MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-interface PetReview {
+import { Dog } from '../../../../models/dog.model';
+
+interface DogReview {
   id: string;
   authorName: string;
   createdAt: Date;
@@ -31,37 +29,47 @@ interface PetReview {
   reported: boolean;
 }
 
-const MOCK_PETS: Pet[] = [
+
+type DogEditPayload = Pick<Dog, 'name' | 'breed' | 'notes' | 'size' | 'weightKg' | 'isActive'>;
+
+const CURRENT_USER_ID = 1;
+
+const MOCK_DOGS: Dog[] = [
   {
-    id: '1',
+    dogId: 1,
+    owner: { id: 1 } as any,
     name: 'Burek',
     breed: 'Mieszaniec',
-    age: '3 lata',
-    description: 'Przyjazny, energiczny pies, lubi spacery i zabawy.',
-    photos: [
-      'https://placedog.net/600/400?id=1',
-      'https://placedog.net/400/300?id=11',
-      'https://placedog.net/400/300?id=12',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCfsoJXbTmd0zizizddDFlMH8n_-TRo844Ax4esDN-W2M-j93ILeX1MVDPsItyhrO4v80&usqp=CAU',
-    ],
+    notes: 'Przyjazny, energiczny pies, lubi spacery i zabawy.',
+    size: 'M',
+    weightKg: 18,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: '2',
+    dogId: 2,
+    owner: { id: 999 } as any,
     name: 'Luna',
-    breed: 'Kot europejski',
-    age: '2 lata',
-    description: 'Nieco nieśmiała, ale bardzo przytulasta.',
-    photos: ['https://placekitten.com/600/400', 'https://placekitten.com/400/300'],
-  },
-  {
-    id: '3',
-    name: 'Rex',
-    breed: 'Owczarek niemiecki',
-    age: '5 lat',
-    description: 'Spokojny, lojalny i świetny stróż.',
-    photos: ['https://placedog.net/600/400?id=2', 'https://placedog.net/400/300?id=21'],
+    breed: 'Labrador',
+    notes: 'Nieco nieśmiała, ale bardzo przytulasta.',
+    size: 'L',
+    weightKg: 28,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
 ];
+
+
+const DOG_PHOTOS: Record<number, string[]> = {
+  1: [
+    'https://placedog.net/600/400?id=1',
+    'https://placedog.net/400/300?id=11',
+    'https://placedog.net/400/300?id=12',
+  ],
+  2: ['https://placedog.net/600/400?id=2', 'https://placedog.net/400/300?id=21'],
+};
 
 @Component({
   selector: 'app-pet-details',
@@ -82,16 +90,20 @@ const MOCK_PETS: Pet[] = [
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
-    MatButtonToggle,
+    MatButtonToggleModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatSlideToggleModule,
   ],
 })
 export class PetDetailsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
 
-  public readonly pet = signal<Pet | null>(null);
+  public readonly dog = signal<Dog | null>(null);
 
-  public readonly reviews = signal<PetReview[]>([
+  public readonly reviews = signal<DogReview[]>([
     {
       id: '1',
       authorName: 'Jan Kowalski',
@@ -101,26 +113,87 @@ export class PetDetailsComponent {
     },
   ]);
 
-  public readonly reviewForm: FormGroup<{ text: FormControl<string> }> = new FormGroup<{
-    text: FormControl<string>;
-  }>({
-    text: new FormControl<string>('', {
+  public readonly reviewForm: FormGroup<{ text: FormControl<string> }> = new FormGroup({
+    text: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(5)],
     }),
   });
 
   constructor() {
-    const id = this.route.snapshot.paramMap.get('id');
+    const idParam = this.route.snapshot.paramMap.get('id');
+    const dogId = idParam ? Number(idParam) : NaN;
 
-    if (id) {
-      const found: Pet | undefined = MOCK_PETS.find((p: Pet): boolean => p.id === id);
-      this.pet.set(found ?? null);
+    if (!Number.isNaN(dogId)) {
+      const found = MOCK_DOGS.find((d: Dog): boolean => d.dogId === dogId);
+      this.dog.set(found ?? null);
+    } else {
+      this.dog.set(null);
     }
   }
 
   public get textControl(): FormControl<string> {
     return this.reviewForm.controls.text;
+  }
+
+  public isOwner(dog: Dog): boolean {
+    const ownerAny = dog.owner as any;
+    const ownerId = ownerAny?.id ?? ownerAny?.userId ?? ownerAny?.user_id ?? ownerAny?._id ?? null;
+
+    const meAny = { id: CURRENT_USER_ID, userId: CURRENT_USER_ID } as any;
+    const meId = meAny?.id ?? meAny?.userId ?? null;
+
+    return ownerId != null && meId != null && Number(ownerId) === Number(meId);
+  }
+
+
+  public getPhotos(dogId: number): string[] {
+    return DOG_PHOTOS[dogId] ?? [];
+  }
+
+  public getFirstPhotoUrl(): string | null {
+    const currentDog = this.dog();
+    if (!currentDog) return null;
+
+    const photos = this.getPhotos(currentDog.dogId);
+    return photos.length ? photos[0] : null;
+  }
+
+  public openEditDogDialog(currentDog: Dog): void {
+    if (!this.isOwner(currentDog)) return;
+
+    const dialogRef = this.dialog.open(EditDogDialogComponent, {
+      width: '520px',
+      data: {
+        name: currentDog.name,
+        breed: currentDog.breed,
+        notes: currentDog.notes ?? '',
+        size: currentDog.size ?? 'M',
+        weightKg: Number(currentDog.weightKg ?? 0),
+        isActive: !!currentDog.isActive,
+      } satisfies DogEditPayload,
+    });
+
+    dialogRef.afterClosed().subscribe((result: DogEditPayload | undefined) => {
+      if (!result) return;
+
+      this.dog.update((d) => {
+        if (!d) return d;
+
+        return {
+          ...d,
+          name: result.name,
+          breed: result.breed,
+          notes: result.notes,
+          size: result.size,
+          weightKg: Number(result.weightKg),
+          isActive: result.isActive,
+          updatedAt: new Date().toISOString(),
+        };
+      });
+
+      this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 3500 });
+    });
   }
 
   public onSubmitReview(): void {
@@ -129,13 +202,10 @@ export class PetDetailsComponent {
       return;
     }
 
-    const { value } = this.reviewForm;
-    const text = value.text?.trim();
-    if (!text) {
-      return;
-    }
+    const text = this.reviewForm.controls.text.value.trim();
+    if (!text) return;
 
-    const newReview: PetReview = {
+    const newReview: DogReview = {
       id: Date.now().toString(),
       authorName: 'Ty',
       createdAt: new Date(),
@@ -143,7 +213,7 @@ export class PetDetailsComponent {
       reported: false,
     };
 
-    this.reviews.update((current: PetReview[]): PetReview[] => [...current, newReview]);
+    this.reviews.update((current: DogReview[]): DogReview[] => [...current, newReview]);
     this.reviewForm.reset();
 
     this.snackBar.open('Twoja opinia została dodana i jest widoczna publicznie.', 'OK', {
@@ -152,10 +222,9 @@ export class PetDetailsComponent {
   }
 
   public onReportReview(reviewId: string, reported: boolean): void {
-    this.reviews.update((current: PetReview[]): PetReview[] =>
-      current.map(
-        (review: PetReview): PetReview =>
-          review.id === reviewId ? { ...review, reported } : review,
+    this.reviews.update((current: DogReview[]): DogReview[] =>
+      current.map((review: DogReview): DogReview =>
+        review.id === reviewId ? { ...review, reported } : review,
       ),
     );
 
@@ -167,12 +236,122 @@ export class PetDetailsComponent {
       { duration: 4000 },
     );
   }
+}
 
-  public getFirstPhotoUrl(): string | null {
-    const currentPet = this.pet();
-    if (!currentPet || !currentPet.photos || currentPet.photos.length === 0) {
-      return null;
-    }
-    return currentPet.photos[0];
+@Component({
+  selector: 'app-edit-dog-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+  ],
+  template: `
+    <div class="modal-container">
+      <h2 mat-dialog-title>Edytuj szczegóły psa</h2>
+
+      <div mat-dialog-content>
+        <form [formGroup]="form" class="dialog-form">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Imię</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Rasa</mat-label>
+            <input matInput formControlName="breed" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Notatki</mat-label>
+            <textarea matInput rows="3" formControlName="notes"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Rozmiar</mat-label>
+            <mat-select formControlName="size">
+              <mat-option value="S">S</mat-option>
+              <mat-option value="M">M</mat-option>
+              <mat-option value="L">L</mat-option>
+              <mat-option value="XL">XL</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Waga (kg)</mat-label>
+            <input matInput type="number" formControlName="weightKg" />
+          </mat-form-field>
+
+          <mat-slide-toggle formControlName="isActive">Aktywny</mat-slide-toggle>
+        </form>
+      </div>
+
+      <div mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="close()">Anuluj</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="save()"
+          [disabled]="form.invalid"
+        >
+          Zapisz
+        </button>
+      </div>
+    </div>
+  `,
+  styles: [
+    `
+      .dialog-form {
+        display: grid;
+        gap: 12px;
+        padding-top: 8px;
+      }
+      .full {
+        width: 100%;
+      }
+      .modal-container {
+        padding: 20px;
+        overflow-y: auto;
+        max-height: 700px;
+      }
+    `,
+  ],
+})
+export class EditDogDialogComponent {
+  private readonly dialogRef = inject(MatDialogRef<EditDogDialogComponent>);
+
+  public readonly form = new FormGroup({
+    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    breed: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    notes: new FormControl('', { nonNullable: true }),
+    size: new FormControl('M', { nonNullable: true }),
+    weightKg: new FormControl(0, { nonNullable: true, validators: [Validators.min(0)] }),
+    isActive: new FormControl(true, { nonNullable: true }),
+  });
+
+  constructor(@Inject(MAT_DIALOG_DATA) data: DogEditPayload) {
+    this.form.setValue({
+      name: data.name,
+      breed: data.breed,
+      notes: data.notes ?? '',
+      size: data.size ?? 'M',
+      weightKg: Number(data.weightKg ?? 0),
+      isActive: !!data.isActive,
+    });
+  }
+
+  public close(): void {
+    this.dialogRef.close();
+  }
+
+  public save(): void {
+    if (this.form.invalid) return;
+    this.dialogRef.close(this.form.getRawValue() as DogEditPayload);
   }
 }
