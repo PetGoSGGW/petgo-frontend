@@ -12,16 +12,16 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((r) => r.homeRoutes),
       },
+      {
+        path: 'powiadomienia',
+        loadChildren: () =>
+          import('./notifications/notifications.routes').then((r) => r.notificationsRoutes),
+      },
     ],
   },
   {
     path: 'autoryzacja',
     loadChildren: () => import('./core/auth/auth.routes').then((r) => r.authRoutes),
-  },
-  {
-    path: 'notifications',
-    loadChildren: () =>
-      import('./notifications/notifications.routes').then((r) => r.notificationsRoutes),
   },
   {
     path: '**',
