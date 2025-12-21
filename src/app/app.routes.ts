@@ -27,6 +27,11 @@ export const routes: Routes = [
     loadChildren: () => import('./core/auth/auth.routes').then((r) => r.authRoutes),
   },
   {
+    path: 'pies/:id',
+    loadChildren: () =>
+      import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+  },
+  {
     path: '**',
     redirectTo: '/',
   },

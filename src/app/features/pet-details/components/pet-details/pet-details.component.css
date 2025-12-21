@@ -1,0 +1,185 @@
+.dog-details-page {
+  min-height: calc(100vh - 64px);
+  padding: 24px 16px;
+}
+
+.dog-layout {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .dog-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dog-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.dog-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+}
+
+.dog-photo-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #e3f2fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dog-photo-main {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dog-photo-placeholder {
+  font-size: 48px;
+  color: #90a4ae;
+}
+
+.dog-main-info {
+  flex: 1;
+}
+
+.dog-name {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #212121;
+}
+
+.dog-description {
+  padding: 16px;
+}
+
+.dog-description h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.dog-description p {
+  margin: 0;
+  color: #424242;
+}
+
+.dog-photos-extra {
+  padding: 16px;
+}
+
+.dog-photos-extra h3 {
+  margin: 0 0 8px;
+}
+
+.photos-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.dog-photo-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.reviews-card {
+  padding: 16px 16px 8px;
+}
+
+.reviews-card h3 {
+  margin: 0 0 4px;
+}
+
+.public-info {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #455a64;
+}
+
+.no-reviews {
+  font-size: 14px;
+  color: #546e7a;
+  margin: 0 0 16px;
+}
+
+.review-item {
+  padding: 2rem 0;
+}
+
+.review-item-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.review-content {
+  flex: 1;
+  padding-right: 8px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.review-header .author {
+  font-weight: 600;
+  color: #212121;
+}
+
+.review-header .date {
+  font-size: 12px;
+  color: #78909c;
+}
+
+.review-content .text {
+  margin: 0;
+  color: #424242;
+}
+
+.reviews-divider {
+  margin: 12px 0;
+}
+
+.review-form {
+  margin-top: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.public-hint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #455a64;
+}
+
+.review-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dog-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
