@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -15,11 +15,17 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-import { MatDialog, MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogModule,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { Dog } from '../../../../models/dog.model';
+import { User } from '../../../../core/auth/models/user.model';
 
 interface DogReview {
   id: string;
@@ -29,17 +35,19 @@ interface DogReview {
   reported: boolean;
 }
 
-
 type DogEditPayload = Pick<Dog, 'name' | 'breed' | 'notes' | 'size' | 'weightKg' | 'isActive'>;
 
 const CURRENT_USER_ID = 1;
 
+const MOCK_OWNER_1 = { userId: 1 } as unknown as User;
+const MOCK_OWNER_999 = { userId: 999 } as unknown as User;
+
 const MOCK_DOGS: Dog[] = [
   {
     dogId: 1,
-    owner: { id: 1 } as any,
-    name: 'Burek',
+    owner: MOCK_OWNER_1,
     breed: 'Mieszaniec',
+    name: 'Burek',
     notes: 'Przyjazny, energiczny pies, lubi spacery i zabawy.',
     size: 'M',
     weightKg: 18,
@@ -49,9 +57,9 @@ const MOCK_DOGS: Dog[] = [
   },
   {
     dogId: 2,
-    owner: { id: 999 } as any,
-    name: 'Luna',
+    owner: MOCK_OWNER_999,
     breed: 'Labrador',
+    name: 'Luna',
     notes: 'Nieco nieśmiała, ale bardzo przytulasta.',
     size: 'L',
     weightKg: 28,
@@ -60,7 +68,6 @@ const MOCK_DOGS: Dog[] = [
     updatedAt: new Date().toISOString(),
   },
 ];
-
 
 const DOG_PHOTOS: Record<number, string[]> = {
   1: [
@@ -113,8 +120,8 @@ export class PetDetailsComponent {
     },
   ]);
 
-  public readonly reviewForm: FormGroup<{ text: FormControl<string> }> = new FormGroup({
-    text: new FormControl('', {
+  public readonly reviewForm = new FormGroup<{ text: FormControl<string> }>({
+    text: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(5)],
     }),
@@ -122,10 +129,10 @@ export class PetDetailsComponent {
 
   constructor() {
     const idParam = this.route.snapshot.paramMap.get('id');
-    const dogId = idParam ? Number(idParam) : NaN;
+    const dogId = idParam ? Number(idParam) : Number.NaN;
 
     if (!Number.isNaN(dogId)) {
-      const found = MOCK_DOGS.find((d: Dog): boolean => d.dogId === dogId);
+      const found = MOCK_DOGS.find((d) => d.dogId === dogId);
       this.dog.set(found ?? null);
     } else {
       this.dog.set(null);
@@ -137,15 +144,8 @@ export class PetDetailsComponent {
   }
 
   public isOwner(dog: Dog): boolean {
-    const ownerAny = dog.owner as any;
-    const ownerId = ownerAny?.id ?? ownerAny?.userId ?? ownerAny?.user_id ?? ownerAny?._id ?? null;
-
-    const meAny = { id: CURRENT_USER_ID, userId: CURRENT_USER_ID } as any;
-    const meId = meAny?.id ?? meAny?.userId ?? null;
-
-    return ownerId != null && meId != null && Number(ownerId) === Number(meId);
+    return dog.owner.userId === CURRENT_USER_ID;
   }
-
 
   public getPhotos(dogId: number): string[] {
     return DOG_PHOTOS[dogId] ?? [];
@@ -156,7 +156,7 @@ export class PetDetailsComponent {
     if (!currentDog) return null;
 
     const photos = this.getPhotos(currentDog.dogId);
-    return photos.length ? photos[0] : null;
+    return photos.length > 0 ? photos[0] : null;
   }
 
   public openEditDogDialog(currentDog: Dog): void {
@@ -170,7 +170,7 @@ export class PetDetailsComponent {
         notes: currentDog.notes ?? '',
         size: currentDog.size ?? 'M',
         weightKg: Number(currentDog.weightKg ?? 0),
-        isActive: !!currentDog.isActive,
+        isActive: currentDog.isActive,
       } satisfies DogEditPayload,
     });
 
@@ -213,7 +213,7 @@ export class PetDetailsComponent {
       reported: false,
     };
 
-    this.reviews.update((current: DogReview[]): DogReview[] => [...current, newReview]);
+    this.reviews.update((current) => [...current, newReview]);
     this.reviewForm.reset();
 
     this.snackBar.open('Twoja opinia została dodana i jest widoczna publicznie.', 'OK', {
@@ -222,10 +222,8 @@ export class PetDetailsComponent {
   }
 
   public onReportReview(reviewId: string, reported: boolean): void {
-    this.reviews.update((current: DogReview[]): DogReview[] =>
-      current.map((review: DogReview): DogReview =>
-        review.id === reviewId ? { ...review, reported } : review,
-      ),
+    this.reviews.update((current) =>
+      current.map((review) => (review.id === reviewId ? { ...review, reported } : review)),
     );
 
     this.snackBar.open(
@@ -325,24 +323,32 @@ export class PetDetailsComponent {
 })
 export class EditDogDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<EditDogDialogComponent>);
+  private readonly data = inject<DogEditPayload>(MAT_DIALOG_DATA);
 
-  public readonly form = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    breed: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    notes: new FormControl('', { nonNullable: true }),
-    size: new FormControl('M', { nonNullable: true }),
-    weightKg: new FormControl(0, { nonNullable: true, validators: [Validators.min(0)] }),
-    isActive: new FormControl(true, { nonNullable: true }),
+  public readonly form = new FormGroup<{
+    name: FormControl<string>;
+    breed: FormControl<string>;
+    notes: FormControl<string>;
+    size: FormControl<string>;
+    weightKg: FormControl<number>;
+    isActive: FormControl<boolean>;
+  }>({
+    name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    breed: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    notes: new FormControl<string>('', { nonNullable: true }),
+    size: new FormControl<string>('M', { nonNullable: true }),
+    weightKg: new FormControl<number>(0, { nonNullable: true, validators: [Validators.min(0)] }),
+    isActive: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) data: DogEditPayload) {
+  constructor() {
     this.form.setValue({
-      name: data.name,
-      breed: data.breed,
-      notes: data.notes ?? '',
-      size: data.size ?? 'M',
-      weightKg: Number(data.weightKg ?? 0),
-      isActive: !!data.isActive,
+      name: this.data.name,
+      breed: this.data.breed,
+      notes: this.data.notes ?? '',
+      size: this.data.size ?? 'M',
+      weightKg: Number(this.data.weightKg ?? 0),
+      isActive: this.data.isActive,
     });
   }
 
@@ -352,6 +358,6 @@ export class EditDogDialogComponent {
 
   public save(): void {
     if (this.form.invalid) return;
-    this.dialogRef.close(this.form.getRawValue() as DogEditPayload);
+    this.dialogRef.close(this.form.getRawValue());
   }
 }
