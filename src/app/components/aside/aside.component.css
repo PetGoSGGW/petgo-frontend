@@ -2,7 +2,7 @@
   position: sticky;
   top: var(--header-height);
   height: calc(100svh - var(--header-height));
-  background-color: var(--mat-sys-surface-dim);
+  background-color: var(--mat-sys-surface-variant);
   width: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }

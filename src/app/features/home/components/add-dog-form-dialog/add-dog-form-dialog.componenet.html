@@ -1,0 +1,10 @@
+<span matDialogTitle>Dodaj pupila</span>
+
+<mat-dialog-content>
+  <app-dog-form />
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button matButton="outlined" (click)="matDialogRef.close()">Zamknij</button>
+  <button matButton="tonal" (click)="submit()">Dodaj</button>
+</mat-dialog-actions>
