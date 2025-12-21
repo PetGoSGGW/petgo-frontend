@@ -87,14 +87,13 @@
                     </p>
                   </div>
 
-                  <button
-                    mat-icon-button
+                  <mat-button-toggle
                     matTooltip="Zgłoś opinię do weryfikacji"
-                    (click)="onReportReview(review.id)"
-                    [disabled]="review.reported"
+                    [checked]="review.reported"
+                    (change)="onReportReview(review.id, $event.source.checked)"
                   >
-                    <mat-icon [class.reported]="review.reported"> flag </mat-icon>
-                  </button>
+                    <mat-icon [class.reported]="review.reported">flag</mat-icon>
+                  </mat-button-toggle>
                 </div>
               </mat-list-item>
             }

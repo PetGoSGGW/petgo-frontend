@@ -12,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonToggle } from '@angular/material/button-toggle';
 
 interface Pet {
   id: string;
@@ -81,6 +82,7 @@ const MOCK_PETS: Pet[] = [
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
+    MatButtonToggle,
   ],
 })
 export class PetDetailsComponent {
@@ -149,17 +151,21 @@ export class PetDetailsComponent {
     });
   }
 
-  public onReportReview(reviewId: string): void {
+  public onReportReview(reviewId: string, reported: boolean): void {
     this.reviews.update((current: PetReview[]): PetReview[] =>
       current.map(
         (review: PetReview): PetReview =>
-          review.id === reviewId ? { ...review, reported: true } : review,
+          review.id === reviewId ? { ...review, reported } : review,
       ),
     );
 
-    this.snackBar.open('Opinia została zgłoszona do weryfikacji przez administratora.', 'OK', {
-      duration: 4000,
-    });
+    this.snackBar.open(
+      reported
+        ? 'Opinia została zgłoszona do weryfikacji przez administratora.'
+        : 'Zgłoszenie opinii zostało cofnięte.',
+      'OK',
+      { duration: 4000 },
+    );
   }
 
   public getFirstPhotoUrl(): string | null {
