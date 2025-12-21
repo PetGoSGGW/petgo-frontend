@@ -4,21 +4,6 @@
   gap: 1rem;
 }
 
-.container {
-  background-color: var(--mat-sys-surface-variant);
-  border-radius: 1rem;
-  padding: 1rem;
-  gap: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.container-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  padding-bottom: 0.5rem;
-}
-
 .no-dog {
   display: flex;
   flex-direction: column;
@@ -44,21 +29,20 @@
 
 .error {
   text-align: center;
+  color: var(--mat-sys-error);
   font-size: 1.25rem;
   font-weight: 500;
 }
 
-.walk-list {
-  list-style-type: none;
-
-  & > li {
-    background-color: var(--mat-sys-surface);
-    border-radius: 1rem;
-    padding: 1rem;
-  }
+.list-item {
+  background-color: var(--mat-sys-surface);
+  border-radius: 1rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.no-walks {
-  text-align: center;
-  font-weight: 600;
+.field {
+  display: flex;
+  flex-direction: column;
 }
