@@ -1,17 +1,54 @@
-<div>
+<div class="container">
+  <span class="container-title">Pupile</span>
+
   @if (dogs.isLoading()) {
     <mat-progress-spinner />
   } @else if (dogs.error()) {
-    <span>Błąd</span>
+    <span class="error">Błąd</span>
   } @else if (dogs.hasValue()) {
     @for (dog of dogs.value(); track dog.dogId) {
       <span>{{ dog.name }}</span>
     } @empty {
-      <div>
-        <span>Wygląda na to, że nie masz żadnego dodanego pupila!</span>
-        <mat-icon></mat-icon>
-        <button matButton="tonal">Dodaj pupila</button>
+      <div class="no-dog">
+        <mat-icon class="no-search-icon">search_off</mat-icon>
+        <span class="no-dog-message">Wygląda na to, że nie masz żadnego dodanego pupila!</span>
+        <button class="btn" matButton="tonal">Dodaj pupila</button>
       </div>
     }
+  }
+</div>
+
+<div class="container">
+  <span class="container-title">Skończone spacery</span>
+
+  @if (completedWalks.isLoading()) {
+    <mat-progress-spinner />
+  } @else if (completedWalks.error()) {
+    <span class="error">Błąd</span>
+  } @else if (completedWalks.hasValue()) {
+    <ul class="walk-list">
+      @for (reservation of completedWalks.value(); track reservation.reservationId) {
+        <li>
+          <div>
+            <span>Imię pupila</span>
+            <span>
+              {{ reservation.dog.name }}
+            </span>
+          </div>
+
+          <div>
+            <span>Czas trwania</span>
+            <span>{{ reservation.scheduledStart }} {{ reservation.scheduledEnd }}</span>
+          </div>
+
+          <div>
+            <span>Wyprowadzał</span>
+            <span>{{ reservation.walker.username }}</span>
+          </div>
+        </li>
+      } @empty {
+        <li class="no-walks">Nie masz ukończonych spacerów!</li>
+      }
+    </ul>
   }
 </div>
