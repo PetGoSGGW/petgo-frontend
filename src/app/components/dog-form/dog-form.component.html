@@ -1,0 +1,67 @@
+<form>
+  <mat-form-field>
+    @let nameTouched = form.controls.name.touched;
+    @let nameErrors = form.controls.name.errors;
+
+    <mat-label>Imię pupila</mat-label>
+    <input matInput [formControl]="form.controls.name" />
+
+    @if (nameTouched && nameErrors?.['required']) {
+      <mat-error>Podaj imię pupila.</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="row">
+    <mat-form-field>
+      @let weightTouched = form.controls.weight.touched;
+      @let weightErrors = form.controls.weight.errors;
+
+      <mat-label>Waga pupila (kg)</mat-label>
+      <input
+        matInput
+        type="number"
+        matNativeControl="number"
+        [formControl]="form.controls.weight"
+      />
+
+      @if (weightTouched && weightErrors?.['required']) {
+        <mat-error>Podaj wagę pupila.</mat-error>
+      } @else if (weightTouched && weightErrors?.['min']) {
+        <mat-error>Minimalna waga to 1kg.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      @let breedTouched = form.controls.breed.touched;
+      @let breedErrors = form.controls.breed.errors;
+
+      <mat-label>Rasa pupila</mat-label>
+      <input matInput [formControl]="form.controls.breed" />
+
+      @if (breedTouched && breedErrors?.['required']) {
+        <mat-error>Podaj rasę pupila.</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    @let sizeTouched = form.controls.size.touched;
+    @let sizeErrors = form.controls.size.errors;
+
+    <mat-label>Rozmiar pupila</mat-label>
+    <mat-select [formControl]="form.controls.size">
+      @for (size of availableSizes(); track size) {
+        <mat-option [value]="size">{{ size }}</mat-option>
+      }
+    </mat-select>
+
+    @if (sizeTouched && sizeErrors?.['required']) {
+      <mat-error>Podaj rasę pupila.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Opis pupila</mat-label>
+    <textarea matInput [formControl]="form.controls.notes"></textarea>
+  </mat-form-field>
+</form>
