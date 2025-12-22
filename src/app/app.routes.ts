@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/guards/auth.guard';
+import { ReservationApiService } from './serivces/reservation-api.service';
+import { DogApiService } from './serivces/dog-api.service';
 
 export const routes: Routes = [
   {
@@ -11,6 +13,12 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((r) => r.homeRoutes),
+        providers: [ReservationApiService, DogApiService],
+      },
+      {
+        path: 'kontakt',
+        loadChildren: () =>
+          import('./features/contact/contact.routes').then((r) => r.contactRoutes),
       },
       {
         path: 'powiadomienia',
