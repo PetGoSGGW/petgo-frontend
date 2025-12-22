@@ -5,6 +5,8 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
+import { Router } from '@angular/router';
+import { WalkerOffer } from './models/walker-offer.model';
 
 @Component({
   selector: 'app-walker-offers',
@@ -13,6 +15,7 @@ import { MatButton } from '@angular/material/button';
   styleUrl: './walker-offers.component.css',
 })
 export class OffersComponent {
+  private router = inject(Router);
   private readonly offersService = inject(WalkerOffersService);
   protected readonly search = signal('');
   protected readonly stars = new Array(5);
@@ -22,7 +25,9 @@ export class OffersComponent {
     stream: ({ params: { search } }) => this.offersService.getOffers(search),
   });
 
-  protected reserve(name: string): void {
-    alert(`Zarezerwowano: ${name}`);
+  protected async reserve(offer: WalkerOffer): Promise<void> {
+    await this.router.navigate(['/rezerwacja'], {
+      state: { rezerwacja: offer },
+    });
   }
 }
