@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pet-go-front": {
+    "petgo-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",

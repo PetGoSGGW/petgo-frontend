@@ -1,0 +1,99 @@
+<div class="contact-page page">
+  <mat-card class="card">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar">
+        <mat-icon>help_outline</mat-icon>
+      </div>
+      <mat-card-title>Potrzebujesz wsparcia?</mat-card-title>
+      <mat-card-subtitle>
+        Odpowiemy w ciągu
+        <strong>{{ responseDays() }}</strong>
+        dni od zgłoszenia.
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <div matLine class="label">Email kontaktowy</div>
+          <div matLine class="value">{{ contactEmail() }}</div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <a matButton="tonal" [href]="'mailto:' + this.contactEmail()">Skontaktuj się z nami</a>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>Zgłoś problem</mat-card-title>
+      <mat-card-subtitle>
+        Wypełnij formularz — skontaktujemy się z Tobą. Możesz dodać zrzut ekranu.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="reportForm" (ngSubmit)="submit()" novalidate>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Temat</mat-label>
+          <input matInput type="text" formControlName="topic" placeholder="Krótki temat problemu" />
+
+          @if (topicControl.touched && topicControl.invalid) {
+            <mat-error> Temat jest wymagany (min. 3 znaki). </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Opis problemu</mat-label>
+          <textarea
+            matInput
+            rows="5"
+            formControlName="description"
+            placeholder="Opisz co się stało, jakie kroki prowadzą do błędu..."
+          ></textarea>
+
+          @if (descriptionControl.touched && descriptionControl.invalid) {
+            <mat-error> Opis jest wymagany (min. 10 znaków). </mat-error>
+          }
+        </mat-form-field>
+
+        <div class="file-field">
+          <label for="screenshotInput" class="file-label">Zrzut ekranu (opcjonalnie)</label>
+          <div class="file-row">
+            <button matButton="outlined" type="button" (click)="fileInput.click()">
+              Wybierz plik
+            </button>
+            <input
+              #fileInput
+              id="screenshotInput"
+              type="file"
+              accept="image/*"
+              (change)="onFileChange($event)"
+              hidden
+            />
+          </div>
+
+          @if (previewUrl()) {
+            <div class="preview">
+              <img [src]="previewUrl()" alt="Podgląd zrzutu ekranu" />
+            </div>
+          }
+        </div>
+
+        <div class="actions">
+          <button matButton="tonal" type="submit" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <mat-progress-spinner
+                mode="indeterminate"
+                diameter="18"
+                strokeWidth="3"
+              ></mat-progress-spinner>
+            } @else {
+              Wyślij zgłoszenie
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
