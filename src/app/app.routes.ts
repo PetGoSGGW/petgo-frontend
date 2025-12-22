@@ -20,6 +20,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/contact/contact.routes').then((r) => r.contactRoutes),
       },
+      {
+        path: 'users/:id',
+        loadChildren: () =>
+          import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
+      },
     ],
   },
   {
