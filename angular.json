@@ -21,7 +21,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles/tokens.scss", "src/styles.scss"]
+            "styles": ["src/styles/tokens.scss", "src/styles.scss", "node_modules/leaflet/dist/leaflet.css"]
           },
           "configurations": {
             "production": {
@@ -57,10 +57,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "pet-go-front:build:production"
+              "buildTarget": "petgo-front:build:production"
             },
             "development": {
-              "buildTarget": "pet-go-front:build:development"
+              "buildTarget": "petgo-front:build:development"
             }
           },
           "defaultConfiguration": "development",
