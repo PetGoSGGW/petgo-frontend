@@ -32,7 +32,7 @@ export const routes: Routes = [
       {
         path: 'pies/:id',
         loadChildren: () =>
-        import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+          import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
       },
     ],
   },
