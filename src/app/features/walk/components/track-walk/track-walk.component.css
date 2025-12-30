@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: calc(100svh - 2rem - var(--header-height));
+}
+
+.map-container {
+  height: 100%;
+  border-radius: 1rem;
+  position: relative;
+}
+
+.map-frame {
+  border: 2px solid black;
+  height: 100%;
+}
+
+#map {
+  height: 100%;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
