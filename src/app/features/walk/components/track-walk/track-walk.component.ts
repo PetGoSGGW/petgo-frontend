@@ -2,15 +2,17 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   input,
   OnInit,
 } from '@angular/core';
-import { WalkApiService } from '../../services/walk-api.service';
 import { LocationService } from '../../../../serivces/location.service';
-import { map, ReplaySubject, switchMap } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import * as L from 'leaflet';
 import { MatButton } from '@angular/material/button';
+import { SessionService } from '../../../../serivces/session.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-track-walk',
@@ -21,7 +23,8 @@ import { MatButton } from '@angular/material/button';
 })
 export class TrackWalkComponent implements OnInit {
   private readonly locationService = inject(LocationService);
-  private readonly walkApi = inject(WalkApiService);
+  private readonly sessionService = inject(SessionService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private map: L.Map | undefined;
   private userPosition: { lat: number; lng: number } | null = null;
@@ -45,18 +48,12 @@ export class TrackWalkComponent implements OnInit {
   public ngOnInit(): void {
     this.locationService
       .getCurrentLocation$()
-      .pipe(
-        switchMap(({ latitude, longitude }) =>
-          this.walkApi
-            .addCoordinatePoint({ sessionId: this.sessionId(), latitude, longitude })
-            .pipe(map(() => ({ latitude, longitude }))),
-        ),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ latitude, longitude }) => {
           this.updatePath(latitude, longitude);
           this.userPosition = { lat: latitude, lng: longitude };
-          this.centerMapOnUser({ zoom: 30 });
+          this.centerMapOnUser();
         },
       });
   }
@@ -126,6 +123,6 @@ export class TrackWalkComponent implements OnInit {
   }
 
   protected finishWalk(sessionId: number): void {
-    this.walkApi.finishWalk$(sessionId);
+    this.sessionService.stopWalk(sessionId);
   }
 }
