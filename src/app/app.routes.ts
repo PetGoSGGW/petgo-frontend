@@ -21,9 +21,18 @@ export const routes: Routes = [
           import('./features/contact/contact.routes').then((r) => r.contactRoutes),
       },
       {
+        path: 'spacer',
+        loadChildren: () => import('./features/walk/walk.routes').then((r) => r.walkRoutes),
+      },
+      {
         path: 'oferty',
         loadChildren: () =>
           import('./features/walker-offers/walker-offers.routes').then((r) => r.offersRoutes),
+      },
+      {
+        path: 'pies/:id',
+        loadChildren: () =>
+          import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
       },
     ],
   },
