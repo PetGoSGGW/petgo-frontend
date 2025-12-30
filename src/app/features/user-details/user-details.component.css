@@ -1,26 +1,39 @@
-/* Główne tło - identyczne jak w Pet Details */
+/* ==========================================================================
+   1. GŁÓWNY LAYOUT STRONY
+   ========================================================================== */
 .user-details-page {
-  background: #f3f7ff;
   min-height: calc(100vh - 64px);
   padding: 24px 16px;
 }
 
-/* Layout Grid - identyczny jak w Pet Details (2fr i 3fr) */
 .details-layout {
-  max-width: 1120px;
+  max-width: 128rem;
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   gap: 24px;
 }
 
-@media (max-width: 960px) {
+/* Responsywność */
+@media (max-width: 96rem) {
   .details-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 3fr);
   }
 }
 
-/* Wspólny styl kart */
+@media (max-width: 64rem) {
+  .details-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Wspólny styl dla wszystkich kart */
 .content-card {
   background: #ffffff;
   border-radius: 16px;
@@ -28,7 +41,9 @@
   overflow: hidden;
 }
 
-/* --- LEWA KOLUMNA (INFO) --- */
+/* ==========================================================================
+   2. LEWA KOLUMNA - PROFIL UŻYTKOWNIKA
+   ========================================================================== */
 .main-info-card {
   height: fit-content;
 }
@@ -40,10 +55,11 @@
   padding: 20px;
 }
 
+/* Avatar */
 .user-photo-wrapper {
   width: 100px;
   height: 100px;
-  border-radius: 12px; /* Lekko zaokrąglone rogi zdjęcia */
+  border-radius: 12px;
   overflow: hidden;
   background: #e3f2fd;
   flex-shrink: 0;
@@ -64,6 +80,7 @@
   color: #90a4ae;
 }
 
+/* Teksty nagłówka */
 .user-main-text {
   flex: 1;
 }
@@ -79,18 +96,20 @@
 }
 
 .active-user {
-  color: var(--mat-sys-primary); /* Niebieski kolor weryfikacji */
-  font-size: 20px;
-  height: 20px;
-  width: 20px;
-}
-.not-active-user {
-  color: var(--mat-sys-tertiary); /* Niebieski kolor weryfikacji */
+  color: var(--mat-sys-primary);
   font-size: 20px;
   height: 20px;
   width: 20px;
 }
 
+.not-active-user {
+  color: var(--mat-sys-tertiary);
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
+/* Opis */
 .user-description {
   padding: 16px 20px;
 }
@@ -107,72 +126,69 @@
   line-height: 1.5;
 }
 
-.user-gallery {
+/* ==========================================================================
+   3. LEWA KOLUMNA - SEKCJA "MOJE PSY"
+   ========================================================================== */
+.user-pets-section {
   padding: 16px 20px;
 }
 
-.user-gallery h3 {
-  margin: 0 0 10px;
+.user-pets-section h3 {
+  margin: 0 0 12px;
   font-size: 16px;
+  color: #212121;
 }
 
-.photos-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
+.pets-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
 }
 
-.gallery-thumb {
-  width: 70px;
-  height: 70px;
+.pet-card-mini {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  object-fit: cover;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.gallery-thumb:hover {
-  opacity: 0.85;
-}
-
-/* --- PRAWA KOLUMNA --- */
-.right-column {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
-/* Karta Akcji (CTA) */
-.action-card {
-  background-color: #e3f2fd; /* Jasny niebieski akcent */
-  border: 1px solid #bbdefb;
+.pet-card-mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.action-content {
-  padding: 20px;
-  text-align: center;
+.pet-mini-photo {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  background-color: #e3f2fd;
 }
 
-.action-content h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  color: #0d47a1;
+.pet-mini-info {
+  padding: 8px 10px;
 }
 
-.action-content p {
-  margin: 0 0 20px;
-  color: #546e7a;
+.pet-name {
+  display: block;
+  font-weight: 600;
   font-size: 14px;
+  color: #334155;
+  margin-bottom: 2px;
 }
 
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
+.pet-details {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
 }
 
-/* Karta Opinii */
+/* ==========================================================================
+   4. PRAWA KOLUMNA - KARTA OPINII (Nagłówek i Statystyki)
+   ========================================================================== */
 .reviews-card {
   padding: 20px;
 }
@@ -213,82 +229,93 @@
   color: #455a64;
 }
 
-.no-reviews {
-  font-size: 14px;
-  color: #546e7a;
-  margin: 0 0 16px;
+/* ==========================================================================
+   5. LISTA OPINII (Custom Div Layout)
+   ========================================================================== */
+.reviews-list-container {
+  display: flex;
+  flex-direction: column;
 }
 
-.review-item {
-  padding: 2rem 0;
+/* Pojedynczy wiersz */
+.review-row {
+  padding: 16px 0;
+  width: 100%;
 }
 
-.review-item-container {
+/* Flexbox dla układu: Treść (lewo) - Przycisk flagi (prawo) */
+.review-content-wrapper {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-.review-content {
+.review-main-content {
   flex: 1;
-  padding-right: 8px;
+  min-width: 0; /* Zapobiega wypychaniu flagi */
 }
 
+/* Nagłówek pojedynczej opinii: Autor, Data, Gwiazdki */
 .review-header {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
+  flex-wrap: wrap; /* Pozwala elementom spadać niżej */
+  align-items: center;
+  margin-bottom: 8px;
+  column-gap: 8px;
 }
 
 .review-header .author {
   font-weight: 600;
   color: #212121;
+  font-size: 1rem;
 }
 
 .review-header .date {
   font-size: 12px;
   color: #78909c;
+  margin-left: auto; /* Wypycha datę przed flagę */
 }
 
-.review-content .text {
+/* Gwiazdki w opinii */
+.star-rating-display {
+  width: 100%; /* Wymusza nową linię */
+  display: flex;
+  margin-top: 2px;
+  color: #f57c00;
+}
+
+.star-icon-small {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  margin-right: 1px;
+}
+
+/* Tekst opinii */
+.text {
   margin: 0;
   color: #424242;
+  line-height: 1.5;
+  font-size: 0.95rem;
 }
 
-.review-item button[mat-icon-button] mat-icon {
+/* Przycisk zgłoszenia (flaga) */
+.report-btn {
+  flex-shrink: 0;
+  margin-top: -8px;
   color: #90a4ae;
 }
 
-.review-item button[mat-icon-button] mat-icon.reported {
+.reported {
   color: #ef5350;
 }
 
-.reviews-divider {
-  margin: 12px 0;
-}
-
+/* ==========================================================================
+   6. FORMULARZ DODAWANIA OPINII
+   ========================================================================== */
 .review-form {
   margin-top: 8px;
-}
-.full-width {
-  width: 100%;
-}
-
-.form-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.hint {
-  font-size: 12px;
-  color: #78909c;
-}
-
-/* Nadpisanie stylu przycisków Angular Material */
-.mat-mdc-raised-button.mat-primary {
-  background-color: #1e88e5;
-  border-radius: 24px;
 }
 
 .rating-input-container {
@@ -304,6 +331,7 @@
   color: #424242;
 }
 
+/* Interaktywne gwiazdki */
 .interactive-stars {
   display: flex;
   align-items: center;
@@ -334,67 +362,25 @@
   min-width: 50px;
 }
 
-.star-rating-display {
-  margin-left: auto;
-  margin-right: 10px;
-  color: #f57c00;
-}
-
-.user-pets-section {
-  padding: 16px 20px;
-}
-
-.user-pets-section h3 {
-  margin: 0 0 12px;
-  font-size: 16px;
-  color: #212121;
-}
-
-.pets-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Responsywne kafelki */
-  gap: 12px;
-}
-
-.pet-card-mini {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.pet-card-mini:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.pet-mini-photo {
+/* Pola tekstowe i przyciski */
+.full-width {
   width: 100%;
-  height: 100px;
-  object-fit: cover;
-  background-color: #e3f2fd;
 }
 
-.pet-mini-info {
-  padding: 8px 10px;
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
 }
 
-.pet-name {
-  display: block;
-  font-weight: 600;
-  font-size: 14px;
-  color: #334155;
-  margin-bottom: 2px;
-}
-
-.pet-details {
-  display: block;
+.hint {
   font-size: 12px;
-  color: #64748b;
+  color: #78909c;
+}
+
+/* Nadpisanie stylu przycisku Angular Material */
+.mat-mdc-raised-button.mat-primary {
+  background-color: #1e88e5;
+  border-radius: 24px;
 }

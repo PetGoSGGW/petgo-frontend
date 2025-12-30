@@ -74,44 +74,6 @@
             </div>
           </div>
 
-          <p class="public-info">
-            Uwaga: wszystkie dodane opinie są
-            <strong>widoczne publicznie</strong>
-            dla innych użytkowników.
-          </p>
-
-          <mat-list>
-            @for (review of reviews(); track review.id) {
-              <mat-list-item class="review-item">
-                <div class="review-item-container">
-                  <div class="review-content">
-                    <div class="review-header">
-                      <span class="author">{{ review.author }}</span>
-                      <div class="star-rating-display">
-                        @for (i of [1, 2, 3, 4, 5]; track i) {
-                          <mat-icon class="star-icon-small">
-                            {{ getRatingForReview(review.rating, i) }}
-                          </mat-icon>
-                        }
-                      </div>
-                      <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
-                    </div>
-                    <p class="text">{{ review.text }}</p>
-                  </div>
-
-                  <button
-                    mat-icon-button
-                    matTooltip="Zgłoś opinię"
-                    (click)="onReportReview(review.id)"
-                    [disabled]="review.reported"
-                  >
-                    <mat-icon [class.reported]="review.reported">flag</mat-icon>
-                  </button>
-                </div>
-              </mat-list-item>
-            }
-          </mat-list>
-
           <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form">
             <div class="rating-input-container">
               <span>Twoja ocena:</span>
@@ -157,6 +119,44 @@
               </button>
             </div>
           </form>
+          <div class="reviews-list-container">
+            @for (review of reviews(); track review.id; let last = $last) {
+              <div class="review-row">
+                <div class="review-content-wrapper">
+                  <div class="review-main-content">
+                    <div class="review-header">
+                      <span class="author">{{ review.author }}</span>
+                      <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
+
+                      <div class="star-rating-display">
+                        @for (i of [1, 2, 3, 4, 5]; track i) {
+                          <mat-icon class="star-icon-small">
+                            {{ getRatingForReview(review.rating, i) }}
+                          </mat-icon>
+                        }
+                      </div>
+                    </div>
+
+                    <p class="text">{{ review.text }}</p>
+                  </div>
+
+                  <button
+                    mat-icon-button
+                    matTooltip="Zgłoś opinię"
+                    (click)="onReportReview(review.id)"
+                    [disabled]="review.reported"
+                    class="report-btn"
+                  >
+                    <mat-icon [class.reported]="review.reported">flag</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              @if (!last) {
+                <mat-divider></mat-divider>
+              }
+            }
+          </div>
         </mat-card>
       </div>
     </div>

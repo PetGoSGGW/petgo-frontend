@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -152,10 +152,10 @@ export const MOCK_PETS: Pet[] = [
   styleUrl: './user-details.component.css',
 })
 export class UserDetailsComponent {
-  private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
-
-  public readonly user = signal<UserProfile | null>(null);
+  public readonly user = computed(
+    () => MOCK_USERS.find((u: UserProfile) => u.id === this.id()) ?? null,
+  );
 
   public readonly userPets = computed(() => {
     const currentUser = this.user();
@@ -183,7 +183,12 @@ export class UserDetailsComponent {
   ]);
   public readonly stars = [1, 2, 3, 4, 5];
   public readonly hoverRating = signal<number | null>(null);
-  public readonly score = signal<number>(0);
+  protected readonly score = computed(() =>
+    (
+      this.reviews().reduce((score, review) => score + review.rating, 0) / this.reviews().length
+    ).toFixed(2),
+  );
+  public readonly id = input.required<string>();
 
   public readonly reviewForm = new FormGroup({
     text: new FormControl<string>('', {
@@ -193,22 +198,6 @@ export class UserDetailsComponent {
     rating: new FormControl<number>(5, { nonNullable: true }), // <--- Add control
   });
 
-  constructor() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      const found: UserProfile | undefined = MOCK_USERS.find(
-        (u: UserProfile): boolean => u.id === id,
-      );
-      this.user.set(found ?? null);
-    }
-    this.calculateScore();
-  }
-
-  public calculateScore(): void {
-    const totalScore =
-      this.reviews().reduce((score, review) => score + review.rating, 0) / this.reviews().length;
-    this.score.set(Number(totalScore.toFixed(2)));
-  }
   public get textControl(): FormControl<string> {
     return this.reviewForm.controls.text;
   }
@@ -242,9 +231,8 @@ export class UserDetailsComponent {
 
   public onStarHover(event: MouseEvent, starIndex: number): void {
     const target = event.target as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    const { width } = rect;
-    const x = event.clientX - rect.left; // X position within the icon
+    const { width, left } = target.getBoundingClientRect();
+    const x = event.clientX - left; // X position within the icon
 
     // If mouse is on the left 50% of the icon, subtract 0.5
     const isHalf = x < width / 2;
@@ -283,8 +271,6 @@ export class UserDetailsComponent {
 
     this.reviews.update((current) => [newReview, ...current]);
     this.reviewForm.reset({ text: '', rating: 5 });
-    this.calculateScore();
-
     this.snackBar.open('Twoja opinia została dodana.', 'OK', { duration: 4000 });
   }
 

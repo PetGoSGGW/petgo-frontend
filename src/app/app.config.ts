@@ -5,7 +5,7 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideLuxonDateAdapter } from '@angular/material-luxon-adapter';
 
 import { routes } from './app.routes';
@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideLuxonDateAdapter(),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideAppInitializer(() => inject(AuthService).loadSession()),
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
   ],
