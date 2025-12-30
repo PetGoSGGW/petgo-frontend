@@ -118,7 +118,7 @@ export class ViewWalkComponent implements OnInit {
 
     if (!this.userMarker) {
       this.userMarker = L.circleMarker(latlng).addTo(this.map);
-      this.userMarker.bindPopup('You are here').openPopup();
+      this.userMarker.bindPopup('Twój pupil').openPopup();
     } else {
       this.userMarker.setLatLng(latlng);
     }
