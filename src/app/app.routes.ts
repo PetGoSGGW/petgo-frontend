@@ -20,6 +20,10 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/contact/contact.routes').then((r) => r.contactRoutes),
       },
+      {
+        path: 'spacer',
+        loadChildren: () => import('./features/walk/walk.routes').then((r) => r.walkRoutes),
+      },
     ],
   },
   {

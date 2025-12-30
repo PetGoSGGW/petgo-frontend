@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "petgo-front:build:production"
+              "buildTarget": "petgo-frontend:build:production"
             },
             "development": {
-              "buildTarget": "petgo-front:build:development"
+              "buildTarget": "petgo-frontend:build:development"
             }
           },
           "defaultConfiguration": "development",
