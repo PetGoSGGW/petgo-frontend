@@ -20,6 +20,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/contact/contact.routes').then((r) => r.contactRoutes),
       },
+      {
+        path: 'oferty',
+        loadChildren: () =>
+          import('./features/walker-offers/walker-offers.routes').then((r) => r.offersRoutes),
+      },
     ],
   },
   {
