@@ -1,0 +1,50 @@
+<div class="search-box">
+  <input type="text" placeholder="Szukaj..." [(ngModel)]="search" />
+</div>
+
+@if (offers.isLoading()) {
+  <mat-spinner />
+} @else if (offers.error()) {
+  <span>Wystąpił błąd!</span>
+} @else if (offers.hasValue()) {
+  <ul class="cards-container">
+    @for (offer of offers.value(); track offer.id) {
+      <li class="card">
+        <div class="columns">
+          <div class="profile">
+            <img src="/assets/user-avatar.png" alt="avatar" class="avatar" />
+
+            <div class="profile-info">
+              <h3>{{ offer.name }}</h3>
+              <span class="username">{{ '@' + offer.username }}</span>
+
+              <div class="rating">
+                @for (_ of stars; track $index) {
+                  <span class="star" [class.filled]="$index <= offer.rating">★</span>
+                }
+                <span class="reviews">({{ offer.reviews }})</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="details">
+            <p><mat-icon>pin_drop</mat-icon> Odległość: {{ offer.distance }} km</p>
+            <p><mat-icon>attach_money</mat-icon> Stawka: {{ offer.rate }} zł/h</p>
+            <p><mat-icon>cake</mat-icon> Wiek: {{ offer.age }} lat</p>
+          </div>
+
+          <div class="localization">
+            <h4>Lokalizacja</h4>
+            <p>Miejscowość: {{ offer.city }}</p>
+            <p>Ulica: {{ offer.street }}</p>
+            <p>Kod pocztowy: {{ offer.postal }}</p>
+          </div>
+        </div>
+
+        <button matButton="filled" class="reserve-btn" (click)="reserve(offer)">Zarezerwuj</button>
+      </li>
+    } @empty {
+      <li class="no-results">Brak wyprowadzaczy</li>
+    }
+  </ul>
+}

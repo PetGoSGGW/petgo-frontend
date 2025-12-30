@@ -24,16 +24,21 @@ export const routes: Routes = [
         path: 'spacer',
         loadChildren: () => import('./features/walk/walk.routes').then((r) => r.walkRoutes),
       },
+      {
+        path: 'oferty',
+        loadChildren: () =>
+          import('./features/walker-offers/walker-offers.routes').then((r) => r.offersRoutes),
+      },
+      {
+        path: 'pies/:id',
+        loadChildren: () =>
+        import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+      },
     ],
   },
   {
     path: 'autoryzacja',
     loadChildren: () => import('./core/auth/auth.routes').then((r) => r.authRoutes),
-  },
-  {
-    path: 'pies/:id',
-    loadChildren: () =>
-      import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
   },
   {
     path: '**',
