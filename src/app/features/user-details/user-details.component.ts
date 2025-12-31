@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, numberAttribute, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -12,122 +12,110 @@ import { RouterLink } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { UserReview } from '../../models/userReview.model';
+import { Dog } from '../../models/dog.model';
+import { User } from '../../core/auth/models/user.model';
 
-interface UserProfile {
-  id: string;
-  name: string;
-  isActive: boolean;
-  location: string;
-  age: number;
-  experience: number;
-  description: string;
-  photos: string[];
-}
-
-interface Pet {
-  id: string;
-  ownerId: string; // Klucz obcy do użytkownika
-  name: string;
-  breed: string;
-  age: number;
-  photoUrl: string;
-}
-
-interface UserReview {
-  id: string;
-  author: string;
-  createdAt: Date;
-  text: string;
-  rating: number;
-  reported: boolean;
-}
-
-export const MOCK_USERS: UserProfile[] = [
+export const MOCK_USERS: User[] = [
   {
-    id: '1',
-    name: 'Anna Nowak',
-    isActive: false,
-    location: 'Warszawa, Mokotów',
-    age: 30,
-    experience: 3,
-    description:
-      'Cześć! Jestem studentką weterynarii i uwielbiam spędzać czas aktywnie. Mam doświadczenie zarówno z małymi, jak i dużymi psami. Wiem, jak udzielić pierwszej pomocy. Chętnie zabiorę Twojego pupila na długi spacer do parku!',
-    photos: [
-      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80',
-    ],
+    id: 1,
+    username: 'anna_nowak',
+    email: 'anna.nowak@example.com',
+    firstName: 'Anna',
+    lastName: 'Nowak',
+    role: 'USER',
+    dateOfBirth: new Date('1994-05-20'), // ok. 30 lat
   },
   {
-    id: '2',
-    name: 'Piotr Lewandowicz',
-    isActive: true,
-    location: 'Wrocław, Krzyki',
-    age: 24,
-    experience: 1,
-    description:
-      'Jestem studentem AWF i zapalonym biegaczem. Jeśli Twój pies potrzebuje wybiegania i dużej dawki ruchu, świetnie się dogadamy. Preferuję rasy aktywne, z którymi mogę trenować canicross.',
-    photos: [
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80', // Wspólne zdjęcie z psem
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
-    ],
+    id: 2,
+    username: 'piotr_lewy',
+    email: 'piotr.lewandowicz@example.com',
+    firstName: 'Piotr',
+    lastName: 'Lewandowicz',
+    role: 'USER',
+    dateOfBirth: new Date('2000-11-15'), // ok. 24 lata
   },
   {
-    id: '3',
-    name: 'Katarzyna Wójcik',
-    isActive: true,
-    location: 'Gdańsk, Przymorze',
-    age: 42,
-    experience: 12,
-    description:
-      'Jestem certyfikowaną behawiorystką z wieloletnim stażem. Specjalizuję się w pracy z psami lękowymi i reaktywnymi. Oferuję spacery socjalizacyjne oraz opiekę nad psami wymagającymi szczególnej troski.',
-    photos: [
-      'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=400&q=80',
-    ],
+    id: 3,
+    username: 'kasia_wojcik',
+    email: 'katarzyna.wojcik@example.com',
+    firstName: 'Katarzyna',
+    lastName: 'Wójcik',
+    role: 'ADMIN',
+    dateOfBirth: new Date('1982-03-10'), // ok. 42 lata
   },
 ];
 
-export const MOCK_PETS: Pet[] = [
+export const MOCK_DOGS: Dog[] = [
   {
-    id: '1',
-    ownerId: '1', // Anna Nowak
+    dogId: 101,
+    ownerId: 1, // Anna Nowak (MOCK_USERS[0].id)
     name: 'Burek',
-    breed: 'Mieszaniec',
-    age: 3,
-    photoUrl:
-      'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=300&q=80',
+    breed: { breedCode: 'MIX', name: 'Mieszaniec' },
+    notes: 'Przyjazny, energiczny pies.',
+    size: 'MEDIUM',
+    weightKg: 15,
+    isActive: true,
+    createdAt: '2023-01-15T10:00:00Z',
+    updatedAt: '2023-06-20T14:30:00Z',
+    photos: [
+      {
+        photoId: 501,
+        url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=300&q=80',
+        uploadedAt: '2025-12-31T11:29:27.685Z',
+      },
+    ],
   },
   {
-    id: '2',
-    ownerId: '1', // Anna Nowak (drugi pies)
+    dogId: 102,
+    ownerId: 1, // Anna Nowak
     name: 'Luna',
-    breed: 'Beagle',
-    age: 2,
-    photoUrl:
-      'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=300&q=80',
+    breed: { breedCode: 'BEAGLE', name: 'Beagle' },
+    notes: 'Uwielbia węszyć.',
+    size: 'SMALL',
+    weightKg: 11,
+    isActive: true,
+    createdAt: '2023-02-10T09:00:00Z',
+    updatedAt: '2023-02-10T09:00:00Z',
+    photos: [
+      {
+        photoId: 502,
+        url: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=300&q=80',
+        uploadedAt: '2025-12-31T12:00:00Z',
+      },
+    ],
   },
   {
-    id: '3',
-    ownerId: '2', // Piotr Lewandowicz
+    dogId: 103,
+    ownerId: 2, // Piotr Lewandowicz (MOCK_USERS[1].id)
     name: 'Azor',
-    breed: 'Husky',
-    age: 5,
-    photoUrl:
-      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=300&q=80',
+    breed: { breedCode: 'HUSKY', name: 'Husky' },
+    notes: 'Wymaga dużo ruchu.',
+    size: 'LARGE',
+    weightKg: 28,
+    isActive: true,
+    createdAt: '2023-05-05T16:20:00Z',
+    updatedAt: '2023-08-12T11:15:00Z',
+    photos: [
+      {
+        photoId: 503,
+        url: 'https://images.unsplash.com/photo-1596796245643-6c7c251d7c92?auto=format&fit=crop&w=300&q=80',
+        uploadedAt: '2025-12-31T13:00:00Z',
+      },
+    ],
   },
   {
-    id: '4',
-    ownerId: '3', // Katarzyna Wójcik
+    dogId: 104,
+    ownerId: 3, // Katarzyna Wójcik (MOCK_USERS[2].id)
     name: 'Fafik',
-    breed: 'Terier',
-    age: 8,
-    photoUrl:
-      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=300&q=80',
+    breed: { breedCode: 'TERRIER', name: 'Terier' },
+    notes: 'Starszy piesek.',
+    size: 'SMALL',
+    weightKg: 8,
+    isActive: true,
+    createdAt: '2022-11-20T08:45:00Z',
+    updatedAt: '2024-01-10T18:00:00Z',
+    photos: [],
   },
 ];
 
@@ -153,14 +141,12 @@ export const MOCK_PETS: Pet[] = [
 })
 export class UserDetailsComponent {
   private readonly snackBar = inject(MatSnackBar);
-  public readonly user = computed(
-    () => MOCK_USERS.find((u: UserProfile) => u.id === this.id()) ?? null,
-  );
+  public readonly user = computed(() => MOCK_USERS.find((u: User) => u.id === this.id()) ?? null);
 
   public readonly userPets = computed(() => {
     const currentUser = this.user();
     if (!currentUser) return [];
-    return MOCK_PETS.filter((pet) => pet.ownerId === currentUser.id);
+    return MOCK_DOGS.filter((dog) => dog.ownerId === currentUser.id);
   });
 
   public readonly reviews = signal<UserReview[]>([
@@ -188,7 +174,7 @@ export class UserDetailsComponent {
       this.reviews().reduce((score, review) => score + review.rating, 0) / this.reviews().length
     ).toFixed(2),
   );
-  public readonly id = input.required<string>();
+  public readonly id = input.required<number, string>({ transform: numberAttribute });
 
   public readonly reviewForm = new FormGroup({
     text: new FormControl<string>('', {
@@ -204,7 +190,13 @@ export class UserDetailsComponent {
 
   public getAvatarUrl(): string | null {
     const u = this.user();
-    return u && u.photos.length > 0 ? u.photos[0] : null;
+    if (!u) {
+      return null;
+    }
+    // Generuje awatar z inicjałami (np. Anna Nowak -> AN)
+    // background=random: losowy kolor tła
+    // color=fff: biały tekst
+    return `https://ui-avatars.com/api/?name=${u.firstName}+${u.lastName}&background=random&color=fff&size=200`;
   }
 
   public getStarIcon(starIndex: number): string {
@@ -279,5 +271,18 @@ export class UserDetailsComponent {
       current.map((r) => (r.id === reviewId ? { ...r, reported: true } : r)),
     );
     this.snackBar.open('Zgłoszono opinię do moderacji.', 'OK', { duration: 4000 });
+  }
+
+  public getAge(dateOfBirth: Date | string): number {
+    const dob = new Date(dateOfBirth);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    return age;
   }
 }

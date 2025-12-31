@@ -5,7 +5,7 @@
         <div class="user-header">
           <div class="user-photo-wrapper">
             @if (getAvatarUrl(); as avatar) {
-              <img class="user-photo-main" [src]="avatar" [alt]="currentUser.name" />
+              <img class="user-photo-main" [src]="avatar" [alt]="currentUser.firstName" />
             } @else {
               <div class="user-photo-placeholder">
                 <mat-icon>person</mat-icon>
@@ -15,34 +15,16 @@
 
           <div class="user-main-text">
             <h2 class="user-name">
-              {{ currentUser.name }}
-              <mat-icon [ngClass]="currentUser.isActive ? 'active-user' : 'not-active-user'"
-                >radio_button_checked</mat-icon
-              >
+              {{ currentUser.firstName }}
             </h2>
 
             <mat-chip-set>
               <mat-chip class="info-chip">
-                <mat-icon>place</mat-icon>
-                <span>{{ currentUser.location }}</span>
-              </mat-chip>
-              <mat-chip class="info-chip">
                 <mat-icon>elderly</mat-icon>
-                <span>wiek: {{ currentUser.age }}</span>
-              </mat-chip>
-              <mat-chip class="info-chip">
-                <mat-icon>history</mat-icon>
-                <span>{{ currentUser.experience }} lata stażu</span>
+                <span>wiek: {{ getAge(currentUser.dateOfBirth) }}</span>
               </mat-chip>
             </mat-chip-set>
           </div>
-        </div>
-
-        <mat-divider></mat-divider>
-
-        <div class="user-description">
-          <h3>O mnie</h3>
-          <p>{{ currentUser.description }}</p>
         </div>
 
         @if (userPets().length > 0) {
@@ -50,12 +32,12 @@
           <div class="user-pets-section">
             <h3>Moje psy</h3>
             <div class="pets-list">
-              @for (pet of userPets(); track pet.id) {
-                <div class="pet-card-mini" [routerLink]="['/pets', pet.id]">
-                  <img [src]="pet.photoUrl" [alt]="pet.name" class="pet-mini-photo" />
+              @for (pet of userPets(); track pet.dogId) {
+                <div class="pet-card-mini" [routerLink]="['/pets', pet.dogId]">
+                  <img [src]="pet.photos[0].url" [alt]="pet.name" class="pet-mini-photo" />
                   <div class="pet-mini-info">
                     <span class="pet-name">{{ pet.name }}</span>
-                    <span class="pet-details">{{ pet.breed }}, {{ pet.age }} lat</span>
+                    <span class="pet-details">{{ pet.breed.name }}, {{ pet.weightKg }}kg</span>
                   </div>
                 </div>
               }
