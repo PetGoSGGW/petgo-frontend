@@ -102,14 +102,13 @@
             </div>
           </form>
           <div class="reviews-list-container">
-            @for (review of reviews(); track review.id; let last = $last) {
+            @for (review of reviews(); track review; let last = $last) {
               <div class="review-row">
                 <div class="review-content-wrapper">
                   <div class="review-main-content">
                     <div class="review-header">
-                      <span class="author">{{ review.author }}</span>
+                      <span class="author">{{ review.author.firstName }}</span>
                       <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
-
                       <div class="star-rating-display">
                         @for (i of [1, 2, 3, 4, 5]; track i) {
                           <mat-icon class="star-icon-small">
@@ -119,18 +118,8 @@
                       </div>
                     </div>
 
-                    <p class="text">{{ review.text }}</p>
+                    <p class="text">{{ review.comment }}</p>
                   </div>
-
-                  <button
-                    mat-icon-button
-                    matTooltip="Zgłoś opinię"
-                    (click)="onReportReview(review.id)"
-                    [disabled]="review.reported"
-                    class="report-btn"
-                  >
-                    <mat-icon [class.reported]="review.reported">flag</mat-icon>
-                  </button>
                 </div>
               </div>
 

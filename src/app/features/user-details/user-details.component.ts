@@ -151,20 +151,24 @@ export class UserDetailsComponent {
 
   public readonly reviews = signal<UserReview[]>([
     {
-      id: '1',
-      author: 'Marek (właściciel Reksia)',
-      createdAt: new Date('2025-09-10'),
-      text: 'Super podejście! Reksio wrócił zmęczony i szczęśliwy. Polecam każdemu.',
       rating: 4.5,
-      reported: false,
+      comment: 'Super podejście! Reksio wrócił zmęczony i szczęśliwy. Polecam każdemu.',
+      createdAt: new Date('2025-09-10'),
+      author: {
+        userId: 201,
+        firstName: 'Marek',
+        lastName: 'Kowalski',
+      },
     },
     {
-      id: '2',
-      author: 'Kasia',
-      createdAt: new Date('2025-09-05'),
-      text: 'Punktualna i bardzo miła osoba. Na pewno skorzystam ponownie.',
       rating: 5,
-      reported: false,
+      comment: 'Punktualna i bardzo miła osoba. Na pewno skorzystam ponownie.',
+      createdAt: new Date('2025-09-05'),
+      author: {
+        userId: 202,
+        firstName: 'Kasia',
+        lastName: 'Nowak',
+      },
     },
   ]);
   public readonly stars = [1, 2, 3, 4, 5];
@@ -251,26 +255,19 @@ export class UserDetailsComponent {
 
     const { text, rating } = this.reviewForm.getRawValue();
     if (!text) return;
-
     const newReview: UserReview = {
-      id: Date.now().toString(),
-      author: 'Ty',
-      createdAt: new Date(),
-      text,
       rating: rating ?? 5,
-      reported: false,
+      comment: text,
+      author: {
+        userId: this.id(), // Mock ID zalogowanego usera
+        firstName: MOCK_USERS[this.id()].firstName, // Placeholder
+        lastName: MOCK_USERS[this.id()].lastName,
+      },
+      createdAt: new Date(),
     };
-
     this.reviews.update((current) => [newReview, ...current]);
     this.reviewForm.reset({ text: '', rating: 5 });
     this.snackBar.open('Twoja opinia została dodana.', 'OK', { duration: 4000 });
-  }
-
-  public onReportReview(reviewId: string): void {
-    this.reviews.update((current) =>
-      current.map((r) => (r.id === reviewId ? { ...r, reported: true } : r)),
-    );
-    this.snackBar.open('Zgłoszono opinię do moderacji.', 'OK', { duration: 4000 });
   }
 
   public getAge(dateOfBirth: Date | string): number {

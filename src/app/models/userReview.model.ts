@@ -1,8 +1,12 @@
 export interface UserReview {
-  id: string;
-  author: string;
-  createdAt: Date;
-  text: string;
   rating: number;
-  reported: boolean;
+  comment: string;
+  author: Author;
+  createdAt: Date;
+}
+
+export interface Author {
+  userId: number;
+  firstName: string;
+  lastName: string;
 }
