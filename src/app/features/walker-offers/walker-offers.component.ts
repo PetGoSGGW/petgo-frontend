@@ -5,18 +5,40 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
-import { Router } from '@angular/router';
 import { WalkerOffer } from './models/walker-offer.model';
+import {
+  WalkerOfferReservationDialogComponent,
+  WalkerOfferReservationDialogData,
+} from './components/walker-offer-reservation-dialog/walker-offer-reservation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { filter } from 'rxjs';
+import { MatList, MatListItem, MatListItemLine, MatListItemTitle } from '@angular/material/list';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-walker-offers',
-  imports: [FormsModule, MatIcon, MatProgressSpinner, MatButton],
+  imports: [
+    FormsModule,
+    MatIcon,
+    MatProgressSpinner,
+    MatButton,
+    MatList,
+    MatListItem,
+    MatListItemTitle,
+    MatListItemLine,
+    RouterLink,
+    DatePipe,
+  ],
   templateUrl: './walker-offers.component.html',
   styleUrl: './walker-offers.component.css',
 })
 export class OffersComponent {
-  private router = inject(Router);
   private readonly offersService = inject(WalkerOffersApiService);
+  private readonly dialog = inject(MatDialog);
+
+  // TODO: search wymaga lat i longi, będzie brana lokalizacja użytkownika i range jaki ustawi użytkownik (input)
+
   protected readonly search = signal('');
   protected readonly stars = new Array(5);
 
@@ -25,9 +47,16 @@ export class OffersComponent {
     stream: ({ params: { search } }) => this.offersService.getOffers(search),
   });
 
-  protected async reserve(offer: WalkerOffer): Promise<void> {
-    await this.router.navigate(['/rezerwacja'], {
-      state: { rezerwacja: offer },
-    });
+  protected openReservationDialog({ offerId, slots }: WalkerOffer): void {
+    this.dialog
+      .open(WalkerOfferReservationDialogComponent, {
+        data: {
+          offerId,
+          slots,
+        } satisfies WalkerOfferReservationDialogData,
+      })
+      .afterClosed()
+      .pipe(filter(Boolean))
+      .subscribe();
   }
 }

@@ -17,11 +17,12 @@ import { WalkerOffersApiService } from '../../services/walker-offers-api.service
 import { DatePipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { AvailableSlot } from '../../models/available-slor.model';
+import { AvailableSlot } from '../../models/available-slot.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface WalkerOfferReservationDialogData {
-  offerId: WalkerOffer['id'];
+  offerId: WalkerOffer['offerId'];
+  slots: AvailableSlot[];
 }
 
 @Component({

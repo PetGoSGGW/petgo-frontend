@@ -1,13 +1,12 @@
+import { AvailableSlot } from './available-slot.model';
+
 export interface WalkerOffer {
-  id: number;
-  name: string;
-  username: string;
-  rating: number;
-  reviews: number;
-  distance: number;
-  rate: number;
-  age: number;
-  city: string;
-  street: string;
-  postal: string;
+  offerId: number;
+  walkerId: number;
+  walkerName: string;
+  priceCents: number;
+  description: string;
+  isActive: boolean;
+  createdAt: string;
+  slots: AvailableSlot[];
 }
