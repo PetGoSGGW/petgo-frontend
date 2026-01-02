@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { WalkerOffersService } from './services/walker-offers.service';
+import { WalkerOffersApiService } from './services/walker-offers-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -16,7 +16,7 @@ import { WalkerOffer } from './models/walker-offer.model';
 })
 export class OffersComponent {
   private router = inject(Router);
-  private readonly offersService = inject(WalkerOffersService);
+  private readonly offersService = inject(WalkerOffersApiService);
   protected readonly search = signal('');
   protected readonly stars = new Array(5);
 
