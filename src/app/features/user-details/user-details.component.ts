@@ -40,7 +40,10 @@ export class UserDetailsComponent {
   public readonly user = toSignal(
     toObservable(this.id).pipe(switchMap((id) => this.userApiService.getUser(id))),
   );
-  public readonly userPets$ = this.dogApiService.getDogsByUserId(this.id());
+  public readonly userPets = toSignal(
+    toObservable(this.id).pipe(switchMap((id) => this.dogApiService.getDogsByUserId(id))),
+    { initialValue: [] },
+  );
   public readonly reviews = toSignal(
     toObservable(this.id).pipe(switchMap((id) => this.userApiService.getUserReviews(id))),
   );

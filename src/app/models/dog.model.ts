@@ -11,8 +11,8 @@ export interface Photo {
 
 export interface Dog {
   dogId: number;
-  ownerId: number; // Zmiana: ID zamiast całego obiektu User
-  breed: Breed; // Zmiana: Obiekt zamiast stringa
+  ownerId: number;
+  breed: Breed;
   name: string;
   size: string;
   notes: string;

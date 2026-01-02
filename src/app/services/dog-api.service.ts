@@ -11,7 +11,7 @@ export class DogApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
-  public getDogsByUserId(ownerId: number): Observable<Dog[]> {
+  public getDogsByUserId(ownerId: number | string): Observable<Dog[]> {
     return this.http.get<Dog[]>(`${this.apiUrl}/dogs`, {
       params: { ownerId },
     });
