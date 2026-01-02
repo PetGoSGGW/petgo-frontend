@@ -27,17 +27,17 @@
           </div>
         </div>
 
-        @if (userPets().length > 0) {
+        @if (userPets$ | async; as dogs) {
           <mat-divider></mat-divider>
           <div class="user-pets-section">
             <h3>Moje psy</h3>
             <div class="pets-list">
-              @for (pet of userPets(); track pet.dogId) {
-                <div class="pet-card-mini" [routerLink]="['/pets', pet.dogId]">
-                  <img [src]="pet.photos[0].url" [alt]="pet.name" class="pet-mini-photo" />
+              @for (dog of dogs; track dog.dogId) {
+                <div class="pet-card-mini" [routerLink]="['/pets', dog.dogId]">
+                  <img [src]="dog.photos[0].url" [alt]="dog.name" class="pet-mini-photo" />
                   <div class="pet-mini-info">
-                    <span class="pet-name">{{ pet.name }}</span>
-                    <span class="pet-details">{{ pet.breed.name }}, {{ pet.weightKg }}kg</span>
+                    <span class="pet-name">{{ dog.name }}</span>
+                    <span class="pet-details">{{ dog.breed.name }}, {{ dog.weightKg }}kg</span>
                   </div>
                 </div>
               }
@@ -47,88 +47,44 @@
       </mat-card>
 
       <div class="right-column">
-        <mat-card class="content-card reviews-card">
-          <div class="reviews-title-row">
-            <h3>Opinie ({{ reviews().length }})</h3>
-            <div class="rating-badge">
-              <mat-icon>star</mat-icon>
-              {{ score() }}
-            </div>
-          </div>
-
-          <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form">
-            <div class="rating-input-container">
-              <span>Twoja ocena:</span>
-
-              <div class="interactive-stars" (mouseleave)="onStarLeave()">
-                @for (star of stars; track star) {
-                  <mat-icon
-                    class="star-btn"
-                    [class.active]="
-                      (hoverRating() ?? reviewForm.controls.rating.value) >= star - 0.5
-                    "
-                    (mousemove)="onStarHover($event, star)"
-                    (click)="onStarClick()"
-                  >
-                    {{ getStarIcon(star) }}
-                  </mat-icon>
-                }
-
-                <span class="rating-value-label">
-                  {{ hoverRating() ?? reviewForm.controls.rating.value }} / 5
-                </span>
+        @if (reviews(); as reviews) {
+          <mat-card class="content-card reviews-card">
+            <div class="reviews-title-row">
+              <h3>Opinie ({{ reviews.length }})</h3>
+              <div class="rating-badge">
+                <mat-icon>star</mat-icon>
+                {{ score() }}
               </div>
-
-              <input type="hidden" formControlName="rating" />
             </div>
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Dodaj opinię o użytkowniku</mat-label>
-              <textarea
-                matInput
-                rows="3"
-                formControlName="text"
-                placeholder="Jak przebiegł spacer?..."
-              ></textarea>
-              @if (textControl.touched && textControl.invalid) {
-                <mat-error>Treść opinii jest wymagana.</mat-error>
-              }
-            </mat-form-field>
-
-            <div class="form-footer">
-              <span class="hint">💡 Twoja opinia będzie widoczna dla wszystkich użytkowników</span>
-              <button matButton="filled" type="submit" [disabled]="reviewForm.invalid">
-                Dodaj opinię
-              </button>
-            </div>
-          </form>
-          <div class="reviews-list-container">
-            @for (review of reviews(); track review; let last = $last) {
-              <div class="review-row">
-                <div class="review-content-wrapper">
-                  <div class="review-main-content">
-                    <div class="review-header">
-                      <span class="author">{{ review.author.firstName }}</span>
-                      <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
-                      <div class="star-rating-display">
-                        @for (i of [1, 2, 3, 4, 5]; track i) {
-                          <mat-icon class="star-icon-small">
-                            {{ getRatingForReview(review.rating, i) }}
-                          </mat-icon>
-                        }
+            <div class="reviews-list-container">
+              @for (review of reviews; track review; let last = $last) {
+                <div class="review-row">
+                  <div class="review-content-wrapper">
+                    <div class="review-main-content">
+                      <div class="review-header">
+                        <span class="author">{{ review.author.firstName }}</span>
+                        <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
+                        <div class="star-rating-display">
+                          @for (i of [1, 2, 3, 4, 5]; track i) {
+                            <mat-icon class="star-icon-small">
+                              {{ getRatingForReview(review.rating, i) }}
+                            </mat-icon>
+                          }
+                        </div>
                       </div>
-                    </div>
 
-                    <p class="text">{{ review.comment }}</p>
+                      <p class="text">{{ review.comment }}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              @if (!last) {
-                <mat-divider></mat-divider>
+                @if (!last) {
+                  <mat-divider></mat-divider>
+                }
               }
-            }
-          </div>
-        </mat-card>
+            </div>
+          </mat-card>
+        }
       </div>
     </div>
   }
