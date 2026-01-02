@@ -1,4 +1,23 @@
 <ul>
-  <li><a routerLink="/" routerLinkActive="active-link">Strona główna</a></li>
-  <li><a routerLink="/oferty" routerLinkActive="active-link">Oferty</a></li>
+  <li>
+    <a
+      routerLink="/"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="clicked.emit()"
+    >
+      <mat-icon>home</mat-icon>
+      Strona główna</a
+    >
+  </li>
+  <li>
+    <a routerLink="/oferty" routerLinkActive="active-link" (click)="clicked.emit()">
+      <mat-icon>list</mat-icon>
+      Oferty</a
+    >
+  </li>
 </ul>
+
+<a routerLink="/kontakt" routerLinkActive="active-link" (click)="clicked.emit()">
+  <mat-icon>question_mark</mat-icon>Skontaktuj się z nami</a
+>

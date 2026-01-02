@@ -1,6 +1,7 @@
 import {
   ApplicationConfig,
   inject,
+  LOCALE_ID,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
@@ -14,6 +15,11 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { AuthService } from './core/auth/services/auth.service';
 import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
 
+import { registerLocaleData } from '@angular/common';
+import localePl from '@angular/common/locales/pl';
+
+registerLocaleData(localePl);
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -23,5 +29,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideAppInitializer(() => inject(AuthService).loadSession()),
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
+    { provide: LOCALE_ID, useValue: 'pl' },
   ],
 };

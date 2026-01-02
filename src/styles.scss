@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use './styles/_theme-colors.scss' as theme-colors;
+@import 'leaflet/dist/leaflet.css';
 
 html {
   @include mat.theme(
