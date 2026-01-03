@@ -1,69 +1,89 @@
-@if (offers.isLoading()) {
+@if (offers.isLoading() || loading()) {
   <mat-spinner />
 } @else if (offers.error()) {
   <mat-error>Wystąpił błąd!</mat-error>
 } @else if (offers.hasValue() && location(); as coordinates) {
-  <app-walker-offer-map [radiusKm]="radius()" [userPosition]="coordinates" />
-
-  <mat-form-field>
-    <mat-label>Zasięg</mat-label>
-    <mat-select [(ngModel)]="radius">
-      <mat-option [value]="0">0 km</mat-option>
-      <mat-option [value]="1">1 km</mat-option>
-      <mat-option [value]="2">2 km</mat-option>
-      <mat-option [value]="3">3 km</mat-option>
-      <mat-option [value]="4">4 km</mat-option>
-      <mat-option [value]="5">5 km</mat-option>
-      <mat-option [value]="10">10 km</mat-option>
-      <mat-option [value]="15">15 km</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <ul class="cards-container">
-    @for (offer of offers.value().content; track offer.offerId) {
-      <li>
-        <div class="row">
-          <a [routerLink]="['/uzytkownik/', offer.walkerId]" class="row-title">
-            {{ offer.walkerName }}
-          </a>
-
-          <span class="item-price">Cena: {{ offer.priceCents }}zł</span>
-        </div>
-
-        <div class="row">
-          <span>Opis: {{ offer.description }}</span>
-
-          <span>Dodano: {{ offer.createdAt | date: 'dd.MM.yyyy' }}</span>
-        </div>
-
-        <div class="item-footer">
-          <button
-            matButton="filled"
-            class="reserve-btn"
-            (click)="$event.stopImmediatePropagation(); openReservationDialog(offer)"
-            [matTooltip]="offer.slots.length === 0 ? 'Brak wolnych slotów' : ''"
-            [disabled]="offer.slots.length === 0"
-          >
-            Zarezerwuj
-          </button>
-        </div>
-      </li>
-    } @empty {
-      <li class="no-results">
-        <div class="no-results-message">
-          <mat-icon>search_off</mat-icon>
-          Brak wyprowadzaczy
-        </div>
-      </li>
-    }
-  </ul>
-  @if (count() > size()) {
-    <mat-paginator
-      [length]="total()"
-      [pageSize]="size()"
-      [pageSizeOptions]="[size()]"
-      (page)="page.set($event.pageIndex + 1)"
-      aria-label="Wybierz stronę"
+  @if (shouldShowMap()) {
+    <app-walker-offer-map
+      [radiusKm]="radius()"
+      [userPosition]="coordinates"
+      [offers]="offers.value().content"
+      (markerClicked)="openReservationDialog($event)"
     />
   }
+
+  <div class="container">
+    <div class="filters">
+      <mat-form-field [subscriptSizing]="'dynamic'">
+        <mat-label>Zasięg</mat-label>
+        <mat-select [(ngModel)]="radius">
+          <mat-option [value]="0">0 km</mat-option>
+          <mat-option [value]="1">1 km</mat-option>
+          <mat-option [value]="2">2 km</mat-option>
+          <mat-option [value]="3">3 km</mat-option>
+          <mat-option [value]="4">4 km</mat-option>
+          <mat-option [value]="5">5 km</mat-option>
+          <mat-option [value]="10">10 km</mat-option>
+          <mat-option [value]="15">15 km</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-slide-toggle [(ngModel)]="shouldShowMap">Pokaż mapę</mat-slide-toggle>
+    </div>
+
+    <ul
+      class="cards-container"
+      [class.height-full]="!shouldShowMap()"
+      [class.height-half]="shouldShowMap()"
+    >
+      @for (offer of offers.value().content; track offer.offerId) {
+        <li>
+          <div class="row">
+            <a [routerLink]="['/uzytkownik/', offer.walkerId]" class="row-title">
+              {{ offer.walkerName }}
+            </a>
+
+            <div class="additional">
+              <span class="item-price">{{ offer.priceCents }}zł</span>
+
+              <mat-divider [vertical]="true" />
+              <span class="item-date">{{ offer.createdAt | date: 'dd.MM.yyyy' }}</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <span>Opis: {{ offer.description }}</span>
+          </div>
+
+          <div class="item-footer">
+            <button
+              matButton="filled"
+              class="reserve-btn"
+              (click)="$event.stopImmediatePropagation(); openReservationDialog(offer)"
+              [matTooltip]="offer.slots.length === 0 ? 'Brak wolnych slotów' : ''"
+              [disabled]="offer.slots.length === 0"
+            >
+              Zarezerwuj
+            </button>
+          </div>
+        </li>
+      } @empty {
+        <li class="no-results">
+          <div class="no-results-message">
+            <mat-icon>search_off</mat-icon>
+            Brak wyprowadzaczy
+          </div>
+        </li>
+      }
+    </ul>
+    @if (count() > size()) {
+      <mat-paginator
+        [length]="total()"
+        [pageSize]="size()"
+        [pageSizeOptions]="[size()]"
+        (page)="page.set($event.pageIndex + 1)"
+        aria-label="Wybierz stronę"
+      />
+    }
+  </div>
 }

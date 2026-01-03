@@ -25,9 +25,9 @@ export type MapControlAction = 'center' | 'zoom-in' | 'zoom-out';
     `
       .controls {
         position: absolute;
-        top: calc(var(--header-height) + 2rem);
-        right: 2rem;
-        z-index: 1001;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1000;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;

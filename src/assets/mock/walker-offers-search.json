@@ -124,7 +124,7 @@
       "walkerId": 506,
       "walkerName": "Łukasz Kubiak",
       "priceCents": 1700,
-      "description": "Affordable walks, focused on quick neighborhood routes.",
+      "description": "Affordable walks, focused on quick neighborhood routes.Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes. Affordable walks, focused on quick neighborhood routes.",
       "isActive": true,
       "createdAt": "2026-02-22T11:20:00Z",
       "slots": [
@@ -132,8 +132,8 @@
           "slotId": 6001,
           "startTime": "2026-01-14T07:00:00Z",
           "endTime": "2026-01-14T07:30:00Z",
-          "latitude": 52.215,
-          "longitude": 21.0,
+          "latitude": 52.2,
+          "longitude": 26.2,
           "isReserved": false
         },
         {

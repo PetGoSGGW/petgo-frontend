@@ -10,7 +10,7 @@ import {
   WalkerOfferReservationDialogData,
 } from './components/walker-offer-reservation-dialog/walker-offer-reservation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, map } from 'rxjs';
+import { filter, map, tap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { LocationService } from '../../serivces/location.service';
@@ -20,6 +20,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { WalkerOfferMapComponent } from './components/walker-offer-map/walker-offer-map.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDivider } from '@angular/material/divider';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-walker-offers',
@@ -38,6 +40,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     WalkerOfferMapComponent,
     MatIcon,
     MatTooltipModule,
+    MatDivider,
+    MatSlideToggle,
   ],
   templateUrl: './walker-offers.component.html',
   styleUrl: './walker-offers.component.css',
@@ -47,10 +51,13 @@ export class WalkerOffersComponent {
   private readonly dialog = inject(MatDialog);
   private readonly locationService = inject(LocationService);
 
+  protected readonly loading = signal(true);
+
   protected readonly location = toSignal(
     this.locationService.getCurrentLocation$().pipe(
       map(({ latitude, longitude }) => ({ lat: latitude, lng: longitude })),
       filter((coordinates) => !!coordinates),
+      tap(() => this.loading.set(false)),
     ),
   );
 
@@ -71,6 +78,8 @@ export class WalkerOffersComponent {
         radiusKm: radius,
       }),
   });
+
+  protected readonly shouldShowMap = signal(true);
 
   protected readonly total = computed(() =>
     this.offers.hasValue() ? this.offers.value().totalElements : 0,

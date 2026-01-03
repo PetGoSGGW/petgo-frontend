@@ -60,6 +60,16 @@ export interface WalkerOfferReservationDialogData {
         display: flex;
         align-items: center;
       }
+
+      .footer {
+        display: flex;
+        width: 100%;
+        gap: 1rem;
+
+        & > button {
+          width: 100%;
+        }
+      }
     `,
   ],
   template: `
@@ -122,7 +132,10 @@ export interface WalkerOfferReservationDialogData {
           }
         </mat-form-field>
 
-        <button type="submit" matButton="tonal">Zarezerwuj</button>
+        <div class="footer">
+          <button type="button" matButton="outlined" (click)="dialogRef.close()">Cofnij</button>
+          <button type="submit" matButton="tonal">Zarezerwuj</button>
+        </div>
       </form>
     </mat-dialog-content>
   `,
@@ -132,7 +145,7 @@ export class WalkerOfferReservationDialogComponent {
   private readonly data = inject<WalkerOfferReservationDialogData>(MAT_DIALOG_DATA);
   private readonly walkerOfferApi = inject(WalkerOffersApiService);
   protected readonly matSnackBar = inject(MatSnackBar);
-  private readonly dialogRef = inject(MatDialogRef);
+  protected readonly dialogRef = inject(MatDialogRef);
 
   protected readonly offerId = signal(this.data.offerId).asReadonly();
   protected readonly dogs = signal<Dog[]>([]);

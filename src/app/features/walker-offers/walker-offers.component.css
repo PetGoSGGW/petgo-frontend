@@ -1,4 +1,13 @@
 :host {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+
+  max-height: calc(100svh - var(--header-height));
+  height: 100%;
+}
+
+.container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -7,6 +16,7 @@
 ul {
   width: 100%;
   list-style-type: none;
+  overflow-y: auto;
 
   li {
     width: 100%;
@@ -17,6 +27,14 @@ ul {
     flex-direction: column;
     gap: 1rem;
   }
+}
+
+.height-full {
+  height: calc(((100svh - var(--header-height) - 1rem)) - 5.5rem);
+}
+
+.height-half {
+  height: calc(((100svh - var(--header-height) - 2rem) / 2) - 5.5rem);
 }
 
 .row-title {
@@ -157,11 +175,30 @@ mat-list {
   padding: 0.5rem 1rem 0.5rem 0;
 }
 
+.additional {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 @media (min-width: 768px) {
   .row {
     flex-direction: row;
     justify-content: space-between;
     gap: 1rem;
+  }
+
+  .item-price {
+    text-align: right;
+  }
+
+  .item-date {
+    text-align: right;
   }
 
   .reserve-btn {
@@ -174,5 +211,35 @@ mat-list {
   .left {
     flex-direction: row;
     gap: 4rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  :host {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .container {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+
+  mat-slide-toggle {
+    display: none;
+  }
+
+  app-walker-offer-map {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+
+    height: auto;
+  }
+
+  .height-full {
+    height: auto;
+  }
+
+  .height-half {
+    height: auto;
   }
 }
