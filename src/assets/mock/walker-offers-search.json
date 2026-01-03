@@ -1,0 +1,152 @@
+{
+  "content": [
+    {
+      "offerId": 101,
+      "walkerId": 501,
+      "walkerName": "Anna Kowalski",
+      "priceCents": 2500,
+      "description": "Friendly local walker, loves big parks and long walks.",
+      "isActive": true,
+      "createdAt": "2026-07-15T10:12:00Z",
+      "slots": [
+        {
+          "slotId": 1001,
+          "startTime": "2026-01-10T08:00:00Z",
+          "endTime": "2026-01-10T09:00:00Z",
+          "latitude": 52.2297,
+          "longitude": 21.0122,
+          "isReserved": false
+        },
+        {
+          "slotId": 1002,
+          "startTime": "2026-01-11T09:00:00Z",
+          "endTime": "2026-01-11T10:00:00Z",
+          "latitude": 52.2300,
+          "longitude": 21.0150,
+          "isReserved": true
+        }
+      ]
+    },
+    {
+      "offerId": 102,
+      "walkerId": 502,
+      "walkerName": "Mateusz Nowak",
+      "priceCents": 1800,
+      "description": "Quick neighborhood walks, available on weekends.",
+      "isActive": true,
+      "createdAt": "2026-06-20T08:00:00Z",
+      "slots": [
+        {
+          "slotId": 2001,
+          "startTime": "2026-01-11T14:00:00Z",
+          "endTime": "2026-01-11T15:00:00Z",
+          "latitude": 52.2370,
+          "longitude": 21.0175,
+          "isReserved": false
+        },
+        {
+          "slotId": 2002,
+          "startTime": "2026-01-11T15:00:00Z",
+          "endTime": "2026-01-11T16:00:00Z",
+          "latitude": 52.2355,
+          "longitude": 21.0140,
+          "isReserved": false
+        }
+      ]
+    },
+    {
+      "offerId": 103,
+      "walkerId": 503,
+      "walkerName": "Katarzyna Zielinska",
+      "priceCents": 2200,
+      "description": "Calm walks around Old Town and Łazienki Park.",
+      "isActive": true,
+      "createdAt": "2026-05-02T09:30:00Z",
+      "slots": [
+        {
+          "slotId": 3001,
+          "startTime": "2026-01-12T10:00:00Z",
+          "endTime": "2026-01-12T11:00:00Z",
+          "latitude": 52.2430,
+          "longitude": 21.0110,
+          "isReserved": false
+        }
+      ]
+    },
+    {
+      "offerId": 104,
+      "walkerId": 504,
+      "walkerName": "Piotr Lewandowski",
+      "priceCents": 2000,
+      "description": "Experienced with energetic dogs, knows many green routes.",
+      "isActive": true,
+      "createdAt": "2026-04-18T12:00:00Z",
+      "slots": [
+        {
+          "slotId": 4001,
+          "startTime": "2026-01-12T08:00:00Z",
+          "endTime": "2026-01-12T09:00:00Z",
+          "latitude": 52.2290,
+          "longitude": 21.0005,
+          "isReserved": false
+        },
+        {
+          "slotId": 4002,
+          "startTime": "2026-01-12T09:30:00Z",
+          "endTime": "2026-01-12T10:30:00Z",
+          "latitude": 52.2265,
+          "longitude": 21.0040,
+          "isReserved": false
+        }
+      ]
+    },
+    {
+      "offerId": 105,
+      "walkerId": 505,
+      "walkerName": "Magdalena Wroblewska",
+      "priceCents": 2100,
+      "description": "Weekend availability; happy with small and medium dogs.",
+      "isActive": true,
+      "createdAt": "2026-03-10T07:45:00Z",
+      "slots": [
+        {
+          "slotId": 5001,
+          "startTime": "2026-01-13T16:00:00Z",
+          "endTime": "2026-01-13T17:00:00Z",
+          "latitude": 52.2500,
+          "longitude": 21.0200,
+          "isReserved": false
+        }
+      ]
+    },
+    {
+      "offerId": 106,
+      "walkerId": 506,
+      "walkerName": "Łukasz Kubiak",
+      "priceCents": 1700,
+      "description": "Affordable walks, focused on quick neighborhood routes.",
+      "isActive": true,
+      "createdAt": "2026-02-22T11:20:00Z",
+      "slots": [
+        {
+          "slotId": 6001,
+          "startTime": "2026-01-14T07:00:00Z",
+          "endTime": "2026-01-14T07:30:00Z",
+          "latitude": 52.2150,
+          "longitude": 21.0000,
+          "isReserved": false
+        },
+        {
+          "slotId": 6002,
+          "startTime": "2026-01-14T08:00:00Z",
+          "endTime": "2026-01-14T08:45:00Z",
+          "latitude": 52.2100,
+          "longitude": 21.0300,
+          "isReserved": true
+        }
+      ]
+    }
+  ],
+  "totalElements": 6,
+  "number": 0
+}

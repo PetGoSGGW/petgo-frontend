@@ -15,11 +15,16 @@ export class WalkerOffersApiService {
     latitude: number;
     longitude: number;
     radiusKm: number;
-  }): Observable<{ content: WalkerOffer[]; totalElements: number }> {
-    return this.http.get<{ content: WalkerOffer[]; totalElements: number }>(
-      `${this.apiUrl}/offers/search`,
-      { params },
+  }): Observable<{ content: WalkerOffer[]; totalElements: number; number: number }> {
+    console.log(params);
+    return this.http.get<{ content: WalkerOffer[]; totalElements: number; number: number }>(
+      '/assets/mock/walker-offers-search.json',
     );
+
+    // return this.http.get<{ content: WalkerOffer[]; totalElements: number; number: number }>(
+    //   `${this.apiUrl}/offers/search`,
+    //   { params },
+    // );
   }
 
   public getAvailableSlots(offerId: WalkerOffer['offerId']): Observable<AvailableSlot[]> {

@@ -1,24 +1,22 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatChipListbox, MatChipOption } from '@angular/material/chips';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerToggle,
-} from '@angular/material/datepicker';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
+import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormField, MatHint, MatLabel, MatError } from '@angular/material/form-field';
-import { finalize } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { finalize, tap } from 'rxjs';
 import { Dog } from '../../../../models/dog.model';
 import { WalkerOffer } from '../../models/walker-offer.model';
 import { WalkerOffersApiService } from '../../services/walker-offers-api.service';
 import { DatePipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
-import { MatOption, MatSelect } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { AvailableSlot } from '../../models/available-slot.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface WalkerOfferReservationDialogData {
   offerId: WalkerOffer['offerId'];
@@ -30,70 +28,93 @@ export interface WalkerOfferReservationDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogModule,
-    MatFormField,
-    MatHint,
-    MatDatepicker,
-    MatLabel,
-    MatDatepickerInput,
-    MatDatepickerToggle,
     MatButton,
     ReactiveFormsModule,
     FormsModule,
-    MatChipListbox,
-    MatChipOption,
+    MatChipsModule,
     DatePipe,
-    MatError,
     MatListModule,
-    MatSelect,
-    MatOption,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatInputModule,
+    MatIconModule,
+    MatIconButton,
   ],
-  styles: [``],
+  providers: [WalkerOffersApiService],
+  styles: [
+    `
+      .form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .slots {
+        display: flex;
+        flex-direction: column;
+        padding: 0 0.5rem;
+      }
+
+      .no-date {
+        display: flex;
+        align-items: center;
+      }
+    `,
+  ],
   template: `
     <span mat-dialog-title>Zarezerwuj</span>
     <mat-dialog-content>
-      <form [formGroup]="form" (ngSubmit)="$event.preventDefault(); reserve()">
+      <form class="form" [formGroup]="form" (ngSubmit)="reserve()">
         <mat-form-field>
           <mat-label>Data</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="date" />
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [matDatepickerFilter]="dateFilter"
+            formControlName="date"
+          />
+          @if (form.value.date) {
+            <button matSuffix matIconButton aria-label="Clear" (click)="resetDate()">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
           <mat-hint>DD.MM.RRRR</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker [touchUi]="isMobile()" #picker></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field>
-          @let slotTouched = form.controls.slots.touched;
-          @let slotErrors = form.controls.slots.errors;
+        <div class="slots">
+          @let slotTouched = form.controls.slot.touched;
+          @let slotErrors = form.controls.slot.errors;
 
           <mat-label>Dostępne godziny</mat-label>
-          @if (slots.hasValue()) {
-            <mat-chip-listbox>
-              @for (availableSlot of availableSlots(); track availableSlot) {
-                <mat-chip-option [disabled]="availableSlot.isReserved" [value]="availableSlot">
-                  {{ availableSlot.startTime | date: 'dd.MM.yyyy' }} -
-                  {{ availableSlot.endTime | date: 'dd.MM.yyyy' }}</mat-chip-option
-                >
-              } @empty {
-                <span>Brak dostępnych slotów</span>
-              }
-            </mat-chip-listbox>
-          } @else if (slots.isLoading()) {
-            <span>Ładowanie...</span>
-          } @else if (slots.error()) {
-            <mat-error>Błąd.</mat-error>
-          }
-          @if (slotTouched && slotErrors?.['required']) {
+          <mat-chip-listbox [value]="form.value.slot" (change)="changeSlot($event)">
+            @for (availableSlot of availableSlots(); track availableSlot) {
+              <mat-chip-option [disabled]="availableSlot.isReserved" [value]="availableSlot">
+                {{ availableSlot.startTime | date: 'dd.MM.yyyy HH:mm' }} -
+                {{ availableSlot.endTime | date: 'HH:mm' }}</mat-chip-option
+              >
+            } @empty {
+              <span>Brak dostępnych slotów</span>
+            }
+          </mat-chip-listbox>
+
+          @if (slotTouched && slotErrors?.['required'] && slots().length > 0) {
             <mat-error>Wybierz slot</mat-error>
           }
-        </mat-form-field>
+        </div>
 
         <mat-form-field>
-          <mat-label>Wybierz pupila</mat-label>
           @let dogTouched = form.controls.dog.touched;
           @let dogErrors = form.controls.dog.errors;
 
-          <mat-select formControlName="dog">
+          <mat-label>Wybierz pupila</mat-label>
+          <mat-select [formControl]="form.controls.dog">
             @for (dog of dogs(); track dog.dogId) {
               <mat-option [value]="dog">{{ dog.name }}</mat-option>
+            } @empty {
+              <mat-option disabled>Brak pupila</mat-option>
             }
           </mat-select>
           @if (dogTouched && dogErrors?.['required']) {
@@ -124,20 +145,35 @@ export class WalkerOfferReservationDialogComponent {
 
   protected form = this.fb.group({
     date: this.fb.control<string | null>(null, Validators.required),
-    slots: this.fb.control<AvailableSlot[]>([], {
+    slot: this.fb.control<AvailableSlot | null>(null, {
       validators: Validators.required,
-      nonNullable: true,
     }),
     dog: this.fb.control<Dog | null>(null, Validators.required),
   });
 
-  private readonly dateValue = toSignal(this.form.controls.date.valueChanges);
+  protected readonly slots = signal(this.data.slots).asReadonly();
+
+  private readonly dateValue = toSignal(
+    this.form.controls.date.valueChanges.pipe(
+      tap((date) => {
+        const { slot } = this.form.value;
+
+        if (date && slot) {
+          const { startTime, endTime } = slot;
+
+          if (!this.compareDates(date, startTime) || !this.compareDates(date, endTime)) {
+            this.form.controls.slot.setValue(null);
+          }
+        }
+      }),
+    ),
+  );
 
   protected readonly availableSlots = computed(() => {
     const date = this.dateValue();
-    const slots = this.slots.hasValue() ? this.slots.value() : [];
+    const slots = this.slots();
 
-    if (slots.length === 0 || !date) return [];
+    if (!date) return slots;
 
     return slots.filter(
       ({ startTime, endTime }) =>
@@ -145,10 +181,18 @@ export class WalkerOfferReservationDialogComponent {
     );
   });
 
-  protected slots = rxResource({
-    params: () => ({ offerId: this.offerId() }),
-    stream: ({ params: { offerId } }) => this.walkerOfferApi.getAvailableSlots(offerId),
-  });
+  protected dateFilter: DateFilterFn<string | null> = (date): boolean => {
+    if (!date) return false;
+
+    const dateFromCalendar = new Date(date);
+
+    if (!dateFromCalendar) return false;
+    return this.slots().some(
+      ({ startTime, endTime }) =>
+        this.compareDates(startTime, dateFromCalendar.toISOString()) ||
+        this.compareDates(endTime, dateFromCalendar.toISOString()),
+    );
+  };
 
   private compareDates(date: string, compareDate: string): boolean {
     const firstDate = new Date(date);
@@ -160,15 +204,40 @@ export class WalkerOfferReservationDialogComponent {
     return firstDateString === secondDateString;
   }
 
+  protected changeSlot({ value }: MatChipListboxChange): void {
+    this.form.controls.slot.setValue(value);
+
+    if (!value && !this.form.value.date) {
+      this.form.controls.slot.markAsUntouched();
+    }
+
+    const slot = value as AvailableSlot | null;
+    if (!slot) return;
+
+    const start = new Date(slot.startTime);
+    const x = new Date(start.getFullYear(), start.getMonth(), start.getDate()); // hours/mins/secs = 0
+
+    if (this.form.value.date !== x.toISOString()) {
+      this.form.controls.date.setValue(x.toISOString());
+    }
+  }
+
+  protected resetDate(): void {
+    this.form.controls.date.setValue(null);
+    this.form.controls.slot.setValue(null);
+    this.form.controls.slot.markAsUntouched();
+    this.form.controls.slot.markAsPristine();
+  }
+
   protected reserve(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const { dog, slots } = this.form.value;
+    const { dog, slot: slot } = this.form.value;
 
-    if (!dog || !slots) return;
+    if (!dog || !slot) return;
 
     this.loading.set(true);
 
@@ -176,7 +245,7 @@ export class WalkerOfferReservationDialogComponent {
       .reserve({
         offerId: this.data.offerId,
         dogId: dog.dogId,
-        availablilitySlots: slots.map(({ slotId }) => slotId),
+        availablilitySlots: [slot.slotId],
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
