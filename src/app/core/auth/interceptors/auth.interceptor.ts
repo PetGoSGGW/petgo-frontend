@@ -11,7 +11,7 @@ export const authInterceptor: HttpInterceptorFn = (
 
   if (!['login', 'register'].some((url) => request.url.includes(url))) {
     const clonedRequest = request.clone({
-      headers: request.headers.set('Authorization', `${tokenType} ${accessToken}`),
+      headers: request.headers.set('Authorization', `${tokenType()} ${accessToken()}`),
     });
 
     return next(clonedRequest);

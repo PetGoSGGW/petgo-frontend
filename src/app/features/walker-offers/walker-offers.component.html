@@ -1,15 +1,27 @@
 <div class="search-box">
-  <input type="text" placeholder="Szukaj..." [(ngModel)]="search" />
+  <mat-form-field>
+    <mat-label>Zasięg</mat-label>
+    <mat-select [(ngModel)]="radius">
+      <mat-option [value]="0">0 km</mat-option>
+      <mat-option [value]="1">1 km</mat-option>
+      <mat-option [value]="2">2 km</mat-option>
+      <mat-option [value]="3">3 km</mat-option>
+      <mat-option [value]="4">4 km</mat-option>
+      <mat-option [value]="5">5 km</mat-option>
+      <mat-option [value]="10">10 km</mat-option>
+      <mat-option [value]="15">15 km</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 @if (offers.isLoading()) {
   <mat-spinner />
 } @else if (offers.error()) {
-  <span>Wystąpił błąd!</span>
+  <mat-error>Wystąpił błąd!</mat-error>
 } @else if (offers.hasValue()) {
   <ul class="cards-container">
     <mat-list>
-      @for (offer of offers.value(); track offer.offerId) {
+      @for (offer of offers.value().content; track offer.offerId) {
         <mat-list-item>
           <div class="row" matListItemTitle>
             <a [routerLink]="['/users/', offer.walkerId]">
@@ -38,4 +50,10 @@
       }
     </mat-list>
   </ul>
+  <mat-paginator
+    [length]="total()"
+    [pageSize]="10"
+    [pageSizeOptions]="[10]"
+    aria-label="Wybierz stronę"
+  />
 }

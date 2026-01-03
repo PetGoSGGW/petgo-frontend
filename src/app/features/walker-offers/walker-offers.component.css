@@ -1,11 +1,11 @@
-.search-box {
-  max-width: 25rem;
-  width: 100%;
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-  display: flex;
-  justify-content: center;
-}
+/* .search-box { */
+/*   max-width: 25rem; */
+/*   width: 100%; */
+/*   margin-top: 1.25rem; */
+/*   margin-bottom: 1.25rem; */
+/*   display: flex; */
+/*   justify-content: center; */
+/* } */
 
 .search-box input {
   width: 100%;

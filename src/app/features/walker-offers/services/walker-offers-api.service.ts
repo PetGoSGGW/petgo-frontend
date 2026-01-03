@@ -11,10 +11,15 @@ export class WalkerOffersApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
-  public getOffers(search: string): Observable<WalkerOffer[]> {
-    console.log(search);
-
-    return of([]);
+  public getOffers(params: {
+    latitude: number;
+    longitude: number;
+    radiusKm: number;
+  }): Observable<{ content: WalkerOffer[]; totalElements: number }> {
+    return this.http.get<{ content: WalkerOffer[]; totalElements: number }>(
+      `${this.apiUrl}/offers/search`,
+      { params },
+    );
   }
 
   public getAvailableSlots(offerId: WalkerOffer['offerId']): Observable<AvailableSlot[]> {
@@ -91,7 +96,7 @@ export class WalkerOffersApiService {
   }
 
   public reserve(body: {
-    offerId: WalkerOffer['id'];
+    offerId: WalkerOffer['offerId'];
     dogId: Dog['dogId'];
     availablilitySlots: AvailableSlot['slotId'][];
   }): Observable<unknown> {
