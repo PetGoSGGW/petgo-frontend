@@ -31,7 +31,9 @@ nav {
 }
 
 .profile-username {
-  display: none;
+  &.desktop {
+    display: none;
+  }
 }
 
 img {
@@ -40,7 +42,14 @@ img {
 
 @media (min-width: 48rem) {
   .profile-username {
-    display: block;
+    &.desktop {
+      display: flex;
+      color: black;
+    }
+
+    &.mobile {
+      display: none;
+    }
   }
 }
 

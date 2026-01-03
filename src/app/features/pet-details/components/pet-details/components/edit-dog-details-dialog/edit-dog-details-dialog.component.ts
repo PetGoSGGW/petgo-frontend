@@ -118,7 +118,7 @@ export class EditDogDialogComponent {
   constructor() {
     this.form.setValue({
       name: this.data.name,
-      breed: this.data.breed,
+      breed: this.data.breed.name,
       notes: this.data.notes ?? '',
       size: this.data.size ?? 'M',
       weightKg: Number(this.data.weightKg ?? 0),

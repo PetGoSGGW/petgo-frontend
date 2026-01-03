@@ -1,14 +1,24 @@
-import { User } from '../core/auth/models/user.model';
+export interface Breed {
+  breedCode: string;
+  name: string;
+}
+
+export interface Photo {
+  photoId: number;
+  url: string;
+  uploadedAt: string;
+}
 
 export interface Dog {
   dogId: number;
-  owner: User;
-  breed: string;
+  ownerId: number;
+  breed: Breed;
   name: string;
-  notes?: string;
-  size?: string;
-  weightKg?: number;
+  size: string;
+  notes: string;
+  weightKg: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  photos: Photo[];
 }

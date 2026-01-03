@@ -10,6 +10,8 @@ export const sampleWalkers: User[] = [
     email: 'anna.walker@example.com',
     firstName: 'Anna',
     lastName: 'Kowalska',
+    role: 'USER',
+    dateOfBirth: new Date('1994-05-20'),
   },
   {
     userId: 202,
@@ -17,6 +19,8 @@ export const sampleWalkers: User[] = [
     email: 'pawel.walker@example.com',
     firstName: 'Paweł',
     lastName: 'Nowak',
+    role: 'USER',
+    dateOfBirth: new Date('1994-05-20'),
   },
 ];
 
@@ -27,6 +31,8 @@ export const sampleOwners: User[] = [
     email: 'marta.owner@example.com',
     firstName: 'Marta',
     lastName: 'Wiśniewska',
+    role: 'USER',
+    dateOfBirth: new Date('1994-05-20'), // ok. 30 lat
   },
   {
     userId: 102,
@@ -34,6 +40,8 @@ export const sampleOwners: User[] = [
     email: 'jan.owner@example.com',
     firstName: 'Jan',
     lastName: 'Lewandowski',
+    role: 'USER',
+    dateOfBirth: new Date('1994-05-20'), // ok. 30 lat
   },
   {
     userId: 103,
@@ -41,14 +49,16 @@ export const sampleOwners: User[] = [
     email: 'ola.owner@example.com',
     firstName: 'Ola',
     lastName: 'Zielińska',
+    role: 'USER',
+    dateOfBirth: new Date('1994-05-20'), // ok. 30 lat
   },
 ];
 
 export const sampleDogs: Dog[] = [
   {
     dogId: 501,
-    owner: sampleOwners[0],
-    breed: 'Labrador Retriever',
+    ownerId: sampleOwners[0].userId,
+    breed: { breedCode: 'Labrador Retriever', name: 'Labrador Retriever' },
     name: 'Burek',
     notes:
       'Uwielbia aportować. opis moze być bardzo długi i co z tym moge zrobic, zeby dobrze sie wyswietalo',
@@ -57,11 +67,18 @@ export const sampleDogs: Dog[] = [
     isActive: true,
     createdAt: '2025-10-15T10:00:00Z',
     updatedAt: '2025-12-01T09:30:00Z',
+    photos: [
+      {
+        photoId: 502,
+        url: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=300&q=80',
+        uploadedAt: '2025-12-31T12:00:00Z',
+      },
+    ],
   },
   {
     dogId: 502,
-    owner: sampleOwners[1],
-    breed: 'Beagle',
+    ownerId: sampleOwners[1].userId,
+    breed: { breedCode: 'BEAGLE', name: 'Beagle' },
     name: 'Reksio',
     notes: 'Energiczny, lubi dłuższe spacery.',
     size: 'medium',
@@ -69,22 +86,37 @@ export const sampleDogs: Dog[] = [
     isActive: true,
     createdAt: '2025-09-02T08:00:00Z',
     updatedAt: '2025-11-20T12:10:00Z',
+    photos: [
+      {
+        photoId: 502,
+        url: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=300&q=80',
+        uploadedAt: '2025-12-31T12:00:00Z',
+      },
+    ],
   },
   {
     dogId: 503,
-    owner: sampleOwners[2],
-    breed: 'Border Collie',
+    ownerId: sampleOwners[2].userId,
+    breed: { breedCode: 'Border Collie', name: 'Border Collie' },
     name: 'Luna',
+    notes: 'Spokojny i posłuszny.',
     size: 'medium',
     weightKg: 16,
     isActive: true,
     createdAt: '2025-07-22T07:45:00Z',
     updatedAt: '2025-12-05T15:25:00Z',
+    photos: [
+      {
+        photoId: 502,
+        url: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=300&q=80',
+        uploadedAt: '2025-12-31T12:00:00Z',
+      },
+    ],
   },
   {
     dogId: 504,
-    owner: sampleOwners[1],
-    breed: 'German Shepherd',
+    ownerId: sampleOwners[1].userId,
+    breed: { breedCode: 'German Shepherd', name: 'German Shepherd' },
     name: 'Max',
     notes: 'Spokojny i posłuszny.',
     size: 'large',
@@ -92,6 +124,13 @@ export const sampleDogs: Dog[] = [
     isActive: true,
     createdAt: '2025-11-01T11:15:00Z',
     updatedAt: '2025-12-10T13:40:00Z',
+    photos: [
+      {
+        photoId: 502,
+        url: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=300&q=80',
+        uploadedAt: '2025-12-31T12:00:00Z',
+      },
+    ],
   },
 ];
 
