@@ -19,10 +19,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { Dog } from '../../../../models/dog.model';
-import { User } from '../../../../core/auth/models/user.model';
 import { EditDogDetailsDialogData } from './models/edit-dog-details-dialog-data.model';
 import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
 import { filter } from 'rxjs';
+import { sampleDogs } from '../../../../data/sample-data';
 
 interface DogReview {
   id: string;
@@ -33,36 +33,6 @@ interface DogReview {
 }
 
 const CURRENT_USER_ID = 1;
-
-const MOCK_OWNER_1 = { userId: 1 } as unknown as User;
-const MOCK_OWNER_999 = { userId: 999 } as unknown as User;
-
-const MOCK_DOGS: Dog[] = [
-  {
-    dogId: 1,
-    owner: MOCK_OWNER_1,
-    breed: 'Mieszaniec',
-    name: 'Burek',
-    notes: 'Przyjazny, energiczny pies, lubi spacery i zabawy.',
-    size: 'M',
-    weightKg: 18,
-    isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    dogId: 2,
-    owner: MOCK_OWNER_999,
-    breed: 'Labrador',
-    name: 'Luna',
-    notes: 'Nieco nieśmiała, ale bardzo przytulasta.',
-    size: 'L',
-    weightKg: 28,
-    isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
 
 const DOG_PHOTOS: Record<number, string[]> = {
   1: [
@@ -129,7 +99,7 @@ export class PetDetailsComponent {
     effect(() => {
       const id = this.id();
 
-      const found = MOCK_DOGS.find((d) => d.dogId === id);
+      const found = sampleDogs.find((d) => d.dogId === id);
       this.dog.set(found ?? null);
     });
   }
@@ -139,7 +109,7 @@ export class PetDetailsComponent {
   }
 
   public isOwner(dog: Dog): boolean {
-    return dog.owner.userId === CURRENT_USER_ID;
+    return dog.ownerId === CURRENT_USER_ID;
   }
 
   public getPhotos(dogId: number): string[] {

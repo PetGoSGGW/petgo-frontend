@@ -34,6 +34,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
       },
+      {
+        path: 'uzytkownik/:id',
+        loadChildren: () =>
+          import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
+      },
     ],
   },
   {
