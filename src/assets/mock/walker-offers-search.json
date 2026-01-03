@@ -21,8 +21,8 @@
           "slotId": 1002,
           "startTime": "2026-01-11T09:00:00Z",
           "endTime": "2026-01-11T10:00:00Z",
-          "latitude": 52.2300,
-          "longitude": 21.0150,
+          "latitude": 52.23,
+          "longitude": 21.015,
           "isReserved": true
         }
       ]
@@ -40,7 +40,7 @@
           "slotId": 2001,
           "startTime": "2026-01-11T14:00:00Z",
           "endTime": "2026-01-11T15:00:00Z",
-          "latitude": 52.2370,
+          "latitude": 52.237,
           "longitude": 21.0175,
           "isReserved": false
         },
@@ -49,7 +49,7 @@
           "startTime": "2026-01-11T15:00:00Z",
           "endTime": "2026-01-11T16:00:00Z",
           "latitude": 52.2355,
-          "longitude": 21.0140,
+          "longitude": 21.014,
           "isReserved": false
         }
       ]
@@ -67,8 +67,8 @@
           "slotId": 3001,
           "startTime": "2026-01-12T10:00:00Z",
           "endTime": "2026-01-12T11:00:00Z",
-          "latitude": 52.2430,
-          "longitude": 21.0110,
+          "latitude": 52.243,
+          "longitude": 21.011,
           "isReserved": false
         }
       ]
@@ -86,7 +86,7 @@
           "slotId": 4001,
           "startTime": "2026-01-12T08:00:00Z",
           "endTime": "2026-01-12T09:00:00Z",
-          "latitude": 52.2290,
+          "latitude": 52.229,
           "longitude": 21.0005,
           "isReserved": false
         },
@@ -95,7 +95,7 @@
           "startTime": "2026-01-12T09:30:00Z",
           "endTime": "2026-01-12T10:30:00Z",
           "latitude": 52.2265,
-          "longitude": 21.0040,
+          "longitude": 21.004,
           "isReserved": false
         }
       ]
@@ -113,8 +113,8 @@
           "slotId": 5001,
           "startTime": "2026-01-13T16:00:00Z",
           "endTime": "2026-01-13T17:00:00Z",
-          "latitude": 52.2500,
-          "longitude": 21.0200,
+          "latitude": 52.25,
+          "longitude": 21.02,
           "isReserved": false
         }
       ]
@@ -132,16 +132,16 @@
           "slotId": 6001,
           "startTime": "2026-01-14T07:00:00Z",
           "endTime": "2026-01-14T07:30:00Z",
-          "latitude": 52.2150,
-          "longitude": 21.0000,
+          "latitude": 52.215,
+          "longitude": 21.0,
           "isReserved": false
         },
         {
           "slotId": 6002,
           "startTime": "2026-01-14T08:00:00Z",
           "endTime": "2026-01-14T08:45:00Z",
-          "latitude": 52.2100,
-          "longitude": 21.0300,
+          "latitude": 52.21,
+          "longitude": 21.03,
           "isReserved": true
         }
       ]
