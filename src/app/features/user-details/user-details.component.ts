@@ -9,11 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { UserApiService } from '../../services/user-api.service';
 import { DogApiService } from '../../services/dog-api.service';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-user-details',
@@ -29,6 +29,8 @@ import { switchMap } from 'rxjs';
     MatDividerModule,
     MatTooltipModule,
     RouterLink,
+    MatProgressSpinner,
+    MatError,
   ],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
@@ -36,30 +38,37 @@ import { switchMap } from 'rxjs';
 export class UserDetailsComponent {
   private readonly userApiService = inject(UserApiService);
   private readonly dogApiService = inject(DogApiService);
-  public readonly id = input.required<number, string>({ transform: numberAttribute });
-  public readonly user = toSignal(
-    toObservable(this.id).pipe(switchMap((id) => this.userApiService.getUser(id))),
-  );
-  public readonly userPets = toSignal(
-    toObservable(this.id).pipe(switchMap((id) => this.dogApiService.getDogsByUserId(id))),
-    { initialValue: [] },
-  );
-  public readonly reviews = toSignal(
-    toObservable(this.id).pipe(switchMap((id) => this.userApiService.getUserReviews(id))),
-  );
-  public readonly score = computed(() => {
-    const reviewsList = this.reviews();
 
-    if (!reviewsList || reviewsList.length === 0) {
+  public readonly id = input.required<number, string>({ transform: numberAttribute });
+
+  protected readonly user = rxResource({
+    params: () => ({ id: this.id() }),
+    stream: ({ params: { id } }) => this.userApiService.getUser(id),
+  });
+
+  protected readonly dogs = rxResource({
+    params: () => ({ id: this.id() }),
+    stream: ({ params: { id } }) => this.dogApiService.getDogsByUserId(id),
+  });
+  protected readonly reviews = rxResource({
+    params: () => ({ id: this.id() }),
+    stream: ({ params: { id } }) => this.userApiService.getUserReviews(id),
+  });
+
+  protected readonly score = computed(() => {
+    const reviews = this.reviews.hasValue() ? this.reviews.value() : [];
+
+    if (!reviews || reviews.length === 0) {
       return 0;
     }
 
-    const sum = reviewsList.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / reviewsList.length) * 10) / 10;
+    const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+    return Math.round((sum / reviews.length) * 10) / 10;
   });
 
-  public getAvatarUrl(): string | null {
-    const u = this.user();
+  protected getAvatarUrl(): string | null {
+    const u = this.user.hasValue() ? this.user.value() : null;
+
     if (!u) return `https://ui-avatars.com/api/?name=AA&background=random&color=fff&size=200`;
     // Generuje awatar z inicjałami (np. Anna Nowak -> AN)
     // background=random: losowy kolor tła
@@ -67,7 +76,7 @@ export class UserDetailsComponent {
     return `https://ui-avatars.com/api/?name=${u.firstName}+${u.lastName}&background=random&color=fff&size=200`;
   }
 
-  public getRatingForReview(rating: number, index: number): string {
+  protected getRatingForReview(rating: number, index: number): string {
     if (rating >= index) {
       return 'star';
     } else if (rating >= index - 0.5) {
@@ -77,8 +86,10 @@ export class UserDetailsComponent {
     }
   }
 
-  public getAge(dateOfBirth: Date | string): number {
-    const dob = new Date(dateOfBirth);
+  protected getAge(birth: Date | string | null): number {
+    if (!birth) return 0;
+
+    const dob = new Date(birth);
     const today = new Date();
     let age = today.getFullYear() - dob.getFullYear();
     const monthDiff = today.getMonth() - dob.getMonth();

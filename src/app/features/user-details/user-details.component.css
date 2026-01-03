@@ -14,6 +14,13 @@
   gap: 24px;
 }
 
+mat-error {
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 /* Responsywność */
 @media (max-width: 96rem) {
   .details-layout {
@@ -143,6 +150,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
+
+  & > .empty {
+    grid-column: 1 / -1;
+  }
 }
 
 .pet-card-mini {
