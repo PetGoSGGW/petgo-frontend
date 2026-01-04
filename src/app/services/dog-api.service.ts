@@ -5,12 +5,12 @@ import { Observable } from 'rxjs';
 import { Dog } from '../models/dog.model';
 
 export interface DogUpdateRequestDto {
-  breedCode: string | null;
+  breedCode: string;
   name: string;
-  size: string | null;
-  notes: string | null;
-  weightKg: number | null;
-  isActive: boolean | null;
+  size: string;
+  notes: string;
+  weightKg: number;
+  isActive: boolean;
 }
 
 @Injectable({
@@ -26,13 +26,11 @@ export class DogApiService {
     });
   }
 
-  public getDog(id: number | string): Observable<Dog[]> {
-    return this.http.get<Dog[]>(`${this.apiUrl}/dogs/${id}`);
+  public getDog(id: number | string): Observable<Dog> {
+    return this.http.get<Dog>(`${this.apiUrl}/dogs/${id}`);
   }
 
   public updateDog(id: number | string, request: DogUpdateRequestDto): Observable<Dog> {
-    return this.http.patch<Dog>(`${this.apiUrl}/dogs/${id}`, {
-      params: request
-    });
+    return this.http.patch<Dog>(`${this.apiUrl}/dogs/${id}`, request);
   }
 }

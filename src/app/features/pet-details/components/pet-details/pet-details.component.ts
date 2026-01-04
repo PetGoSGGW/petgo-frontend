@@ -17,11 +17,13 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Dog, Photo, Breed } from '../../../../models/dog.model';
+
+import { Dog } from '../../../../models/dog.model';
 import { EditDogDetailsDialogData } from './models/edit-dog-details-dialog-data.model';
 import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
 import { filter } from 'rxjs';
-import { DogApiService } from '../../services/dog-api.service';
+
+import { DogApiService, DogUpdateRequestDto } from '../../../../services/dog-api.service';
 
 interface DogReview {
   id: string;
@@ -61,7 +63,7 @@ const CURRENT_USER_ID = 1;
 export class PetDetailsComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
-  private readonly dogApi = inject(DogApiService); 
+  private readonly dogApi = inject(DogApiService);
 
   public readonly dog = signal<Dog | null>(null);
 
@@ -69,8 +71,7 @@ export class PetDetailsComponent {
     transform: (id) => Number(id),
   });
 
-  public readonly reviews = signal<DogReview[]>([
-  ]);
+  public readonly reviews = signal<DogReview[]>([]);
 
   public readonly reviewForm = new FormGroup<{ text: FormControl<string> }>({
     text: new FormControl<string>('', {
@@ -84,7 +85,7 @@ export class PetDetailsComponent {
       const id = this.id();
 
       this.dogApi.getDog(id).subscribe({
-        next: (dog) => this.dog.set(dog),
+        next: (dog: Dog) => this.dog.set(dog),
         error: () => {
           this.dog.set(null);
           this.snackBar.open('Nie udało się pobrać danych psa.', 'OK', { duration: 4000 });
@@ -101,15 +102,17 @@ export class PetDetailsComponent {
     return dog.ownerId === CURRENT_USER_ID;
   }
 
-  public getPhotos(dog: Dog): string[] {
-    return (dog.photos ?? []).map((p) => p.url).filter(Boolean);
+  public getPhotos(dogId: number): string[] {
+    const currentDog = this.dog();
+    if (!currentDog || currentDog.dogId !== dogId) return [];
+    return (currentDog.photos ?? []).map((p) => p.url);
   }
 
   public getFirstPhotoUrl(): string | null {
     const currentDog = this.dog();
     if (!currentDog) return null;
 
-    const photos = this.getPhotos(currentDog);
+    const photos = this.getPhotos(currentDog.dogId);
     return photos.length > 0 ? photos[0] : null;
   }
 
@@ -120,7 +123,7 @@ export class PetDetailsComponent {
       width: '520px',
       data: {
         name: currentDog.name,
-        breed: currentDog.breed?.breedCode ?? '',
+        breed: currentDog.breed,
         notes: currentDog.notes ?? '',
         size: currentDog.size ?? 'M',
         weightKg: Number(currentDog.weightKg ?? 0),
@@ -131,7 +134,14 @@ export class PetDetailsComponent {
     dialogRef
       .afterClosed()
       .pipe(filter((result) => !!result))
-      .subscribe((result: EditDogDetailsDialogData) => {
+      .subscribe((result: {
+        name: string;
+        breed: string;  
+        notes: string;
+        size: string;
+        weightKg: number;
+        isActive: boolean;
+      }) => {
         this.dog.update((dog) => {
           if (!dog) return dog;
 
@@ -140,8 +150,7 @@ export class PetDetailsComponent {
             name: result.name,
             breed: {
               ...dog.breed,
-              breedCode: result.breed,
-              name: dog.breed?.name ?? '',
+              name: result.breed,
             },
             notes: result.notes,
             size: result.size,
@@ -151,8 +160,8 @@ export class PetDetailsComponent {
           };
         });
 
-        const payload = {
-          breedCode: result.breed,
+        const payload: DogUpdateRequestDto = {
+          breedCode: currentDog.breed.breedCode,
           name: result.name,
           size: result.size,
           notes: result.notes,
@@ -161,7 +170,7 @@ export class PetDetailsComponent {
         };
 
         this.dogApi.updateDog(currentDog.dogId, payload).subscribe({
-          next: (updatedDog) => {
+          next: (updatedDog: Dog) => {
             this.dog.set(updatedDog);
             this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 4000 });
           },
