@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { WalkerOffersService } from './services/walker-offers.service';
+import { WalkerOffersApiService } from './services/walker-offers-api.service';
 
 export const offersRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./walker-offers.component').then((c) => c.OffersComponent),
-    providers: [WalkerOffersService],
+    loadComponent: () => import('./walker-offers.component').then((c) => c.WalkerOffersComponent),
+    providers: [WalkerOffersApiService],
   },
 ];

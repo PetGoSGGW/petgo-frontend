@@ -17,6 +17,9 @@ import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
 
 import { registerLocaleData } from '@angular/common';
 import localePl from '@angular/common/locales/pl';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { PolishPaginatorIntl } from '../assets/polish-paginator-intl';
 
 registerLocaleData(localePl);
 
@@ -30,5 +33,7 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(AuthService).loadSession()),
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
     { provide: LOCALE_ID, useValue: 'pl' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
+    { provide: MatPaginatorIntl, useClass: PolishPaginatorIntl },
   ],
 };
