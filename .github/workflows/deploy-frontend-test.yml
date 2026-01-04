@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Stop frontend service
         run: sudo systemctl stop petgo-frontend
-        
+
       - name: Checkout repository
         uses: actions/checkout@v4
 

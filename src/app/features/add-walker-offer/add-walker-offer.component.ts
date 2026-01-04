@@ -16,7 +16,7 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDivider } from '@angular/material/divider';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { finalize, map, switchMap, take } from 'rxjs';
+import { filter, finalize, map, switchMap, take } from 'rxjs';
 import { DateTime } from 'luxon';
 import { LuxonPipe } from '../../pipes/luxon.pipe';
 import { SlotDatePipe } from './pipes/slot-date.pipe';
@@ -24,7 +24,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UserOfferService } from '../../services/user-offer.service';
-import { CustomValidator } from '../../uilts/validator';
+import { CustomValidator } from '../../uilts/custom-validator';
 import { toCents } from '../../uilts/format-price';
 
 export interface Slot {
@@ -70,6 +70,7 @@ export default class AddWalkerOfferComponent {
   private readonly userOfferService = inject(UserOfferService);
 
   protected readonly loading = signal(false);
+  protected readonly tomorrow = DateTime.now().plus({ day: 1 }).startOf('day');
 
   protected offerForm = this.fb.group({
     price: this.fb.control<string | null>(null, [
@@ -88,7 +89,10 @@ export default class AddWalkerOfferComponent {
 
   protected slotForm = this.fb.group({
     startTime: this.fb.control<DateTime | null>(null, Validators.required),
-    date: this.fb.control<DateTime | null>(null, Validators.required),
+    date: this.fb.control<DateTime | null>(null, [
+      Validators.required,
+      CustomValidator.minDateTodayValidator(),
+    ]),
   });
 
   protected readonly endTime = toSignal(
@@ -167,7 +171,9 @@ export default class AddWalkerOfferComponent {
         description,
       })
       .pipe(
-        switchMap(() => this.locationService.getCurrentLocation$()),
+        switchMap(() =>
+          this.locationService.getCurrentLocation$().pipe(filter((location) => !!location)),
+        ),
         switchMap(() =>
           this.addWalkerOfferApi.addSlots$(
             this.slotsControl.value.map((value) => ({

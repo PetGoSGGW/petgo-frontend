@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatError, MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatError, MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { DateTime } from 'luxon';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { finalize, map, switchMap, take } from 'rxjs';
+import { filter, finalize, map, take } from 'rxjs';
 import { LuxonPipe } from '../../pipes/luxon.pipe';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
@@ -13,13 +13,14 @@ import { UserOfferService } from '../../services/user-offer.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { SlotDatePipe } from '../add-walker-offer/pipes/slot-date.pipe';
 import { MatIcon } from '@angular/material/icon';
-import { CustomValidator } from '../../uilts/validator';
+import { CustomValidator } from '../../uilts/custom-validator';
 import { UserWalkerOfferDetailsApiService } from './services/user-walker-offer-details-api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { fromCents, toCents } from '../../uilts/format-price';
 import { AvailableSlot } from '../walker-offers/models/available-slot.model';
 import { LocationService } from '../../services/location.service';
+import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-offer-details-map/user-walker-offer-details-map.component';
 
 @Component({
   selector: 'app-user-walker-offer-details',
@@ -39,6 +40,8 @@ import { LocationService } from '../../services/location.service';
     SlotDatePipe,
     MatIcon,
     MatCheckbox,
+    UserWalkerOfferDetailsMapComponent,
+    MatSuffix,
   ],
   template: `
     <div class="main" [class.updating]="updating()">
@@ -94,6 +97,13 @@ import { LocationService } from '../../services/location.service';
         <div class="section app-page">
           <h2>Sloty dostępności</h2>
 
+          @if (location(); as location) {
+            <app-user-walker-offer-details-map
+              [userPosition]="location"
+              [availableSlots]="offer.slots"
+            />
+          }
+
           <div class="slots">
             @for (slot of offer.slots; track slot) {
               <button matButton="tonal" (click)="removeSlot(slot)">
@@ -126,8 +136,23 @@ import { LocationService } from '../../services/location.service';
 
             <mat-form-field>
               <mat-label>Wybierz datę</mat-label>
-              <input matInput [matDatepicker]="datepicker" formControlName="date" />
+              @let dateTouched = form.controls.date;
+              @let dateErrors = form.controls.date.errors;
+
+              <input
+                matInput
+                [min]="tomorrow"
+                [matDatepicker]="datepicker"
+                formControlName="date"
+              />
               <mat-hint>DD/MM/RRRR</mat-hint>
+
+              @if (dateTouched && dateErrors?.['required']) {
+                <mat-error>Wybierz datę.</mat-error>
+              } @else if (dateTouched && dateErrors?.['minDate']) {
+                <mat-error>Data nie może być wcześniejsza niż dzisiaj.</mat-error>
+              }
+
               <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
               <mat-datepicker #datepicker touchUi></mat-datepicker>
             </mat-form-field>
@@ -153,6 +178,15 @@ export default class UserWalkerOfferDetailsComponent {
   public readonly error = this.userOfferSerice.error;
 
   protected readonly updating = signal(false);
+
+  protected readonly tomorrow = DateTime.now().plus({ day: 1 }).startOf('day');
+
+  protected readonly location = toSignal(
+    this.locationService.getCurrentLocation$().pipe(
+      map(({ latitude, longitude }) => ({ latitude, longitude })),
+      filter((coordinates) => !!coordinates),
+    ),
+  );
 
   protected offerForm = this.fb.group({
     price: this.fb.control<string | null>(null, [
@@ -181,7 +215,10 @@ export default class UserWalkerOfferDetailsComponent {
 
   protected form = this.fb.group({
     startTime: this.fb.control<DateTime | null>(null, Validators.required),
-    date: this.fb.control<DateTime | null>(null, Validators.required),
+    date: this.fb.control<DateTime | null>(null, [
+      Validators.required,
+      CustomValidator.minDateTodayValidator(),
+    ]),
   });
 
   protected readonly endTime = toSignal(
@@ -235,19 +272,22 @@ export default class UserWalkerOfferDetailsComponent {
 
     this.updating.set(true);
 
-    this.locationService
-      .getCurrentLocation$()
+    const location = this.location();
+
+    if (!location) return;
+
+    const { latitude, longitude } = location;
+
+    this.userWalkerOfferDetailsApi
+      .addSlot$([
+        {
+          startTime: startDate.toISO() ?? '',
+          endTime: endDate.toISO() ?? '',
+          latitude,
+          longitude,
+        },
+      ])
       .pipe(
-        switchMap(({ latitude, longitude }) =>
-          this.userWalkerOfferDetailsApi.addSlot$([
-            {
-              startTime: startDate.toISO() ?? '',
-              endTime: endDate.toISO() ?? '',
-              latitude,
-              longitude,
-            },
-          ]),
-        ),
         take(1),
         finalize(() => this.updating.set(false)),
       )

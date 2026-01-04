@@ -1,4 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { DateTime } from 'luxon';
 
 export class CustomValidator {
   public static noDotValidator(): ValidatorFn {
@@ -25,6 +26,25 @@ export class CustomValidator {
         return {
           min: { min, actual: numericValue },
         };
+      }
+
+      return null;
+    };
+  }
+
+  public static minDateTodayValidator(): ValidatorFn {
+    return ({ value }: AbstractControl): ValidationErrors | null => {
+      if (!value) return null;
+
+      // Expecting a Luxon DateTime
+      const picked = value as DateTime;
+
+      if (!DateTime.isDateTime(picked)) return null;
+
+      const todayStart = DateTime.now().plus({ day: 1 }).startOf('day');
+
+      if (picked.startOf('day') < todayStart) {
+        return { minDate: { min: todayStart.toISODate(), actual: picked.toISODate() } };
       }
 
       return null;
