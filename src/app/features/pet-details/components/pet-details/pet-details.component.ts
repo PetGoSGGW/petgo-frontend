@@ -17,12 +17,11 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-
-import { Dog } from '../../../../models/dog.model';
+import { Dog, Photo, Breed } from '../../../../models/dog.model';
 import { EditDogDetailsDialogData } from './models/edit-dog-details-dialog-data.model';
 import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
 import { filter } from 'rxjs';
-import { sampleDogs } from '../../../../data/sample-data';
+import { DogApiService } from '../../services/dog-api.service';
 
 interface DogReview {
   id: string;
@@ -33,15 +32,6 @@ interface DogReview {
 }
 
 const CURRENT_USER_ID = 1;
-
-const DOG_PHOTOS: Record<number, string[]> = {
-  1: [
-    'https://placedog.net/600/400?id=1',
-    'https://placedog.net/400/300?id=11',
-    'https://placedog.net/400/300?id=12',
-  ],
-  2: ['https://placedog.net/600/400?id=2', 'https://placedog.net/400/300?id=21'],
-};
 
 @Component({
   selector: 'app-pet-details',
@@ -71,6 +61,7 @@ const DOG_PHOTOS: Record<number, string[]> = {
 export class PetDetailsComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
+  private readonly dogApi = inject(DogApiService); 
 
   public readonly dog = signal<Dog | null>(null);
 
@@ -79,13 +70,6 @@ export class PetDetailsComponent {
   });
 
   public readonly reviews = signal<DogReview[]>([
-    {
-      id: '1',
-      authorName: 'Jan Kowalski',
-      createdAt: new Date(),
-      text: 'Świetny, bardzo przyjazny pies!',
-      reported: false,
-    },
   ]);
 
   public readonly reviewForm = new FormGroup<{ text: FormControl<string> }>({
@@ -99,8 +83,13 @@ export class PetDetailsComponent {
     effect(() => {
       const id = this.id();
 
-      const found = sampleDogs.find((d) => d.dogId === id);
-      this.dog.set(found ?? null);
+      this.dogApi.getDog(id).subscribe({
+        next: (dog) => this.dog.set(dog),
+        error: () => {
+          this.dog.set(null);
+          this.snackBar.open('Nie udało się pobrać danych psa.', 'OK', { duration: 4000 });
+        },
+      });
     });
   }
 
@@ -112,15 +101,15 @@ export class PetDetailsComponent {
     return dog.ownerId === CURRENT_USER_ID;
   }
 
-  public getPhotos(dogId: number): string[] {
-    return DOG_PHOTOS[dogId] ?? [];
+  public getPhotos(dog: Dog): string[] {
+    return (dog.photos ?? []).map((p) => p.url).filter(Boolean);
   }
 
   public getFirstPhotoUrl(): string | null {
     const currentDog = this.dog();
     if (!currentDog) return null;
 
-    const photos = this.getPhotos(currentDog.dogId);
+    const photos = this.getPhotos(currentDog);
     return photos.length > 0 ? photos[0] : null;
   }
 
@@ -131,7 +120,7 @@ export class PetDetailsComponent {
       width: '520px',
       data: {
         name: currentDog.name,
-        breed: currentDog.breed,
+        breed: currentDog.breed?.breedCode ?? '',
         notes: currentDog.notes ?? '',
         size: currentDog.size ?? 'M',
         weightKg: Number(currentDog.weightKg ?? 0),
@@ -149,7 +138,11 @@ export class PetDetailsComponent {
           return {
             ...dog,
             name: result.name,
-            breed: result.breed,
+            breed: {
+              ...dog.breed,
+              breedCode: result.breed,
+              name: dog.breed?.name ?? '',
+            },
             notes: result.notes,
             size: result.size,
             weightKg: Number(result.weightKg),
@@ -158,7 +151,26 @@ export class PetDetailsComponent {
           };
         });
 
-        this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 4000 });
+        const payload = {
+          breedCode: result.breed,
+          name: result.name,
+          size: result.size,
+          notes: result.notes,
+          weightKg: Number(result.weightKg),
+          isActive: result.isActive,
+        };
+
+        this.dogApi.updateDog(currentDog.dogId, payload).subscribe({
+          next: (updatedDog) => {
+            this.dog.set(updatedDog);
+            this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 4000 });
+          },
+          error: () => {
+            this.snackBar.open('Nie udało się zapisać zmian na serwerze.', 'OK', {
+              duration: 4000,
+            });
+          },
+        });
       });
   }
 
