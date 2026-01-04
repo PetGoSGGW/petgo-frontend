@@ -102,6 +102,6 @@ export class WalkerOffersComponent {
       })
       .afterClosed()
       .pipe(filter(Boolean))
-      .subscribe();
+      .subscribe(() => this.offers.reload());
   }
 }

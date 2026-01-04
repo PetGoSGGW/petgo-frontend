@@ -134,7 +134,7 @@ export interface WalkerOfferReservationDialogData {
 
         <div class="footer">
           <button type="button" matButton="outlined" (click)="dialogRef.close()">Cofnij</button>
-          <button type="submit" matButton="tonal">Zarezerwuj</button>
+          <button type="submit" matButton="tonal" [disabled]="loading()">Zarezerwuj</button>
         </div>
       </form>
     </mat-dialog-content>
