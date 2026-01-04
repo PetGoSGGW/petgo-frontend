@@ -1,13 +1,16 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/guards/auth.guard';
-import { ReservationApiService } from './serivces/reservation-api.service';
-import { DogApiService } from './serivces/dog-api.service';
+import { ReservationApiService } from './services/reservation-api.service';
+import { DogApiService } from './services/dog-api.service';
+import { UserOfferService } from './services/user-offer.service';
+import { UserOfferApiService } from './services/user-offer-api.service';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./components/layout/layout.component'),
     canActivate: [authGuard],
+    providers: [UserOfferService, UserOfferApiService],
     children: [
       {
         path: '',
@@ -38,6 +41,20 @@ export const routes: Routes = [
         path: 'uzytkownik/:id',
         loadChildren: () =>
           import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
+      },
+      {
+        path: 'dodaj-spacer',
+        loadChildren: () =>
+          import('./features/add-walker-offer/add-walker-offer.routes').then(
+            (r) => r.addWalkerOfferRoutes,
+          ),
+      },
+      {
+        path: 'moja-oferta',
+        loadChildren: () =>
+          import('./features/user-walker-offer-details/user-walker-offer-details.routes').then(
+            (r) => r.userWalkerOfferDetails,
+          ),
       },
     ],
   },

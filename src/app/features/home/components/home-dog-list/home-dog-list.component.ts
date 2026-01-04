@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddDogFormDialogComponent } from '../add-dog-form-dialog/add-dog-form-dialog.component';
 import { filter } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { DogApiService } from '../../../../serivces/dog-api.service';
+import { DogApiService } from '../../../../services/dog-api.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
