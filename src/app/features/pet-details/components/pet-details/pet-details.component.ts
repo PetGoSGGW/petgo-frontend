@@ -134,53 +134,55 @@ export class PetDetailsComponent {
     dialogRef
       .afterClosed()
       .pipe(filter((result) => !!result))
-      .subscribe((result: {
-        name: string;
-        breed: string;  
-        notes: string;
-        size: string;
-        weightKg: number;
-        isActive: boolean;
-      }) => {
-        this.dog.update((dog) => {
-          if (!dog) return dog;
+      .subscribe(
+        (result: {
+          name: string;
+          breed: string;
+          notes: string;
+          size: string;
+          weightKg: number;
+          isActive: boolean;
+        }) => {
+          this.dog.update((dog) => {
+            if (!dog) return dog;
 
-          return {
-            ...dog,
+            return {
+              ...dog,
+              name: result.name,
+              breed: {
+                ...dog.breed,
+                name: result.breed,
+              },
+              notes: result.notes,
+              size: result.size,
+              weightKg: Number(result.weightKg),
+              isActive: result.isActive,
+              updatedAt: new Date().toISOString(),
+            };
+          });
+
+          const payload: DogUpdateRequestDto = {
+            breedCode: currentDog.breed.breedCode,
             name: result.name,
-            breed: {
-              ...dog.breed,
-              name: result.breed,
-            },
-            notes: result.notes,
             size: result.size,
+            notes: result.notes,
             weightKg: Number(result.weightKg),
             isActive: result.isActive,
-            updatedAt: new Date().toISOString(),
           };
-        });
 
-        const payload: DogUpdateRequestDto = {
-          breedCode: currentDog.breed.breedCode,
-          name: result.name,
-          size: result.size,
-          notes: result.notes,
-          weightKg: Number(result.weightKg),
-          isActive: result.isActive,
-        };
-
-        this.dogApi.updateDog(currentDog.dogId, payload).subscribe({
-          next: (updatedDog: Dog) => {
-            this.dog.set(updatedDog);
-            this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 4000 });
-          },
-          error: () => {
-            this.snackBar.open('Nie udało się zapisać zmian na serwerze.', 'OK', {
-              duration: 4000,
-            });
-          },
-        });
-      });
+          this.dogApi.updateDog(currentDog.dogId, payload).subscribe({
+            next: (updatedDog: Dog) => {
+              this.dog.set(updatedDog);
+              this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 4000 });
+            },
+            error: () => {
+              this.snackBar.open('Nie udało się zapisać zmian na serwerze.', 'OK', {
+                duration: 4000,
+              });
+            },
+          });
+        },
+      );
   }
 
   public onSubmitReview(): void {
