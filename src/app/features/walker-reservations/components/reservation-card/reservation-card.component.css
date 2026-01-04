@@ -1,0 +1,154 @@
+.reservation-card {
+    cursor: default;
+    transition: box-shadow 0.3s ease;
+}
+
+.reservation-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.user-info:hover {
+    opacity: 0.8;
+}
+
+.username {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+}
+
+.dog-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.dog-section:hover {
+    opacity: 0.9;
+    background-color: var(--mat-sys-surface-variant);
+}
+
+.dog-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.dog-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.dog-name {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+}
+
+.dog-breed {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.dog-details {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+    text-transform: capitalize;
+}
+
+.details-chips {
+    margin-top: 1rem;
+}
+
+.details-chips mat-chip-set {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.details-chips mat-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.details-chips mat-icon {
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.details-chips span {
+    font-size: 0.875rem;
+    line-height: 1.125rem;
+}
+
+/* Status colors */
+.status-pending {
+    background-color: #ffd54f !important;
+    /* Yellow */
+    color: #000000 !important;
+}
+
+.status-confirmed {
+    background-color: #66bb6a !important;
+    /* Green */
+    color: #ffffff !important;
+}
+
+.status-completed {
+    background-color: #42a5f5 !important;
+    /* Blue */
+    color: #ffffff !important;
+}
+
+.status-cancelled {
+    background-color: #bdbdbd !important;
+    /* Gray */
+    color: #000000 !important;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .dog-photo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .dog-name {
+        font-size: 1rem;
+    }
+
+    .details-chips mat-chip {
+        font-size: 0.75rem;
+    }
+}

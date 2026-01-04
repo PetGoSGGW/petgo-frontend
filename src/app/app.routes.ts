@@ -39,6 +39,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
       },
+      {
+        path: 'umowione-spacery',
+        loadChildren: () =>
+          import('./features/walker-reservations/walker-reservations.routes').then(
+            (r) => r.walkerReservationsRoutes,
+          ),
+      },
     ],
   },
   {

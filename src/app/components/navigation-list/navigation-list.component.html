@@ -1,23 +1,21 @@
 <ul>
   <li>
-    <a
-      routerLink="/"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="clicked.emit()"
-    >
+    <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+      (click)="clicked.emit()">
       <mat-icon>home</mat-icon>
-      Strona główna</a
-    >
+      Strona główna</a>
   </li>
   <li>
     <a routerLink="/oferty" routerLinkActive="active-link" (click)="clicked.emit()">
       <mat-icon>list</mat-icon>
-      Oferty</a
-    >
+      Oferty</a>
+  </li>
+  <li>
+    <a routerLink="/umowione-spacery" routerLinkActive="active-link" (click)="clicked.emit()">
+      <mat-icon>event_available</mat-icon>
+      Umówione spacery</a>
   </li>
 </ul>
 
 <a routerLink="/kontakt" routerLinkActive="active-link" (click)="clicked.emit()">
-  <mat-icon>question_mark</mat-icon>Skontaktuj się z nami</a
->
+  <mat-icon>question_mark</mat-icon>Skontaktuj się z nami</a>

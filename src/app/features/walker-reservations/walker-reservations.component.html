@@ -1,0 +1,32 @@
+<div class="walker-reservations-page">
+    <div class="page-header">
+        <h1>Umówione spacery</h1>
+        <p class="subtitle">Lista rezerwacji z Twoich ofert</p>
+    </div>
+
+    @if (reservations.isLoading()) {
+    <div class="loading-container">
+        <mat-spinner />
+    </div>
+    } @else if (reservations.error()) {
+    <div class="error-container">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <mat-error>Wystąpił błąd podczas pobierania rezerwacji</mat-error>
+    </div>
+    } @else if (reservations.hasValue()) {
+    @if (reservations.value().length === 0) {
+    <div class="empty-state">
+        <mat-icon class="empty-icon">event_busy</mat-icon>
+        <h3>Brak rezerwacji</h3>
+        <p>Nie masz jeszcze żadnych umówionych spacerów</p>
+    </div>
+    } @else {
+    <div class="reservations-grid">
+        @for (reservation of reservations.value(); track reservation.reservationId) {
+        <app-reservation-card [reservation]="reservation" (ownerClicked)="navigateToUser($event)"
+            (dogClicked)="navigateToDog($event)" />
+        }
+    </div>
+    }
+    }
+</div>

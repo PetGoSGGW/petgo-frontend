@@ -1,0 +1,48 @@
+<mat-card class="reservation-card">
+    <mat-card-header>
+        <div class="header-content">
+            <div class="user-info" (click)="onOwnerClick()">
+                <span class="username">{{ reservation().owner.firstName }} {{ reservation().owner.lastName }}</span>
+                <app-rating-display [rating]="reservation().owner.rating"
+                    [reviewCount]="reservation().owner.reviewCount" size="small" />
+            </div>
+            <mat-chip [highlighted]="true" [class]="statusClass()">
+                {{ statusLabel() }}
+            </mat-chip>
+        </div>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="dog-section" (click)="onDogClick()">
+            <img [src]="reservation().dog.photoUrl" [alt]="reservation().dog.name" class="dog-photo" />
+            <div class="dog-info">
+                <h4 class="dog-name">{{ reservation().dog.name }}</h4>
+                <p class="dog-breed">{{ reservation().dog.breedName }}</p>
+                <p class="dog-details">
+                    {{ reservation().dog.size }} • {{ reservation().dog.weightKg }}kg
+                </p>
+            </div>
+        </div>
+
+        <div class="details-chips">
+            <mat-chip-set>
+                <mat-chip>
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{ reservation().scheduledStart | date: 'dd.MM.yyyy HH:mm' }}</span>
+                </mat-chip>
+                <mat-chip>
+                    <mat-icon>timer</mat-icon>
+                    <span>{{ walkDuration() }}</span>
+                </mat-chip>
+                <mat-chip>
+                    <mat-icon>payments</mat-icon>
+                    <span>{{ reservation().priceCents }}zł</span>
+                </mat-chip>
+                <mat-chip>
+                    <mat-icon>location_on</mat-icon>
+                    <span>{{ reservation().distanceKm }}km</span>
+                </mat-chip>
+            </mat-chip-set>
+        </div>
+    </mat-card-content>
+</mat-card>

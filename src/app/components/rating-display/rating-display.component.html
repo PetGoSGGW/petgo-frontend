@@ -1,0 +1,12 @@
+<div class="rating-display" [attr.data-size]="size()">
+  <div class="stars">
+    @for (star of stars; track star) {
+      <mat-icon [class]="'star-icon star-' + size()">
+        {{ getStarIcon(star) }}
+      </mat-icon>
+    }
+  </div>
+  @if (reviewCount() > 0) {
+    <span class="review-count">({{ reviewCount() }})</span>
+  }
+</div>
