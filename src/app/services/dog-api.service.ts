@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { Dog } from '../models/dog.model';
+import { Breed } from '../models/breed.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,5 +16,23 @@ export class DogApiService {
     return this.http.get<Dog[]>(`${this.apiUrl}/dogs`, {
       params: { ownerId },
     });
+  }
+
+  public getDogs$(): Observable<Dog[]> {
+    return this.http.get<Dog[]>(`${this.apiUrl}/dogs`);
+  }
+
+  public addDog$(body: {
+    breedCode: Breed['breedCode'];
+    name: string;
+    size: string;
+    notes: string;
+    weightKg: number;
+  }): Observable<Dog> {
+    return this.http.post<Dog>(`${this.apiUrl}/dogs`, body);
+  }
+
+  public getBreeds$(): Observable<Breed[]> {
+    return this.http.get<Breed[]>(`${this.apiUrl}/dogs/breeds`);
   }
 }

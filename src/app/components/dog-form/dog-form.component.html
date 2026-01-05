@@ -17,12 +17,7 @@
       @let weightErrors = form.controls.weight.errors;
 
       <mat-label>Waga pupila (kg)</mat-label>
-      <input
-        matInput
-        type="number"
-        matNativeControl="number"
-        [formControl]="form.controls.weight"
-      />
+      <input matInput type="number" [formControl]="form.controls.weight" />
 
       @if (weightTouched && weightErrors?.['required']) {
         <mat-error>Podaj wagę pupila.</mat-error>
@@ -32,11 +27,15 @@
     </mat-form-field>
 
     <mat-form-field>
-      @let breedTouched = form.controls.breed.touched;
-      @let breedErrors = form.controls.breed.errors;
+      @let breedTouched = form.controls.breedCode.touched;
+      @let breedErrors = form.controls.breedCode.errors;
 
       <mat-label>Rasa pupila</mat-label>
-      <input matInput [formControl]="form.controls.breed" />
+      <mat-select [formControl]="form.controls.breedCode">
+        @for (breed of breeds(); track breed.breedCode) {
+          <mat-option [value]="breed.breedCode">{{ breed.name }}</mat-option>
+        }
+      </mat-select>
 
       @if (breedTouched && breedErrors?.['required']) {
         <mat-error>Podaj rasę pupila.</mat-error>

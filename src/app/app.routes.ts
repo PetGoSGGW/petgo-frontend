@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/guards/auth.guard';
-import { ReservationApiService } from './serivces/reservation-api.service';
-import { DogApiService } from './serivces/dog-api.service';
+import { ReservationApiService } from './services/reservation-api.service';
+import { DogApiService } from './services/dog-api.service';
 
 export const routes: Routes = [
   {
