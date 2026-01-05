@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/guards/auth.guard';
-import { ReservationApiService } from './serivces/reservation-api.service';
-import { DogApiService } from './serivces/dog-api.service';
+import { ReservationApiService } from './services/reservation-api.service';
+import { DogApiService } from './services/dog-api.service';
 
 export const routes: Routes = [
   {
@@ -24,6 +24,25 @@ export const routes: Routes = [
         path: 'powiadomienia',
         loadChildren: () =>
           import('./notifications/notifications.routes').then((r) => r.notificationsRoutes),
+      },
+      {
+        path: 'spacer',
+        loadChildren: () => import('./features/walk/walk.routes').then((r) => r.walkRoutes),
+      },
+      {
+        path: 'oferty',
+        loadChildren: () =>
+          import('./features/walker-offers/walker-offers.routes').then((r) => r.offersRoutes),
+      },
+      {
+        path: 'pies/:id',
+        loadChildren: () =>
+          import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+      },
+      {
+        path: 'uzytkownik/:id',
+        loadChildren: () =>
+          import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
       },
     ],
   },

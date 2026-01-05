@@ -16,12 +16,17 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
-            "styles": ["src/styles/tokens.scss", "src/styles.scss"]
+            "styles": [
+              "src/styles/tokens.scss",
+              "src/styles.scss",
+              "node_modules/leaflet/dist/leaflet.css"
+            ]
           },
           "configurations": {
             "production": {
@@ -57,10 +62,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "pet-go-front:build:production"
+              "buildTarget": "petgo-frontend:build:production"
             },
             "development": {
-              "buildTarget": "pet-go-front:build:development"
+              "buildTarget": "petgo-frontend:build:development"
             }
           },
           "defaultConfiguration": "development",
@@ -76,6 +81,7 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"

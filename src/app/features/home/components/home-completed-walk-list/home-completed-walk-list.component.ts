@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { AuthService } from '../../../../core/auth/services/auth.service';
-import { ReservationApiService } from '../../../../serivces/reservation-api.service';
+import { ReservationApiService } from '../../../../services/reservation-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';

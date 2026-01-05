@@ -1,0 +1,13 @@
+.map-container {
+  height: calc(100svh - 2rem - var(--header-height));
+  border-radius: 1rem;
+}
+
+.map-frame {
+  border: 2px solid black;
+  height: 100%;
+}
+
+#map {
+  height: 100%;
+}

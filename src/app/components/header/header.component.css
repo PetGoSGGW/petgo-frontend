@@ -8,7 +8,7 @@ header {
   background-color: var(--mat-sys-surface-dim);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 1003;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
@@ -31,7 +31,9 @@ nav {
 }
 
 .profile-username {
-  display: none;
+  &.desktop {
+    display: none;
+  }
 }
 
 img {
@@ -40,7 +42,14 @@ img {
 
 @media (min-width: 48rem) {
   .profile-username {
-    display: block;
+    &.desktop {
+      display: flex;
+      color: black;
+    }
+
+    &.mobile {
+      display: none;
+    }
   }
 }
 
