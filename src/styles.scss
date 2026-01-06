@@ -49,3 +49,8 @@ mat-spinner {
   margin-inline: auto;
   width: 100%;
 }
+
+mat-error {
+  margin-inline: auto;
+  color: var(--mat-sys-error);
+}

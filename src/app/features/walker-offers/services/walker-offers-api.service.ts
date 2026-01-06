@@ -18,7 +18,7 @@ export class WalkerOffersApiService {
   }): Observable<{ content: WalkerOffer[]; totalElements: number; number: number }> {
     return this.http.get<{ content: WalkerOffer[]; totalElements: number; number: number }>(
       `${this.apiUrl}/offers/search`,
-      { params },
+      { params: { ...params } },
     );
   }
 
@@ -95,11 +95,11 @@ export class WalkerOffersApiService {
     return of(availableSlots);
   }
 
-  public reserve(body: {
+  public reserve$(body: {
     offerId: WalkerOffer['offerId'];
     dogId: Dog['dogId'];
     availablilitySlots: AvailableSlot['slotId'][];
-  }): Observable<unknown> {
-    return this.http.post<unknown>(`${this.apiUrl}/reservations/`, body);
+  }): Observable<{ reservationId: number }> {
+    return this.http.post<{ reservationId: number }>(`${this.apiUrl}/reservations/`, body);
   }
 }
