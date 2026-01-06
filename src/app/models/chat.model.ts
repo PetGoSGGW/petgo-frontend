@@ -6,6 +6,7 @@ export interface Chat {
 export interface ChatMessage {
   senderId: number;
   content: string;
+  sentAt: Date | string;
 }
 
 export interface SendMessageDto {
