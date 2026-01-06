@@ -4,12 +4,14 @@ import { ReservationApiService } from './services/reservation-api.service';
 import { DogApiService } from './services/dog-api.service';
 import { UserOfferService } from './services/user-offer.service';
 import { UserOfferApiService } from './services/user-offer-api.service';
+import { userOfferResolverFn } from './resolvers/user-offer.resolver';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./components/layout/layout.component'),
     canActivate: [authGuard],
+    resolve: { offerResolverFn: userOfferResolverFn },
     providers: [UserOfferService, UserOfferApiService],
     children: [
       {
