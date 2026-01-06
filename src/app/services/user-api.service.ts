@@ -12,6 +12,9 @@ export class UserApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
+  public getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  }
   public getUser(id: User['id']): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/users/${id}`);
   }

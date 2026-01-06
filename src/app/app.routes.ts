@@ -38,9 +38,25 @@ export const routes: Routes = [
           import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
       },
       {
-        path: 'uzytkownik/:id',
-        loadChildren: () =>
-          import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
+        path: 'uzytkownik',
+        children: [
+          {
+            path: 'lista',
+            loadChildren: () =>
+              import('./features/user-list/user-list.routes').then((r) => r.userListRoutes),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./features/user-details/user-details.routes').then(
+                (r) => r.userDetailsRoutes,
+              ),
+          },
+          {
+            path: '**',
+            redirectTo: 'lista',
+          },
+        ],
       },
       {
         path: 'dodaj-spacer',
