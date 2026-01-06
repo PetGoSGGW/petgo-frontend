@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, numberAttribute } from '@angular/core';
+import { Component, inject, input, numberAttribute } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,11 +9,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatError, MatFormFieldModule } from '@angular/material/form-field';
+import { MatError, MatFormFieldModule, MatHint } from '@angular/material/form-field';
 import { UserApiService } from '../../services/user-api.service';
 import { DogApiService } from '../../services/dog-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { LuxonPipe } from '../../pipes/luxon.pipe';
 
 @Component({
   selector: 'app-user-details',
@@ -31,6 +32,8 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     RouterLink,
     MatProgressSpinner,
     MatError,
+    LuxonPipe,
+    MatHint,
   ],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
@@ -53,17 +56,6 @@ export class UserDetailsComponent {
   protected readonly reviews = rxResource({
     params: () => ({ id: this.id() }),
     stream: ({ params: { id } }) => this.userApiService.getUserReviews(id),
-  });
-
-  protected readonly score = computed(() => {
-    const reviews = this.reviews.hasValue() ? this.reviews.value() : [];
-
-    if (!reviews || reviews.length === 0) {
-      return 0;
-    }
-
-    const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / reviews.length) * 10) / 10;
   });
 
   protected getAvatarUrl(): string | null {
