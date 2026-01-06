@@ -26,6 +26,7 @@ import { Router } from '@angular/router';
 import { UserOfferService } from '../../services/user-offer.service';
 import { CustomValidator } from '../../uilts/custom-validator';
 import { toCents } from '../../uilts/format-price';
+import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 
 export interface Slot {
   start: string | null;
@@ -58,6 +59,7 @@ export interface Slot {
     MatIcon,
     MatButton,
     MatStepLabel,
+    SectionWrapperComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
