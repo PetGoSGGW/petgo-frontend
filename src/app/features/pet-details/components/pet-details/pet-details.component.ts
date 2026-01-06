@@ -71,6 +71,15 @@ export class PetDetailsComponent {
     transform: (id) => Number(id),
   });
 
+  protected readonly dogResource = rxResource<Dog, { id: number }>({
+    params: () => ({ id: this.id() }),
+    stream: ({ params }) => this.dogApi.getDog(params.id),
+  });
+
+  public readonly dog = computed<Dog | null>(() =>
+    this.dogResource.hasValue() ? this.dogResource.value() : null,
+  );
+
   public readonly reviews = signal<DogReview[]>([]);
 
   public readonly reviewForm = new FormGroup<{ text: FormControl<string> }>({
@@ -82,15 +91,10 @@ export class PetDetailsComponent {
 
   constructor() {
     effect(() => {
-      const id = this.id();
-
-      this.dogApi.getDog(id).subscribe({
-        next: (dog: Dog) => this.dog.set(dog),
-        error: () => {
-          this.dog.set(null);
-          this.snackBar.open('Nie udało się pobrać danych psa.', 'OK', { duration: 4000 });
-        },
-      });
+      const err = this.dogResource.error();
+      if (err) {
+        this.snackBar.open('Nie udało się pobrać danych psa.', 'OK', { duration: 4000 });
+      }
     });
   }
 
@@ -172,7 +176,7 @@ export class PetDetailsComponent {
 
           this.dogApi.updateDog(currentDog.dogId, payload).subscribe({
             next: (updatedDog: Dog) => {
-              this.dog.set(updatedDog);
+              this.dogResource.set(updatedDog);
               this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 4000 });
             },
             error: () => {
