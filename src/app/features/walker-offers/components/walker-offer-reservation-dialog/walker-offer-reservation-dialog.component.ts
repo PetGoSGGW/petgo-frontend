@@ -263,6 +263,7 @@ export class WalkerOfferReservationDialogComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
+          this.matSnackBar.open('Zarezerowałeś spacer', 'OK');
           this.dialogRef.close(true);
         },
         error: () => {

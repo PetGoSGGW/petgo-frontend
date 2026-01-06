@@ -10,7 +10,12 @@
   </div>
 
   <div class="profile">
-    <a matIconButton class="profile-username mobile" aria-label="Użytkownik">
+    <a
+      matIconButton
+      [routerLink]="['/uzytkownik/', id()]"
+      class="profile-username mobile"
+      aria-label="Użytkownik"
+    >
       <mat-icon>person</mat-icon>
     </a>
 

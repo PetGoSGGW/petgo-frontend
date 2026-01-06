@@ -1,0 +1,46 @@
+.main {
+  background-color: var(--mat-sys-surface);
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  max-width: 128rem;
+  margin-inline: auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.split {
+  margin-top: 1rem;
+  margin-bottom: calc(1rem + 19.5px);
+}
+
+.split-equal {
+  margin: 1rem 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.next-button {
+  align-self: flex-end;
+  width: fit-content;
+}
+
+.warning-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  color: var(--mat-sys-error);
+
+  & > span {
+    font-size: 1.25rem;
+  }
+}

@@ -39,3 +39,13 @@ body {
 mat-spinner {
   margin-inline: auto;
 }
+
+.app-page {
+  background-color: var(--mat-sys-surface);
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  max-width: 128rem;
+  margin-inline: auto;
+  width: 100%;
+}
