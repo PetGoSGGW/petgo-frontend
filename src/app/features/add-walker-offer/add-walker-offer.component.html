@@ -1,0 +1,90 @@
+<div class="main">
+  <mat-stepper #stepper [linear]="true">
+    <mat-step [stepControl]="offerForm">
+      <form [formGroup]="offerForm">
+        <ng-template matStepLabel>Szczegóły oferty</ng-template>
+
+        <mat-form-field>
+          @let priceTouched = offerForm.controls.price;
+          @let priceErrors = offerForm.controls.price.errors;
+
+          <mat-label>Cena (zł)</mat-label>
+          <input matInput formControlName="price" type="text" inputmode="numeric" />
+
+          @if (priceTouched && priceErrors?.['required']) {
+            <mat-error>Podaj cenę.</mat-error>
+          } @else if (priceTouched && priceErrors?.['min']) {
+            <mat-error>Minimalna cena to 0.</mat-error>
+          } @else if (priceTouched && priceErrors?.['hasDot']) {
+            <mat-error>Nie używaj kropki — użyj przecinka.</mat-error>
+          } @else if (priceTouched && priceErrors?.['pattern']) {
+            <mat-error>Maksymalnie 2 cyfry po przecinku.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          @let descriptionTouched = offerForm.controls.price;
+          @let descriptionErrors = offerForm.controls.price.errors;
+
+          <mat-label>Opis</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+
+          @if (descriptionTouched && descriptionErrors?.['required']) {
+            <mat-error>Napisz opis.</mat-error>
+          }
+        </mat-form-field>
+
+        <button matButton="tonal" class="next-button" matStepperNext [disabled]="loading()">
+          Dalej
+        </button>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="slotsControl">
+      <ng-template matStepLabel>Sloty dostępności</ng-template>
+      <div>
+        @for (slot of slotsControl.value; track slot) {
+          <button matButton="tonal" (click)="removeSlot($index)">
+            <mat-icon>delete</mat-icon>
+            {{ slot | slotDate }}
+          </button>
+        } @empty {
+          <mat-error>Nie dodano slotów dostępności</mat-error>
+        }
+      </div>
+
+      <mat-divider class="split-equal" />
+
+      <form [formGroup]="slotForm">
+        <mat-form-field>
+          <mat-label>Wybierz czas rozpoczęcia</mat-label>
+          <input matInput [matTimepicker]="startTimePicker" readonly formControlName="startTime" />
+          <mat-timepicker-toggle matIconSuffix [for]="startTimePicker" />
+          <mat-timepicker #startTimePicker />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Wybierz czas zakończenia</mat-label>
+          <input matInput readonly [disabled]="true" [value]="endTime() | luxon: 'HH:mm'" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Wybierz datę</mat-label>
+          <input matInput [min]="tomorrow" [matDatepicker]="datepicker" formControlName="date" />
+          <mat-hint>DD/MM/RRRR</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+          <mat-datepicker #datepicker touchUi></mat-datepicker>
+        </mat-form-field>
+
+        <button matButton="outlined" (click)="addSlot()">Dodaj slot</button>
+      </form>
+
+      <mat-divider class="split-equal" />
+
+      <div class="buttons">
+        <button matButton="outlined" matStepperPrevious>Powrót</button>
+        <button matButton="tonal" (click)="submit()" [disabled]="loading()">Dodaj</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>

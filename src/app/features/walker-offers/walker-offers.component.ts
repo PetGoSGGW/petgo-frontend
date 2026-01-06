@@ -13,7 +13,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { filter, map, tap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { LocationService } from '../../serivces/location.service';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatPaginator } from '@angular/material/paginator';
@@ -22,6 +21,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDivider } from '@angular/material/divider';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { FromCentsPipe } from '../../pipes/from-cents.pipe';
+import { LocationService } from '../../services/location.service';
 
 @Component({
   selector: 'app-walker-offers',
@@ -42,6 +43,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
     MatTooltipModule,
     MatDivider,
     MatSlideToggle,
+    FromCentsPipe,
   ],
   templateUrl: './walker-offers.component.html',
   styleUrl: './walker-offers.component.css',

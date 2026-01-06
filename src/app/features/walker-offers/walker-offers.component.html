@@ -44,7 +44,7 @@
             </a>
 
             <div class="additional">
-              <span class="item-price">{{ offer.priceCents }}zł</span>
+              <span class="item-price">{{ offer.priceCents | fromCents }}zł</span>
 
               <mat-divider [vertical]="true" />
               <span class="item-date">{{ offer.createdAt | date: 'dd.MM.yyyy' }}</span>
