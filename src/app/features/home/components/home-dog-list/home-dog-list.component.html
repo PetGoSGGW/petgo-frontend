@@ -1,6 +1,4 @@
-<div class="container">
-  <span class="container-title">Pupile</span>
-
+<app-section-wrapper header="Pupile">
   @if (dogs.isLoading()) {
     <mat-progress-spinner />
   } @else if (dogs.error()) {
@@ -33,4 +31,4 @@
       }
     </div>
   }
-</div>
+</app-section-wrapper>

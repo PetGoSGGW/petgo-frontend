@@ -23,6 +23,7 @@ import { MatDivider } from '@angular/material/divider';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { FromCentsPipe } from '../../pipes/from-cents.pipe';
 import { LocationService } from '../../services/location.service';
+import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 
 @Component({
   selector: 'app-walker-offers',
@@ -44,6 +45,7 @@ import { LocationService } from '../../services/location.service';
     MatDivider,
     MatSlideToggle,
     FromCentsPipe,
+    SectionWrapperComponent,
   ],
   templateUrl: './walker-offers.component.html',
   styleUrl: './walker-offers.component.css',

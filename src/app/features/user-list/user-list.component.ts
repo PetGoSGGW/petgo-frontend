@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UserApiService } from '../../services/user-api.service';
 import { User } from '../../models/user.model';
 import { MatRipple } from '@angular/material/core';
+import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 
 @Component({
   selector: 'app-user-list',
@@ -27,6 +28,7 @@ import { MatRipple } from '@angular/material/core';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatRipple,
+    SectionWrapperComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],

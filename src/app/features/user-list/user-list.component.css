@@ -44,7 +44,7 @@
   padding: 1rem 0.5rem 1rem 1rem;
   cursor: pointer;
   border-radius: 1rem;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--mat-sys-surface-variant);
   width: 100%;
   justify-content: space-between;
   transition: opacity 0.2s;

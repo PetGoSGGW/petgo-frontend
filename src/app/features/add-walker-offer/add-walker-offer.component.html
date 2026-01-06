@@ -1,4 +1,4 @@
-<div class="main">
+<app-section-wrapper header="Dodaj ofertę">
   <mat-stepper #stepper [linear]="true">
     <mat-step [stepControl]="offerForm">
       <form [formGroup]="offerForm">
@@ -42,7 +42,7 @@
 
     <mat-step [stepControl]="slotsControl">
       <ng-template matStepLabel>Sloty dostępności</ng-template>
-      <div>
+      <div class="slots">
         @for (slot of slotsControl.value; track slot) {
           <button matButton="tonal" (click)="removeSlot($index)">
             <mat-icon>delete</mat-icon>
@@ -87,4 +87,4 @@
       </div>
     </mat-step>
   </mat-stepper>
-</div>
+</app-section-wrapper>
