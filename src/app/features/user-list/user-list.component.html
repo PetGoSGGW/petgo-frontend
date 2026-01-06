@@ -7,13 +7,7 @@
     <mat-form-field appearance="outline" class="full-width search-field">
       <mat-label>Szukaj po imieniu lub nazwie</mat-label>
       <mat-icon matPrefix>search</mat-icon>
-      <input
-        matInput
-        type="text"
-        [value]="searchQuery()"
-        (input)="onSearch($event)"
-        placeholder="np. Kasia"
-      />
+      <input matInput type="text" [(ngModel)]="searchQuery" placeholder="np. Kasia" />
       @if (searchQuery()) {
         <button mat-icon-button matSuffix (click)="searchQuery.set('')">
           <mat-icon>close</mat-icon>
@@ -23,31 +17,31 @@
   </div>
 
   <div class="results-list">
-    @for (user of filteredUsers(); track user.id) {
-      <div class="user-item" [routerLink]="['/uzytkownik', user.id]" matRipple>
-        <div class="avatar-wrapper">
-          <img [src]="getAvatarUrl(user)" [alt]="user.username" />
-        </div>
+    <div class="empty-state">
+      @if (users.isLoading()) {
+        <mat-spinner></mat-spinner>
+        <p>Ładowanie użytkowników...</p>
+      } @else if (users.error()) {
+        <mat-error>Błąd podczas pobierania informacji o użytkowniku</mat-error>
+      } @else if (users.hasValue()) {
+        @for (user of filteredUsers(); track user.id) {
+          <div class="user-item" [routerLink]="['/uzytkownik', user.id]" matRipple>
+            <div class="avatar-wrapper">
+              <img [src]="getAvatarUrl(user)" [alt]="user.username" />
+            </div>
 
-        <div class="user-info">
-          <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>
-          <span class="username">&#64;{{ user.username }}</span>
-        </div>
+            <div class="user-info">
+              <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>
+              <span class="username">&#64;{{ user.username }}</span>
+            </div>
 
-        <mat-icon class="arrow-icon">chevron_right</mat-icon>
-      </div>
-    } @empty {
-      <div class="empty-state">
-        @if (users.isLoading()) {
-          <mat-spinner></mat-spinner>
-          <p>Ładowanie użytkowników...</p>
-        } @else if (users.error()) {
-          <mat-error>Błąd podczas pobierania informacji o użytkowniku</mat-error>
-        } @else if (users.hasValue()) {
+            <mat-icon class="arrow-icon">chevron_right</mat-icon>
+          </div>
+        } @empty {
           <mat-icon>search_off</mat-icon>
           <p>Nie znaleziono użytkowników pasujących do "{{ searchQuery() }}"</p>
         }
-      </div>
-    }
+      }
+    </div>
   </div>
 </div>

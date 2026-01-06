@@ -52,11 +52,6 @@ export class UserListComponent {
         user.username.toLowerCase().includes(query),
     );
   });
-
-  public onSearch(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchQuery.set(input.value);
-  }
   public getAvatarUrl(user: User): string {
     return `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&color=fff&size=100`;
   }

@@ -36,13 +36,20 @@ export const routes: Routes = [
       },
       {
         path: 'uzytkownik',
-        loadChildren: () =>
-          import('./features/user-list/user-list.routes').then((r) => r.userListRoutes),
-      },
-      {
-        path: 'uzytkownik/:id',
-        loadChildren: () =>
-          import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
+        children: [
+          {
+            path: 'lista',
+            loadChildren: () =>
+              import('./features/user-list/user-list.routes').then((r) => r.userListRoutes),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./features/user-details/user-details.routes').then(
+                (r) => r.userDetailsRoutes,
+              ),
+          },
+        ],
       },
     ],
   },
