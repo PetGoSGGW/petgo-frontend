@@ -66,8 +66,6 @@ export class PetDetailsComponent {
   private readonly dialog = inject(MatDialog);
   private readonly dogApi = inject(DogApiService);
 
-  public readonly dog = signal<Dog | null>(null);
-
   public readonly id = input.required<number, string>({
     transform: (id) => Number(id),
   });
@@ -77,7 +75,7 @@ export class PetDetailsComponent {
     stream: ({ params }) => this.dogApi.getDog(params.id),
   });
 
-  public readonly dog = computed<Dog | null>(() =>
+  protected readonly dog = computed<Dog | null>(() =>
     this.dogResource.hasValue() ? this.dogResource.value() : null,
   );
 
