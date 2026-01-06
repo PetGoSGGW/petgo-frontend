@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, numberAttribute } from '@angular/core';
+import { Component, inject, input, numberAttribute } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,11 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatError, MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule, MatError } from '@angular/material/form-field';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { UserApiService } from '../../services/user-api.service';
 import { DogApiService } from '../../services/dog-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-user-details',
@@ -33,7 +33,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     MatError,
   ],
   templateUrl: './user-details.component.html',
-  styleUrl: './user-details.component.css',
+  styleUrls: ['./user-details.component.css'], // <- poprawiona nazwa
 })
 export class UserDetailsComponent {
   private readonly userApiService = inject(UserApiService);
@@ -50,29 +50,22 @@ export class UserDetailsComponent {
     params: () => ({ id: this.id() }),
     stream: ({ params: { id } }) => this.dogApiService.getDogsByUserId(id),
   });
+
+  // <- WAŻNE: reviews musi być protected/public
   protected readonly reviews = rxResource({
     params: () => ({ id: this.id() }),
     stream: ({ params: { id } }) => this.userApiService.getUserReviews(id),
   });
 
-  protected readonly score = computed(() => {
-    const reviews = this.reviews.hasValue() ? this.reviews.value() : [];
-
-    if (!reviews || reviews.length === 0) {
-      return 0;
-    }
-
-    const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / reviews.length) * 10) / 10;
-  });
+  // średnia ocena: odczytujemy z reviews.value().avgRating
+  protected get avgRating(): number {
+    return this.reviews.hasValue() ? this.reviews.value().avgRating : 0;
+  }
 
   protected getAvatarUrl(): string | null {
     const u = this.user.hasValue() ? this.user.value() : null;
 
     if (!u) return `https://ui-avatars.com/api/?name=AA&background=random&color=fff&size=200`;
-    // Generuje awatar z inicjałami (np. Anna Nowak -> AN)
-    // background=random: losowy kolor tła
-    // color=fff: biały tekst
     return `https://ui-avatars.com/api/?name=${u.firstName}+${u.lastName}&background=random&color=fff&size=200`;
   }
 

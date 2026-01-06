@@ -64,19 +64,23 @@
         } @else if (reviews.hasValue()) {
           <mat-card class="content-card reviews-card">
             <div class="reviews-title-row">
-              <h3>Opinie ({{ reviews.value().length }})</h3>
+              <h3>Opinie ({{ reviews.value().reviewDTOList.length }})</h3>
               <div class="rating-badge">
                 <mat-icon>star</mat-icon>
-                {{ score() }}
+                {{ reviews.value().avgRating }}
               </div>
             </div>
             <div class="reviews-list-container">
-              @for (review of reviews.value(); track review; let last = $last) {
+              @for (
+                review of reviews.value().reviewDTOList;
+                track review.createdAt;
+                let last = $last
+              ) {
                 <div class="review-row">
                   <div class="review-content-wrapper">
                     <div class="review-main-content">
                       <div class="review-header">
-                        <span class="author">{{ review.author.firstName }}</span>
+                        <span class="author">{{ review.authorDto.firstName }}</span>
                         <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
                         <div class="star-rating-display">
                           @for (i of [1, 2, 3, 4, 5]; track i) {
