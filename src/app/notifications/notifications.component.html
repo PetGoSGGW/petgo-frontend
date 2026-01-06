@@ -11,11 +11,11 @@
     Usuń wszystkie
   </button>
   <div class="notifications-container">
-    <mat-card *ngFor="let n of notifications" class="notification-card" (click)="toggleExpand(n)">
+    <mat-card *ngFor="let n of notifications()" class="notification-card" (click)="toggleExpand(n)">
       <mat-card-title>
         {{ n.title }}
       </mat-card-title>
-      <mat-card-subtitle> Użytkownik: {{ n.user }} </mat-card-subtitle>
+      <mat-card-subtitle *ngIf="n.user !== undefined"> Użytkownik: {{ n.user }} </mat-card-subtitle>
 
       <mat-card-content *ngIf="n.expanded">
         <p>{{ n.content }}</p>
