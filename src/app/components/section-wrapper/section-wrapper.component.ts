@@ -4,14 +4,23 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'app-section-wrapper',
   template: `
     <div class="section">
-      @if (header()) {
-        <h2>{{ header() }}</h2>
-      }
+      <div class="header">
+        @if (header()) {
+          <h2>{{ header() }}</h2>
+        }
+        <ng-content select="[slot='extras']" />
+      </div>
       <ng-content />
     </div>
   `,
   styles: [
     `
+      .header {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
       .section {
         display: flex;
         flex-direction: column;
@@ -28,6 +37,14 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       h2 {
         font-weight: bold;
         font-size: 1.15rem;
+      }
+
+      @media (min-width: 768px) {
+        .header {
+          flex-direction: row;
+
+          justify-content: space-between;
+        }
       }
     `,
   ],
