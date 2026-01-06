@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -22,7 +22,6 @@ import { Dog } from '../../../../models/dog.model';
 import { EditDogDetailsDialogData } from './models/edit-dog-details-dialog-data.model';
 import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
 import { filter } from 'rxjs';
-import { sampleDogs } from '../../../../data/sample-data';
 
 interface DogReview {
   id: string;
@@ -94,15 +93,6 @@ export class PetDetailsComponent {
       validators: [Validators.required, Validators.minLength(5)],
     }),
   });
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-
-      const found = sampleDogs.find((d) => d.dogId === id);
-      this.dog.set(found ?? null);
-    });
-  }
 
   public get textControl(): FormControl<string> {
     return this.reviewForm.controls.text;
