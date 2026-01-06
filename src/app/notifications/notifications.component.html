@@ -6,7 +6,7 @@
     color="warn"
     class="clear-button"
     (click)="clearAll()"
-    [disabled]="notifications.length === 0"
+    [disabled]="notifications().length === 0"
   >
     Usuń wszystkie
   </button>
@@ -29,6 +29,6 @@
         </button>
       </mat-card-content>
     </mat-card>
-    <p *ngIf="notifications.length === 0" class="no-notifications">Brak powiadomień</p>
+    <p *ngIf="notifications().length === 0" class="no-notifications">Brak powiadomień</p>
   </div>
 </div>

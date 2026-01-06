@@ -1,24 +1,47 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Notification } from './notification';
 import { environment } from '../../environments/environment.development';
-import { NotificationEventName } from './notification-event-name';
+import { SseClient } from 'ngx-sse-client';
+import { HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../core/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationsService {
   private readonly apiUrl = environment.apiUrl;
-  private eventSource: EventSource = new EventSource(`${this.apiUrl}/notifications/stream`);
+  private sseClient = inject(SseClient);
+  private authService = inject(AuthService);
   private notificationId = 1;
 
   public getNotifications(): Observable<Notification> {
     return new Observable((observer) => {
-      Object.values(NotificationEventName).forEach((eventName) => {
-        this.eventSource.addEventListener(eventName, (e: MessageEvent) => {
-          observer.next({ id: this.notificationId++, title: eventName, content: e.data });
+      const headers = new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.authService.accessToken}`,
+      );
+
+      this.sseClient
+        .stream(
+          `${this.apiUrl}/notifications/stream`,
+          { keepAlive: true, reconnectionDelay: 1_000, responseType: 'event' },
+          { headers },
+          'GET',
+        )
+        .subscribe((event) => {
+          if (event.type === 'error') {
+            const errorEvent = event as ErrorEvent;
+            console.error(errorEvent.error, errorEvent.message);
+          } else {
+            const messageEvent = event as MessageEvent;
+            observer.next({
+              id: this.notificationId++,
+              title: messageEvent.type,
+              content: messageEvent.data,
+            });
+          }
         });
-      });
     });
   }
 }
