@@ -154,19 +154,19 @@ export class PetDetailsComponent {
           weightKg: number;
           isActive: boolean;
         }) => {
-          this.dogResource.update((dog: Dog) => ({
-            ...dog,
-            name: result.name,
-            breed: {
-              ...dog.breed,
-              name: result.breed,
-            },
-            notes: result.notes,
-            size: result.size,
-            weightKg: Number(result.weightKg),
-            isActive: result.isActive,
-            updatedAt: new Date().toISOString(),
-          }));
+          this.dogResource.update((dog) => {
+            if (!dog) return dog;
+            return {
+              ...dog,
+              name: result.name,
+              breed: { ...dog.breed, name: result.breed },
+              notes: result.notes,
+              size: result.size,
+              weightKg: Number(result.weightKg),
+              isActive: result.isActive,
+              updatedAt: new Date().toISOString(),
+            };
+          });
 
           const payload: DogUpdateRequestDto = {
             breedCode: currentDog.breed.breedCode,
