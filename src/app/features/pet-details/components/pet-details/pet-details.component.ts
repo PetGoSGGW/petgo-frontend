@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -146,23 +154,19 @@ export class PetDetailsComponent {
           weightKg: number;
           isActive: boolean;
         }) => {
-          this.dog.update((dog) => {
-            if (!dog) return dog;
-
-            return {
-              ...dog,
-              name: result.name,
-              breed: {
-                ...dog.breed,
-                name: result.breed,
-              },
-              notes: result.notes,
-              size: result.size,
-              weightKg: Number(result.weightKg),
-              isActive: result.isActive,
-              updatedAt: new Date().toISOString(),
-            };
-          });
+          this.dogResource.update((dog: Dog) => ({
+            ...dog,
+            name: result.name,
+            breed: {
+              ...dog.breed,
+              name: result.breed,
+            },
+            notes: result.notes,
+            size: result.size,
+            weightKg: Number(result.weightKg),
+            isActive: result.isActive,
+            updatedAt: new Date().toISOString(),
+          }));
 
           const payload: DogUpdateRequestDto = {
             breedCode: currentDog.breed.breedCode,
