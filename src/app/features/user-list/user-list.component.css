@@ -1,20 +1,16 @@
-.user-list-container {
-  padding: 16px;
-  background-color: var(--mat-sys-surface-container-low);
+:host {
+  width: 100%;
+}
 
-  margin: -1rem;
-  width: calc(100% + 2rem);
-  border-radius: 0;
-  min-height: calc(100vh - var(--header-height));
+.user-list-container {
+  max-width: 128rem;
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--mat-sys-surface-variant);
+  border-radius: 1rem;
+  margin-inline: auto;
 }
-@media (min-width: 64rem) {
-  .user-list-container {
-    max-width: 600px;
-    margin: auto;
-    border-radius: 1rem;
-  }
-}
-/* Nagłówek */
+
 .list-header {
   display: flex;
   align-items: center;
@@ -29,7 +25,6 @@
   color: #1f1f1f;
 }
 
-/* Wyszukiwarka */
 .search-section {
   margin-bottom: 16px;
 }
@@ -38,7 +33,6 @@
   width: 100%;
 }
 
-/* Lista Użytkowników */
 .results-list {
   display: flex;
   flex-direction: column;
@@ -47,18 +41,24 @@
 .user-item {
   display: flex;
   align-items: center;
-  padding: 16px 8px;
-  border-bottom: 1px solid #eeeeee;
+  padding: 1rem 0.5rem 1rem 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
   border-radius: 1rem;
+  background-color: var(--mat-sys-surface);
+  width: 100%;
+  justify-content: space-between;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
-.user-item:hover {
-  background-color: #f5f5f5;
+.user-item-details {
+  display: flex;
+  gap: 0.5rem;
 }
 
-/* Avatar */
 .avatar-wrapper {
   width: 48px;
   height: 48px;
@@ -75,17 +75,17 @@
   object-fit: cover;
 }
 
-/* Teksty */
 .user-info {
   display: flex;
   flex-direction: column;
+  text-align: left;
   flex: 1;
 }
 
 .full-name {
   font-size: 16px;
   font-weight: 500;
-  color: #212121;
+  color: black;
 }
 
 .username {
@@ -102,9 +102,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 0;
-  color: #757575;
-  gap: 16px;
+  gap: 1rem;
   text-align: center;
 }
 

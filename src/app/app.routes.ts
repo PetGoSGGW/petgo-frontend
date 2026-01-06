@@ -49,6 +49,10 @@ export const routes: Routes = [
                 (r) => r.userDetailsRoutes,
               ),
           },
+          {
+            path: '**',
+            redirectTo: 'lista',
+          },
         ],
       },
     ],
