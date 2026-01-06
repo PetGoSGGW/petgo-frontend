@@ -89,5 +89,7 @@
   background-color: var(--mat-sys-primary) !important;
   color: #fff;
   font-weight: 600;
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
 }
