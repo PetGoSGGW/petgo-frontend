@@ -1,0 +1,24 @@
+<div class="header">
+  <button class="add-btn" (click)="openAddDogDialog()">Dodaj pupila</button>
+</div>
+<div class="grid">
+  @for (dog of dogs.value(); track dog.name) {
+    <a class="tile" [routerLink]="['/pies/', dog.dogId]">
+      <div class="image-wrapper">
+        @if (dog.photos?.[0]) {
+          <img src="dog.photos[0].url" [alt]="dog.name" />
+        } @else {
+          <ng-template>
+            <span class="placeholder"></span>
+          </ng-template>
+        }
+      </div>
+
+      <div class="info">
+        <h3>{{ dog.name }}</h3>
+        <p class="breed">{{ dog.breed.name }}</p>
+        <p class="age">{{ dog.size }}</p>
+      </div>
+    </a>
+  }
+</div>

@@ -30,6 +30,10 @@ export const routes: Routes = [
           import('./features/walker-offers/walker-offers.routes').then((r) => r.offersRoutes),
       },
       {
+        path: 'pupile',
+        loadChildren: () => import('./features/pets/pets.routes').then((r) => r.petsRoutes),
+      },
+      {
         path: 'pies/:id',
         loadChildren: () =>
           import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
