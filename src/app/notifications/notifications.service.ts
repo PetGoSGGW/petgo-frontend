@@ -13,19 +13,18 @@ export class NotificationsService {
   private readonly apiUrl = environment.apiUrl;
   private sseClient = inject(SseClient);
   private authService = inject(AuthService);
-  private notificationId = 1;
 
   public getNotifications(): Observable<Notification> {
     return new Observable((observer) => {
       const headers = new HttpHeaders().set(
         'Authorization',
-        `Bearer ${this.authService.accessToken}`,
+        `Bearer ${this.authService.accessToken()}`,
       );
 
       this.sseClient
         .stream(
           `${this.apiUrl}/notifications/stream`,
-          { keepAlive: true, reconnectionDelay: 1_000, responseType: 'event' },
+          { keepAlive: true, reconnectionDelay: 1000, responseType: 'event' },
           { headers },
           'GET',
         )
@@ -36,7 +35,6 @@ export class NotificationsService {
           } else {
             const messageEvent = event as MessageEvent;
             observer.next({
-              id: this.notificationId++,
               title: messageEvent.type,
               content: messageEvent.data,
             });
