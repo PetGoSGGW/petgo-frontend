@@ -1,6 +1,4 @@
-<div class="container">
-  <span class="container-title">Skończone spacery</span>
-
+<app-section-wrapper header="Ukończone spacery">
   @if (completedWalks.isLoading()) {
     <mat-progress-spinner />
   } @else if (completedWalks.error()) {
@@ -11,14 +9,14 @@
         <mat-list-item>
           <img
             matListItemAvatar
-            src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+            [src]="reservation.dog.photos.at(0)?.url"
             [alt]="reservation.dog.name"
           />
           <span matListItemTitle class="list-item-title">{{ reservation.dog.name }}</span>
           <div matListItemLine class="row">
             <span>
-              {{ reservation.scheduledStart | date: 'dd.MM.yyyy HH:mm' }} -
-              {{ reservation.scheduledEnd | date: 'HH:mm' }}
+              {{ reservation.scheduledStart | luxon: 'dd.LL.yyyy HH:mm' }} -
+              {{ reservation.scheduledEnd | luxon: 'HH:mm' }}
             </span>
 
             <span> {{ reservation.walker.username }}</span>
@@ -29,4 +27,4 @@
       }
     </mat-list>
   }
-</div>
+</app-section-wrapper>

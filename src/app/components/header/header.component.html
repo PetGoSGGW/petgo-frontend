@@ -14,7 +14,12 @@
       <mat-icon>notifications</mat-icon>
     </a>
 
-    <a matIconButton class="profile-username mobile" aria-label="Użytkownik">
+    <a
+      matIconButton
+      [routerLink]="['/uzytkownik/', id()]"
+      class="profile-username mobile"
+      aria-label="Użytkownik"
+    >
       <mat-icon>person</mat-icon>
     </a>
 

@@ -2,7 +2,7 @@ export interface UserReview {
   rating: number;
   comment: string;
   author: Author;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface Author {

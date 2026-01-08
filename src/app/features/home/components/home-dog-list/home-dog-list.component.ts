@@ -8,13 +8,14 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
 
 @Component({
   selector: 'app-home-dog-list',
   templateUrl: './home-dog-list.component.html',
   styleUrl: './home-dog-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatProgressSpinner, MatIcon, MatButton, MatCardModule],
+  imports: [MatProgressSpinner, MatIcon, MatButton, MatCardModule, SectionWrapperComponent],
 })
 export class HomeDogListComponent {
   private readonly matDialog = inject(MatDialog);
