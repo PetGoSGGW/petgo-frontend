@@ -26,6 +26,13 @@ export const routes: Routes = [
           import('./features/contact/contact.routes').then((r) => r.contactRoutes),
       },
       {
+        path: 'powiadomienia',
+        loadChildren: () =>
+          import('./features/notifications/notifications.routes').then(
+            (r) => r.notificationsRoutes,
+          ),
+      },
+      {
         path: 'spacer',
         loadChildren: () => import('./features/walk/walk.routes').then((r) => r.walkRoutes),
       },
