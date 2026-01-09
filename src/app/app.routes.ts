@@ -4,12 +4,14 @@ import { ReservationApiService } from './services/reservation-api.service';
 import { DogApiService } from './services/dog-api.service';
 import { UserOfferService } from './services/user-offer.service';
 import { UserOfferApiService } from './services/user-offer-api.service';
+import { userOfferResolverFn } from './resolvers/user-offer.resolver';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./components/layout/layout.component'),
     canActivate: [authGuard],
+    resolve: { offerResolverFn: userOfferResolverFn },
     providers: [UserOfferService, UserOfferApiService],
     children: [
       {
@@ -22,6 +24,13 @@ export const routes: Routes = [
         path: 'kontakt',
         loadChildren: () =>
           import('./features/contact/contact.routes').then((r) => r.contactRoutes),
+      },
+      {
+        path: 'powiadomienia',
+        loadChildren: () =>
+          import('./features/notifications/notifications.routes').then(
+            (r) => r.notificationsRoutes,
+          ),
       },
       {
         path: 'spacer',
