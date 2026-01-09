@@ -81,7 +81,7 @@
         [length]="total()"
         [pageSize]="size()"
         [pageSizeOptions]="[size()]"
-        (page)="page.set($event.pageIndex + 1)"
+        (page)="pageIndex.set($event.pageIndex)"
         aria-label="Wybierz stronę"
       />
     }

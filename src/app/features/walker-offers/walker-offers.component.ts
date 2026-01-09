@@ -66,6 +66,8 @@ export class WalkerOffersComponent {
     ),
   );
 
+  protected readonly pageIndex = signal(0);
+  protected readonly size = signal(10).asReadonly();
   protected readonly radius = signal<number>(2);
 
   protected offers = rxResource({
@@ -77,7 +79,7 @@ export class WalkerOffersComponent {
       return {
         radius: this.radius(),
         coordinates: location,
-        page: this.page() - 1,
+        page: this.pageIndex(),
       };
     },
     stream: ({ params: { radius, coordinates, page } }) =>
@@ -94,7 +96,9 @@ export class WalkerOffersComponent {
             content: response.content.map((offer) => ({
               ...offer,
               slots:
-                offer.slots?.filter((s) => DateTime.fromISO(s.startTime) > DateTime.now()) ?? [],
+                offer.slots?.filter(
+                  (s) => DateTime.fromISO(s.startTime) > DateTime.now().plus({ day: 1 }),
+                ) ?? [],
             })),
           })),
           map((response) => ({
@@ -113,8 +117,6 @@ export class WalkerOffersComponent {
   protected readonly count = computed(() =>
     this.offers.hasValue() ? this.offers.value().number : 0,
   );
-  protected readonly page = signal(1);
-  protected readonly size = signal(10).asReadonly();
 
   protected openReservationDialog({ offerId, slots }: WalkerOffer): void {
     this.dialog

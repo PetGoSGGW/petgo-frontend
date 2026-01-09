@@ -71,7 +71,7 @@
 <app-section-wrapper [header]="reviewSectionHeader()">
   <div slot="extras" class="rating-badge">
     <mat-icon>star</mat-icon>
-    {{ reviews.hasValue() ? reviews.value().avgRating : 0 }}
+    {{ reviews.hasValue() ? reviews.value().avgRating.toFixed(2) : 0 }}
   </div>
 
   @if (reviews.isLoading()) {
@@ -102,7 +102,7 @@
         </div>
 
         @if (!last) {
-          <mat-divider></mat-divider>
+          <mat-divider />
         }
       } @empty {
         <mat-hint>Użytkownik nie ma żadnej opinii</mat-hint>
@@ -138,7 +138,7 @@
           </div>
         </li>
       } @empty {
-        <li class="list-item-empty">Nie masz żadnych traksakcji</li>
+        <li class="list-item-empty">Nie znaleziono transakcji</li>
       }
     </ul>
   }
