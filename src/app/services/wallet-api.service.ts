@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Transaction } from '../models/transaction.model';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 import { Wallet } from '../models/wallet.model';
 
 @Injectable()
@@ -10,11 +10,25 @@ export class WalletApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
-  public getTransactions$(id: number): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.apiUrl}/wallet/${id}/transactions`);
+  public getTransactions$(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(`${this.apiUrl}/wallet/me/transactions`).pipe(
+      catchError((error) => {
+        if (error instanceof HttpErrorResponse && error.status === 404) {
+          return of([]);
+        }
+        return throwError(() => error);
+      }),
+    );
   }
 
-  public getWallet$(id: number): Observable<Wallet> {
-    return this.http.get<Wallet>(`${this.apiUrl}/wallet/${id}`);
+  public getWallet$(): Observable<Wallet | null> {
+    return this.http.get<Wallet | null>(`${this.apiUrl}/wallet/me`).pipe(
+      catchError((error) => {
+        if (error instanceof HttpErrorResponse && error.status === 404) {
+          return of(null);
+        }
+        return throwError(() => error);
+      }),
+    );
   }
 }

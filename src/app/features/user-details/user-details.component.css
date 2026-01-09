@@ -393,6 +393,11 @@ ul {
       gap: 0.2rem;
     }
   }
+
+  .list-item-empty {
+    background-color: transparent;
+    padding: 0;
+  }
 }
 
 @media (min-width: 768px) {

@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { Dog } from '../models/dog.model';
 import { Breed } from '../models/breed.model';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +19,8 @@ export class DogApiService {
     });
   }
 
-  public getDogs$(): Observable<Dog[]> {
-    return this.http.get<Dog[]>(`${this.apiUrl}/dogs`);
+  public getDogs$(ownerId: User['id']): Observable<Dog[]> {
+    return this.http.get<Dog[]>(`${this.apiUrl}/dogs`, { params: { ownerId } });
   }
 
   public addDog$(body: {

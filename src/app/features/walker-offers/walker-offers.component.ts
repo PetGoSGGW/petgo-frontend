@@ -11,6 +11,7 @@ import {
 } from './components/walker-offer-reservation-dialog/walker-offer-reservation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { filter, map, tap } from 'rxjs';
+import { DateTime } from 'luxon';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -73,14 +74,34 @@ export class WalkerOffersComponent {
 
       if (!location) return undefined;
 
-      return { radius: this.radius(), coordinates: location };
+      return {
+        radius: this.radius(),
+        coordinates: location,
+        page: this.page() - 1,
+      };
     },
-    stream: ({ params: { radius, coordinates } }) =>
-      this.offersService.getOffers({
-        latitude: coordinates.lat,
-        longitude: coordinates.lng,
-        radiusKm: radius,
-      }),
+    stream: ({ params: { radius, coordinates, page } }) =>
+      this.offersService
+        .getOffers({
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          radiusKm: radius,
+          page,
+        })
+        .pipe(
+          map((response) => ({
+            ...response,
+            content: response.content.map((offer) => ({
+              ...offer,
+              slots:
+                offer.slots?.filter((s) => DateTime.fromISO(s.startTime) > DateTime.now()) ?? [],
+            })),
+          })),
+          map((response) => ({
+            ...response,
+            content: response.content.filter((offer) => offer.slots.length > 0),
+          })),
+        ),
   });
 
   protected readonly shouldShowMap = signal(true);

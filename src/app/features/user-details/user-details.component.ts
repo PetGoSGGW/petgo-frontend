@@ -15,10 +15,10 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { LuxonPipe } from '../../pipes/luxon.pipe';
 import { WalletApiService } from '../../services/wallet-api.service';
-import { AuthService } from '../../core/auth/services/auth.service';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 import { FromCentsPipe } from '../../pipes/from-cents.pipe';
 import { DogsGridComponent } from '../../components/dog-grid/dogs-grid.component';
+import { AuthService } from '../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-user-details',
@@ -54,7 +54,7 @@ export class UserDetailsComponent {
 
   public readonly id = input.required<number, string>({ transform: numberAttribute });
 
-  private readonly userId = this.authService.userId;
+  protected readonly userId = this.authService.userId;
 
   protected readonly user = rxResource({
     params: () => ({ id: this.id() }),
@@ -77,17 +77,11 @@ export class UserDetailsComponent {
   });
 
   protected readonly transactions = rxResource({
-    params: () => {
-      const id = this.id();
+    stream: () => this.walletApi.getTransactions$(),
+  });
 
-      if (id !== this.userId()) {
-        return undefined;
-      }
-
-      // TODO: should be wallet id
-      return { id };
-    },
-    stream: ({ params: { id } }) => this.walletApi.getTransactions$(id),
+  protected readonly wallet = rxResource({
+    stream: () => this.walletApi.getWallet$(),
   });
 
   protected getAvatarUrl(): string | null {

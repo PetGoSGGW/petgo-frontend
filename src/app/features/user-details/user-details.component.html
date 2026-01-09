@@ -44,6 +44,30 @@
   }
 </app-section-wrapper>
 
+@if (id() === userId()) {
+  <app-section-wrapper header="Portfel">
+    @if (wallet.isLoading()) {
+      <mat-spinner />
+    } @else if (wallet.error()) {
+      <mat-error>Błąd podczas pobierania pupilów</mat-error>
+    } @else if (wallet.hasValue()) {
+      @if (wallet.value(); as walletValue) {
+        <div>
+          <mat-label>Stan konta</mat-label>
+          <span>{{ walletValue.balanceCents | fromCents }}</span>
+        </div>
+
+        <div>
+          <mat-label>Waluta</mat-label>
+          <span>{{ walletValue.currency }}</span>
+        </div>
+      } @else {
+        <span class="empty">Nie masz portfela</span>
+      }
+    }
+  </app-section-wrapper>
+}
+
 <app-section-wrapper [header]="reviewSectionHeader()">
   <div slot="extras" class="rating-badge">
     <mat-icon>star</mat-icon>
@@ -114,9 +138,7 @@
           </div>
         </li>
       } @empty {
-        <li>
-          <mat-hint>Nie masz żadnych traksakcji</mat-hint>
-        </li>
+        <li class="list-item-empty">Nie masz żadnych traksakcji</li>
       }
     </ul>
   }
