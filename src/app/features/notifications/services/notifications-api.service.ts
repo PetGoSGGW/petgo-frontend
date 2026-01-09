@@ -1,15 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Notification } from './notification';
-import { environment } from '../../environments/environment.development';
+import { Notification } from '../models/notification';
 import { SseClient } from 'ngx-sse-client';
 import { HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../core/auth/services/auth.service';
+import { AuthService } from '../../../core/auth/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class NotificationsService {
+@Injectable()
+export class NotificationsApiService {
   private readonly apiUrl = environment.apiUrl;
   private sseClient = inject(SseClient);
   private authService = inject(AuthService);

@@ -28,7 +28,9 @@ export const routes: Routes = [
       {
         path: 'powiadomienia',
         loadChildren: () =>
-          import('./notifications/notifications.routes').then((r) => r.notificationsRoutes),
+          import('./features/notifications/notifications.routes').then(
+            (r) => r.notificationsRoutes,
+          ),
       },
       {
         path: 'spacer',
