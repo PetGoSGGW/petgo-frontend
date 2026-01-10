@@ -1,43 +1,51 @@
 <div class="chat-container">
   <header class="chat-header">
     <div class="header-content">
-      <h2>Czat dot. rezerwacji #{{ reservationId() }}</h2>
+      <div class="interlocutor-info">
+        @if (chatResource.isLoading() && !chatResource.value()) {
+          <mat-spinner diameter="20"></mat-spinner>
+          <span style="margin-left: 10px; font-size: 14px; color: #666">Ładowanie rozmowy...</span>
+        } @else if (interlocutor(); as user) {
+          <div class="avatar-circle">
+            <img [src]="getAvatarUrl(user.firstName, user.lastName)" [alt]="user.firstName" />
+          </div>
+          <div class="user-details">
+            <h3>{{ user.firstName }} {{ user.lastName }}</h3>
+          </div>
+        }
+      </div>
     </div>
   </header>
 
   <div class="messages-area" #messagesContainer>
-    @if (chatResource.isLoading()) {
+    @if (chatResource.isLoading() && !chatResource.value()) {
       <div class="loading-state">
         <mat-spinner diameter="40"></mat-spinner>
       </div>
     } @else if (chatResource.error()) {
       <div class="error-state">
-        <mat-icon color="warn">error</mat-icon>
-        <p>Błąd ładowania czatu.</p>
-        <button mat-button color="primary" (click)="refreshMessages()">Spróbuj ponownie</button>
+        <mat-spinner diameter="40"></mat-spinner>
       </div>
-    } @else {
-      @if (chatResource.value(); as data) {
-        @for (msg of data.messages; track $index) {
+    } @else if (chatResource.value(); as data) {
+      @for (msg of data.messages; track $index) {
+        <div
+          class="message-row"
+          [class.my-message-row]="msg.senderId === currentUserId()"
+          [class.other-message-row]="msg.senderId !== currentUserId()"
+        >
           <div
-            class="message-row"
-            [class.my-message-row]="msg.senderId === currentUserId()"
-            [class.other-message-row]="msg.senderId !== currentUserId()"
+            class="message-bubble"
+            [matTooltip]="msg.sentAt | date: 'HH:mm'"
+            matTooltipPosition="above"
           >
-            <div
-              class="message-bubble"
-              matTooltip="{{ msg.sentAt | date: 'HH:mm' }}"
-              [matTooltipPosition]="msg.senderId === currentUserId() ? 'before' : 'after'"
-            >
-              {{ msg.content }}
-            </div>
+            {{ msg.content }}
           </div>
-        } @empty {
-          <div class="empty-state">
-            <mat-icon>chat_bubble_outline</mat-icon>
-            <p>Brak wiadomości. Rozpocznij rozmowę!</p>
-          </div>
-        }
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <p>Rozpocznij rozmowę z {{ interlocutor()?.firstName }}!</p>
+        </div>
       }
     }
   </div>
@@ -51,14 +59,14 @@
         (ngModelChange)="newMessageText.set($event)"
         (keyup.enter)="sendMessage()"
         autocomplete="off"
-        [disabled]="chatResource.isLoading() || !!chatResource.error()"
+        [disabled]="chatResource.isLoading() && !chatResource.value()"
       />
       <button
         mat-icon-button
         matSuffix
         color="primary"
         (click)="sendMessage()"
-        [disabled]="!newMessageText() || chatResource.isLoading()"
+        [disabled]="!newMessageText()"
       >
         <mat-icon>send</mat-icon>
       </button>

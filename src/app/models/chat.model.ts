@@ -1,6 +1,14 @@
+export interface ChatUser {
+  userId: number;
+  firstName: string;
+  lastName: string;
+}
+
 export interface Chat {
   chatId: number;
   reservationId: number;
+  owner: ChatUser;
+  walker: ChatUser;
 }
 
 export interface ChatMessage {
@@ -15,6 +23,6 @@ export interface SendMessageDto {
 }
 
 export interface ChatSessionData {
-  chatId: number;
+  chat: Chat;
   messages: ChatMessage[];
 }

@@ -1,5 +1,15 @@
-import { Component, computed, ElementRef, inject, input, signal, viewChild } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop'; // <--- WAŻNY IMPORT
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  viewChild,
+  effect,
+  untracked,
+} from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,10 +19,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { map, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { of, timer } from 'rxjs';
 import { ChatApiService } from '../../services/chat-api.service';
-import { ChatSessionData } from '../../models/chat.model';
+import { ChatUser } from '../../models/chat.model';
 import { AuthService } from '../../core/auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -33,35 +44,76 @@ import { AuthService } from '../../core/auth/services/auth.service';
 export class ChatComponent {
   private readonly chatService = inject(ChatApiService);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   public readonly reservationId = input.required<number>();
+
   public readonly newMessageText = signal<string>('');
+  public readonly messagesContainer = viewChild<ElementRef>('messagesContainer');
   public readonly currentUserId = computed(() => this.authService.session()?.userId);
 
-  public readonly messagesContainer = viewChild<ElementRef>('messagesContainer');
+  // --- ZASÓB GŁÓWNY (Czat + Wiadomości) ---
   public readonly chatResource = rxResource({
-    params: () => ({
-      id: this.reservationId(),
-    }),
-    stream: ({ params: { id } }): Observable<ChatSessionData | undefined> =>
-      this.chatService.getChatByReservationId(id).pipe(
-        switchMap((chat) =>
-          this.chatService.getMessages(chat.chatId).pipe(
-            map((messages) => ({
-              chatId: chat.chatId,
-              messages,
-            })),
-          ),
+    params: () => ({ id: this.reservationId() }),
+    stream: ({ params: { id } }) => {
+      if (!id) return of(undefined);
+
+      // Uruchamiamy timer, który będzie emitował sygnał co 5 sekund
+      return timer(0, 3000).pipe(
+        // switchMap anuluje poprzednie zapytanie, jeśli nowy "cykl" timera się zacznie
+        // (lub gdy zmieni się id), i wykonuje nową logikę pobierania
+        switchMap(() =>
+          this.chatService
+            .getChatByReservationId(id)
+            .pipe(
+              switchMap((chat) =>
+                this.chatService
+                  .getMessages(chat.chatId)
+                  .pipe(map((messages) => ({ chat, messages }))),
+              ),
+            ),
         ),
-      ),
+      );
+    },
   });
+
+  // --- OBLICZANIE ROZMÓWCY (Interlocutor) ---
+  // To computed automatycznie określa, z kim rozmawiamy
+  public readonly interlocutor = computed<ChatUser | null>(() => {
+    if (this.chatResource.error()) {
+      return null;
+    }
+    const data = this.chatResource.value();
+    const myId = this.currentUserId();
+
+    if (!data || !myId) return null;
+    return myId === data.chat.walker.userId ? data.chat.owner : data.chat.walker;
+  });
+
+  constructor() {
+    effect(() => {
+      if (this.chatResource.error()) {
+        this.router.navigate(['/']);
+      }
+    });
+    effect(() => {
+      if (this.chatResource.error()) return;
+      const data = this.chatResource.value();
+      untracked(() => {
+        if (data?.messages) {
+          this.scrollToBottom();
+        }
+      });
+    });
+  }
 
   public sendMessage(): void {
     const text = this.newMessageText().trim();
-    // Pobieramy aktualną wartość z zasobu
     const currentData = this.chatResource.value();
     const senderId = this.currentUserId();
-    if (!text || !currentData?.chatId || !senderId) return;
+
+    // currentData.chat.chatId zamiast samego chatId
+    if (!text || !currentData?.chat.chatId || !senderId) return;
 
     const payload = {
       senderId,
@@ -69,48 +121,33 @@ export class ChatComponent {
       sentAt: new Date(),
     };
 
-    // Optymistyczna aktualizacja (lokalna)
+    // Optymistyczna aktualizacja
     this.chatResource.update((state) => {
       if (!state) return state;
       return {
         ...state,
-        messages: [...state.messages, { ...payload }],
+        messages: [...state.messages, payload], // casting jeśli typy się gryzą
       };
     });
 
     this.newMessageText.set('');
     this.scrollToBottom();
 
-    // Wysyłka do API
-    this.chatService.sendMessage(currentData.chatId, payload).subscribe({
-      error: () => {
-        this.chatResource.reload(); // W razie błędu przywróć stan z serwera
-        // Tu można dodać Toast/SnackBar z informacją o błędzie
-      },
+    this.chatService.sendMessage(currentData.chat.chatId, payload).subscribe({
+      error: () => this.chatResource.reload(),
     });
   }
-
-  public refreshMessages(): void {
-    // rxResource ma wbudowaną metodę reload()
-    this.chatResource.reload();
-  }
-
-  // Helper do scrollowania (wywoływany w HTML po załadowaniu)
-  public onMessagesLoaded(): void {
-    this.scrollToBottom();
-  }
-
   private scrollToBottom(): void {
-    // setTimeout jest nadal potrzebny, aby dać przeglądarce czas na przerysowanie DOM
     setTimeout(() => {
-      // 1. Odczytujemy wartość sygnału przez nawiasy ()
       const container = this.messagesContainer();
-
-      // 2. Sprawdzamy czy element istnieje (sygnał może zwrócić undefined)
       if (container) {
-        const el = container.nativeElement;
-        el.scrollTop = el.scrollHeight;
+        container.nativeElement.scrollTop = container.nativeElement.scrollHeight;
       }
     }, 100);
+  }
+
+  // Helper do awatara
+  public getAvatarUrl(firstName: string, lastName: string): string {
+    return `https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=random&color=fff`;
   }
 }
