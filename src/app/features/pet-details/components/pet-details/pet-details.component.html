@@ -64,12 +64,12 @@
           </div>
         }
 
-        @if (getPhotos(currentDog.dogId).length > 1) {
+        @if (getPhotos().length > 1) {
           <mat-divider></mat-divider>
           <div class="dog-photos-extra">
             <h3>Zdjęcia</h3>
             <div class="photos-row">
-              @for (photo of getPhotos(currentDog.dogId); track photo; let idx = $index) {
+              @for (photo of getPhotos(); track photo; let idx = $index) {
                 @if (idx > 0) {
                   <img
                     class="dog-photo-thumb"
@@ -119,12 +119,7 @@
 
         <mat-divider class="reviews-divider"></mat-divider>
 
-        <form
-          [formGroup]="reviewForm"
-          (ngSubmit)="onSubmitReview()"
-          class="review-form"
-          novalidate
-        >
+        <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form" novalidate>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Dodaj opinię o tym psie</mat-label>
             <textarea matInput rows="4" formControlName="text"></textarea>
@@ -144,12 +139,7 @@
           </div>
 
           <div class="review-actions">
-            <button
-              mat-raised-button
-              color="primary"
-              type="submit"
-              [disabled]="reviewForm.invalid"
-            >
+            <button mat-raised-button color="primary" type="submit" [disabled]="reviewForm.invalid">
               Dodaj opinię
             </button>
           </div>

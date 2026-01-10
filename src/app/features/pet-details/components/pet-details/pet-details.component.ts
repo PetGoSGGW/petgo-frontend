@@ -28,7 +28,14 @@ import { CreateReviewRequest, DogReview, Review } from '../../../../models/revie
 
 const CURRENT_USER_ID = 1;
 
-type DogReviewWithRating = DogReview & { rating: number };
+interface DogReviewItem {
+  id: string;
+  authorName: string;
+  createdAt: Date;
+  text: string;
+  rating: number;
+  reported: boolean;
+}
 
 @Component({
   selector: 'app-pet-details',
@@ -66,7 +73,7 @@ export class PetDetailsComponent {
     transform: (id) => Number(id),
   });
 
-  public readonly reviews = signal<DogReviewWithRating[]>([]);
+  public readonly reviews = signal<DogReviewItem[]>([]);
 
   public readonly reviewForm = new FormGroup<{
     text: FormControl<string>;
@@ -105,14 +112,14 @@ export class PetDetailsComponent {
     });
   }
 
-  private mapReviews(list: Review[]): DogReviewWithRating[] {
+  private mapReviews(list: Review[]): DogReviewItem[] {
     return (list ?? []).map((r) => ({
-      id: `${r.createdAt}-${r.authorDto?.userId ?? 'unknown'}`,
+      id: `${r.createdAt}-${r.authorDto?.userId ?? 'unknown'}-${r.rating ?? '0'}`,
       authorName:
         `${r.authorDto?.firstName ?? ''} ${r.authorDto?.lastName ?? ''}`.trim() || 'Nieznany',
       createdAt: new Date(r.createdAt),
       text: r.comment ?? '',
-      rating: r?.rating ?? 0, 
+      rating: r.rating ?? 0,
       reported: false,
     }));
   }
@@ -179,9 +186,9 @@ export class PetDetailsComponent {
     if (!text) return;
 
     const payload: CreateReviewRequest = {
-      reservationId: 0,
+      reservationId: 0, 
       reviewType: 'DOG',
-      rating: rating,
+      rating, 
       comment: text, 
     };
 
