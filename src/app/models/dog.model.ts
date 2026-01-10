@@ -1,4 +1,5 @@
 import { Breed } from './breed.model';
+import { BasicUserInfo } from './user.model';
 
 export interface Photo {
   photoId: number;
@@ -18,4 +19,11 @@ export interface Dog {
   createdAt: string;
   updatedAt: string;
   photos: Photo[];
+}
+
+export interface BasicDogInfo {
+  dogId: number;
+  name: string;
+  breed: Breed;
+  ownerInfoDto: BasicUserInfo;
 }
