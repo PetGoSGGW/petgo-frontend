@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { WalkerReviewsResponse } from '../models/userReview.model';
@@ -12,6 +12,9 @@ export class UserApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
+  public getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  }
   public getUser(id: User['id']): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/users/${id}`);
   }

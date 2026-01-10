@@ -12,7 +12,7 @@
     />
   }
 
-  <div class="container">
+  <app-section-wrapper header="Oferty">
     <div class="filters">
       <mat-form-field [subscriptSizing]="'dynamic'">
         <mat-label>Zasięg</mat-label>
@@ -44,7 +44,7 @@
             </a>
 
             <div class="additional">
-              <span class="item-price">{{ offer.priceCents }}zł</span>
+              <span class="item-price">{{ offer.priceCents | fromCents }}zł</span>
 
               <mat-divider [vertical]="true" />
               <span class="item-date">{{ offer.createdAt | date: 'dd.MM.yyyy' }}</span>
@@ -52,7 +52,7 @@
           </div>
 
           <div class="row">
-            <span>Opis: {{ offer.description }}</span>
+            <span>{{ offer.description }}</span>
           </div>
 
           <div class="item-footer">
@@ -89,9 +89,9 @@
         [length]="total()"
         [pageSize]="size()"
         [pageSizeOptions]="[size()]"
-        (page)="page.set($event.pageIndex + 1)"
+        (page)="pageIndex.set($event.pageIndex)"
         aria-label="Wybierz stronę"
       />
     }
-  </div>
+  </app-section-wrapper>
 }

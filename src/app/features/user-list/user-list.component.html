@@ -1,0 +1,49 @@
+<app-section-wrapper header="Wyszukiwanie użytkowników">
+  <div class="search-section">
+    <mat-form-field
+      appearance="outline"
+      class="full-width search-field"
+      [subscriptSizing]="'dynamic'"
+    >
+      <mat-label>Szukaj po imieniu lub nazwie</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput type="text" [(ngModel)]="searchQuery" placeholder="np. Kasia" />
+      @if (searchQuery()) {
+        <button mat-icon-button matSuffix (click)="searchQuery.set('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="results-list">
+    <div class="empty-state">
+      @if (users.isLoading()) {
+        <mat-spinner />
+        <p>Ładowanie użytkowników...</p>
+      } @else if (users.error()) {
+        <mat-error>Błąd podczas pobierania informacji o użytkowniku</mat-error>
+      } @else if (users.hasValue()) {
+        @for (user of filteredUsers(); track user.id) {
+          <div class="user-item" [routerLink]="['/uzytkownik', user.id]" matRipple>
+            <div class="user-item-details">
+              <div class="avatar-wrapper">
+                <img [src]="getAvatarUrl(user)" [alt]="user.username" />
+              </div>
+
+              <div class="user-info">
+                <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>
+                <span class="username">&#64;{{ user.username }}</span>
+              </div>
+            </div>
+
+            <mat-icon>chevron_right</mat-icon>
+          </div>
+        } @empty {
+          <mat-icon>search_off</mat-icon>
+          <p>Nie znaleziono użytkowników pasujących do "{{ searchQuery() }}"</p>
+        }
+      }
+    </div>
+  </div>
+</app-section-wrapper>

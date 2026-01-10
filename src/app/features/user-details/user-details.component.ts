@@ -1,4 +1,4 @@
-import { Component, inject, input, numberAttribute } from '@angular/core';
+import { Component, computed, inject, input, numberAttribute } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,11 +9,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule, MatError } from '@angular/material/form-field';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatError, MatFormFieldModule, MatHint } from '@angular/material/form-field';
 import { UserApiService } from '../../services/user-api.service';
 import { DogApiService } from '../../services/dog-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { LuxonPipe } from '../../pipes/luxon.pipe';
+import { WalletApiService } from '../../services/wallet-api.service';
+import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
+import { FromCentsPipe } from '../../pipes/from-cents.pipe';
+import { DogsGridComponent } from '../../components/dog-grid/dogs-grid.component';
+import { AuthService } from '../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-user-details',
@@ -31,15 +37,26 @@ import { rxResource } from '@angular/core/rxjs-interop';
     RouterLink,
     MatProgressSpinner,
     MatError,
+    LuxonPipe,
+    MatHint,
+    SectionWrapperComponent,
+    FromCentsPipe,
+    LuxonPipe,
+    SectionWrapperComponent,
+    DogsGridComponent,
   ],
   templateUrl: './user-details.component.html',
-  styleUrls: ['./user-details.component.css'], // <- poprawiona nazwa
+  styleUrl: './user-details.component.css',
 })
 export class UserDetailsComponent {
   private readonly userApiService = inject(UserApiService);
   private readonly dogApiService = inject(DogApiService);
+  private readonly walletApi = inject(WalletApiService);
+  private readonly authService = inject(AuthService);
 
   public readonly id = input.required<number, string>({ transform: numberAttribute });
+
+  protected readonly userId = this.authService.userId;
 
   protected readonly user = rxResource({
     params: () => ({ id: this.id() }),
@@ -50,22 +67,36 @@ export class UserDetailsComponent {
     params: () => ({ id: this.id() }),
     stream: ({ params: { id } }) => this.dogApiService.getDogsByUserId(id),
   });
-
-  // <- WAŻNE: reviews musi być protected/public
   protected readonly reviews = rxResource({
     params: () => ({ id: this.id() }),
     stream: ({ params: { id } }) => this.userApiService.getUserReviews(id),
   });
 
-  // średnia ocena: odczytujemy z reviews.value().avgRating
   protected get avgRating(): number {
     return this.reviews.hasValue() ? this.reviews.value().avgRating : 0;
   }
+
+  protected readonly reviewSectionHeader = computed(() => {
+    const count = this.reviews.hasValue() ? this.reviews.value().reviewDTOList.length : 0;
+
+    return `Opinie ${count ? '(' + count + ')' : ''}`;
+  });
+
+  protected readonly transactions = rxResource({
+    stream: () => this.walletApi.getTransactions$(),
+  });
+
+  protected readonly wallet = rxResource({
+    stream: () => this.walletApi.getWallet$(),
+  });
 
   protected getAvatarUrl(): string | null {
     const u = this.user.hasValue() ? this.user.value() : null;
 
     if (!u) return `https://ui-avatars.com/api/?name=AA&background=random&color=fff&size=200`;
+    // Generuje awatar z inicjałami (np. Anna Nowak -> AN)
+    // background=random: losowy kolor tła
+    // color=fff: biały tekst
     return `https://ui-avatars.com/api/?name=${u.firstName}+${u.lastName}&background=random&color=fff&size=200`;
   }
 
