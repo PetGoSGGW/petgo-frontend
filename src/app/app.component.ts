@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Amplify } from 'aws-amplify';
 import outputs from '../../amplify_outputs.json';
-import { environment } from '../environments/environment.development';
+import { environment } from '../environments/environment';
 
 if (environment.production) {
   Amplify.configure(outputs);

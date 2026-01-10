@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { MatCard, MatCardContent, MatCardImage } from '@angular/material/card';
+import { MatCard, MatCardActions, MatCardContent, MatCardImage } from '@angular/material/card';
 import { Dog } from '../../models/dog.model';
+import { RouterLink } from '@angular/router';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-dogs-grid',
@@ -18,6 +20,9 @@ import { Dog } from '../../models/dog.model';
 
             <p>{{ dog.notes }}</p>
           </mat-card-content>
+          <mat-card-actions [align]="'end'">
+            <a [routerLink]="['/pupile', dog.dogId]" matButton="tonal">Zobacz</a>
+          </mat-card-actions>
         </mat-card>
       } @empty {
         <ng-content />
@@ -26,7 +31,7 @@ import { Dog } from '../../models/dog.model';
   `,
   styleUrl: 'dogs-grid.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCard, MatCardContent, MatCardImage],
+  imports: [MatCard, MatCardContent, MatCardActions, MatCardImage, RouterLink, MatButton],
 })
 export class DogsGridComponent {
   public readonly dogs = input.required<Dog[]>();
