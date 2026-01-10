@@ -128,7 +128,11 @@ export class PetDetailsComponent {
     return dog.ownerId === CURRENT_USER_ID;
   }
 
-  public getPhotos(_dogId: number): string[] {
+  public getPhotos(dogId: number): string[] {
+    if (!dogId) {
+      return [];
+    }
+
     return this.dog()?.photos?.map((e) => e.url) ?? [];
   }
 
@@ -186,10 +190,10 @@ export class PetDetailsComponent {
     if (!text) return;
 
     const payload: CreateReviewRequest = {
-      reservationId: 0, 
+      reservationId: 0,
       reviewType: 'DOG',
-      rating, 
-      comment: text, 
+      rating,
+      comment: text,
     };
 
     this.reviewApi.createReview(payload).subscribe({

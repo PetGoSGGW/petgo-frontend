@@ -64,12 +64,12 @@
           </div>
         }
 
-        @if (getPhotos().length > 1) {
+        @if (getPhotos(currentDog.dogId).length > 1) {
           <mat-divider></mat-divider>
           <div class="dog-photos-extra">
             <h3>Zdjęcia</h3>
             <div class="photos-row">
-              @for (photo of getPhotos(); track photo; let idx = $index) {
+              @for (photo of getPhotos(currentDog.dogId); track photo; let idx = $index) {
                 @if (idx > 0) {
                   <img
                     class="dog-photo-thumb"
