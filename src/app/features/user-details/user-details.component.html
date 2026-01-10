@@ -41,13 +41,13 @@
           } @else if (dogs.hasValue()) {
             <div class="pets-list">
               @for (dog of dogs.value(); track dog.dogId) {
-                <div class="pet-card-mini" [routerLink]="['/pets', dog.dogId]">
+                <a class="pet-card-mini" [routerLink]="['/pupile', dog.dogId]">
                   <img [src]="dog.photos.at(0)?.url" [alt]="dog.name" class="pet-mini-photo" />
                   <div class="pet-mini-info">
                     <span class="pet-name">{{ dog.name }}</span>
                     <span class="pet-details">{{ dog.breed.name }}, {{ dog.weightKg }}kg</span>
                   </div>
-                </div>
+                </a>
               } @empty {
                 <span class="empty">Nie znaleziono pupilów</span>
               }

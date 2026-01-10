@@ -6,6 +6,11 @@
   padding: 24px 16px;
 }
 
+a {
+  text-decoration: none;
+  color: black;
+}
+
 .details-layout {
   max-width: 128rem;
   margin: 0 auto;
