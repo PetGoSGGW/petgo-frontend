@@ -1,10 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
-import { DatePipe, DecimalPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { DecimalPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
+
 import { WalkerOffer } from '../../models/walker-offer.model';
 import {
   WalkerOfferReservationDialogComponent,
@@ -13,20 +15,27 @@ import {
 import { UserApiService } from '../../../../services/user-api.service';
 import { UserReview } from '../../../../models/userReview.model';
 import { AvailableSlot } from '../../models/available-slot.model';
+import { FromCentsPipe } from '../../../../pipes/from-cents.pipe';
+import { LuxonPipe } from '../../../../pipes/luxon.pipe';
 
 export interface WalkerOfferDetailsDialogData {
   offer: WalkerOffer;
-  userLocation: {
-    lat: number;
-    lng: number;
-  } | null;
+  userLocation: { lat: number; lng: number } | null;
 }
 
 @Component({
-  standalone: true,
-  imports: [MatDialogModule, MatButton, MatDivider, DatePipe, DecimalPipe, MatIconModule],
+  imports: [
+    MatDialogModule,
+    MatButton,
+    MatDivider,
+    DecimalPipe,
+    MatIconModule,
+    FromCentsPipe,
+    LuxonPipe,
+  ],
   templateUrl: './walker-offer-details-dialog.component.html',
   styleUrls: ['./walker-offer-details-dialog.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalkerOfferDetailsDialogComponent {
   private readonly dialog = inject(MatDialog);
@@ -36,43 +45,64 @@ export class WalkerOfferDetailsDialogComponent {
   protected readonly offer = this.data.offer;
   protected readonly userLocation = this.data.userLocation;
 
-  protected getRatingForReview(rating: number, index: number): string {
-    if (rating >= index) {
-      return 'star';
-    } else if (rating >= index - 0.5) {
-      return 'star_half';
-    } else {
-      return 'star_border';
+  protected readonly reviewsResource = rxResource({
+    stream: () => this.userApi.getUserReviews(this.offer.walkerId),
+  });
+
+  protected readonly walkerInfoResource = rxResource({
+    stream: () =>
+      this.userApi
+        .getUser(this.offer.walkerId)
+        .pipe(map((user) => ({ dateOfBirth: user.dateOfBirth.toISOString() }))),
+  });
+
+  protected readonly reviewsList = computed<UserReview[]>(
+    () => this.reviewsResource.value()?.reviewDTOList ?? [],
+  );
+
+  protected readonly avgRating = computed<number>(
+    () => this.reviewsResource.value()?.avgRating ?? 0,
+  );
+
+  protected readonly age = computed<number>(() => {
+    const birth = this.walkerInfoResource.value()?.dateOfBirth;
+    if (!birth) return 0;
+
+    const dob = new Date(birth);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
     }
+    return age;
+  });
+
+  protected getRatingForReview(rating: number, index: number): string {
+    if (rating >= index) return 'star';
+    if (rating >= index - 0.5) return 'star_half';
+    return 'star_border';
   }
 
   private haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
     const toRad = (value: number) => (value * Math.PI) / 180;
-
-    const R = 6371; // promień Ziemi w km
+    const R = 6371;
     const dLat = toRad(lat2 - lat1);
     const dLng = toRad(lng2 - lng1);
-
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   protected readonly nearestSlot = (): AvailableSlot | null => {
-    if (!this.userLocation || !this.offer.slots?.length) {
-      return null;
-    }
+    if (!this.userLocation || !this.offer.slots?.length) return null;
 
     let nearest: AvailableSlot | null = null;
     let minDistance = Infinity;
 
     for (const slot of this.offer.slots) {
-      if (slot.latitude == null || slot.longitude == null) {
-        continue;
-      }
+      if (slot.latitude == null || slot.longitude == null) continue;
 
       const distance = this.haversineDistance(
         this.userLocation.lat,
@@ -86,19 +116,14 @@ export class WalkerOfferDetailsDialogComponent {
         nearest = slot;
       }
     }
-
     return nearest;
   };
 
   protected readonly distanceToWalker = (): number | null => {
-    if (!this.userLocation) {
-      return null;
-    }
+    if (!this.userLocation) return null;
 
     const slot = this.nearestSlot();
-    if (!slot) {
-      return null;
-    }
+    if (!slot) return null;
 
     return this.haversineDistance(
       this.userLocation.lat,
@@ -106,35 +131,6 @@ export class WalkerOfferDetailsDialogComponent {
       slot.latitude,
       slot.longitude,
     );
-  };
-
-  // response z backendu
-  protected readonly reviewsResponse = toSignal(this.userApi.getUserReviews(this.offer.walkerId));
-
-  protected readonly walkerInfoResponse = toSignal(this.userApi.getUser(this.offer.walkerId));
-
-  // helpery do template
-  protected readonly reviewsList = (): UserReview[] => this.reviewsResponse()?.reviewDTOList ?? [];
-
-  protected readonly avgRating = (): number => this.reviewsResponse()?.avgRating ?? 0;
-
-  protected readonly age = (): number => {
-    const birth = this.walkerInfoResponse()?.dateOfBirth;
-    if (!birth) {
-      return 0;
-    }
-
-    const dob = new Date(birth);
-    const today = new Date();
-
-    let age = today.getFullYear() - dob.getFullYear();
-    const monthDiff = today.getMonth() - dob.getMonth();
-
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-
-    return age;
   };
 
   protected openReservation(): void {

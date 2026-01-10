@@ -6,7 +6,7 @@
 
     <p class="price"><strong>Wiek:</strong> {{ age() }} l.</p>
 
-    <p class="price"><strong>Cena:</strong> {{ offer.priceCents }} zł / h</p>
+    <p class="price"><strong>Cena:</strong> {{ offer.priceCents | fromCents }} zł / h</p>
 
     <p class="price">
       <strong>Odległość:</strong>
@@ -19,13 +19,15 @@
       }
     </p>
 
-    <p class="description-label"><strong>Opis:</strong></p>
+    <p class="description-label">
+      <strong>Opis:</strong>
+    </p>
     <p class="description">{{ offer.description }}</p>
   </section>
 
   <mat-divider></mat-divider>
 
-  <!-- OCENY -->
+  <!-- ================= OPINIE ================= -->
   <section class="reviews-section">
     <div class="reviews-title-row">
       <h3>Opinie ({{ reviewsList().length }})</h3>
@@ -38,40 +40,38 @@
       }
     </div>
 
-    @if (reviewsList().length === 0) {
-      <p class="empty">Brak opinii</p>
-    } @else {
-      <div class="reviews-list">
-        @for (review of reviewsList(); track review.createdAt; let last = $last) {
-          <div class="review-row">
-            <div class="review-header">
-              <span class="author">
-                {{ review.authorDto.firstName }}
-                {{ review.authorDto.lastName }}
-              </span>
+    <div class="reviews-list">
+      @for (review of reviewsList(); track review.createdAt; let last = $last) {
+        <div class="review-row">
+          <div class="review-header">
+            <span class="author">
+              {{ review.authorDto.firstName }}
+              {{ review.authorDto.lastName }}
+            </span>
 
-              <span class="date">
-                {{ review.createdAt | date: 'dd.MM.yyyy' }}
-              </span>
+            <span class="date">
+              {{ review.createdAt | luxon: 'dd.LL.yyyy' }}
+            </span>
 
-              <div class="star-rating-display">
-                @for (i of [1, 2, 3, 4, 5]; track i) {
-                  <mat-icon class="star-icon-small">
-                    {{ getRatingForReview(review.rating, i) }}
-                  </mat-icon>
-                }
-              </div>
+            <div class="star-rating-display">
+              @for (i of [1, 2, 3, 4, 5]; track i) {
+                <mat-icon class="star-icon-small">
+                  {{ getRatingForReview(review.rating, i) }}
+                </mat-icon>
+              }
             </div>
-
-            <p class="text">{{ review.comment }}</p>
           </div>
 
-          @if (!last) {
-            <mat-divider></mat-divider>
-          }
+          <p class="text">{{ review.comment }}</p>
+        </div>
+
+        @if (!last) {
+          <mat-divider></mat-divider>
         }
-      </div>
-    }
+      } @empty {
+        <p class="empty">Brak opinii</p>
+      }
+    </div>
   </section>
 </mat-dialog-content>
 

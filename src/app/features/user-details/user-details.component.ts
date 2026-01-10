@@ -7,7 +7,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatError, MatFormFieldModule, MatHint } from '@angular/material/form-field';
 import { UserApiService } from '../../services/user-api.service';
@@ -34,7 +33,6 @@ import { AuthService } from '../../core/auth/services/auth.service';
     MatListModule,
     MatDividerModule,
     MatTooltipModule,
-    RouterLink,
     MatProgressSpinner,
     MatError,
     LuxonPipe,

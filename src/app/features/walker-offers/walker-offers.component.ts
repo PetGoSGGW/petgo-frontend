@@ -9,7 +9,10 @@ import {
   WalkerOfferReservationDialogComponent,
   WalkerOfferReservationDialogData,
 } from './components/walker-offer-reservation-dialog/walker-offer-reservation-dialog.component';
-import { WalkerOfferDetailsDialogComponent } from './components/walker-offer-details-dialog/walker-offer-details-dialog.component';
+import {
+  WalkerOfferDetailsDialogComponent,
+  WalkerOfferDetailsDialogData,
+} from './components/walker-offer-details-dialog/walker-offer-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { filter, map, tap } from 'rxjs';
 import { DateTime } from 'luxon';
@@ -138,7 +141,7 @@ export class WalkerOffersComponent {
 
     this.dialog.open(WalkerOfferDetailsDialogComponent, {
       width: '700px',
-      data: { offer, userLocation: location ?? null },
+      data: { offer, userLocation: location ?? null } satisfies WalkerOfferDetailsDialogData,
     });
   }
 }
