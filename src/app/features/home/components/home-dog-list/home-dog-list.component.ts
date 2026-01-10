@@ -9,7 +9,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
-import { DogsGridComponent } from '../../../../components/dogs-grid/dogs-grid.component';
+import { DogsGridComponent } from '../../../../components/dog-grid/dogs-grid.component';
 
 @Component({
   selector: 'app-home-dog-list',

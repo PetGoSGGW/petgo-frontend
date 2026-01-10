@@ -11,6 +11,7 @@ import {
 } from './components/walker-offer-reservation-dialog/walker-offer-reservation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { filter, map, tap } from 'rxjs';
+import { DateTime } from 'luxon';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -65,6 +66,8 @@ export class WalkerOffersComponent {
     ),
   );
 
+  protected readonly pageIndex = signal(0);
+  protected readonly size = signal(10).asReadonly();
   protected readonly radius = signal<number>(2);
 
   protected offers = rxResource({
@@ -73,14 +76,36 @@ export class WalkerOffersComponent {
 
       if (!location) return undefined;
 
-      return { radius: this.radius(), coordinates: location };
+      return {
+        radius: this.radius(),
+        coordinates: location,
+        page: this.pageIndex(),
+      };
     },
-    stream: ({ params: { radius, coordinates } }) =>
-      this.offersService.getOffers({
-        latitude: coordinates.lat,
-        longitude: coordinates.lng,
-        radiusKm: radius,
-      }),
+    stream: ({ params: { radius, coordinates, page } }) =>
+      this.offersService
+        .getOffers({
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          radiusKm: radius,
+          page,
+        })
+        .pipe(
+          map((response) => ({
+            ...response,
+            content: response.content.map((offer) => ({
+              ...offer,
+              slots:
+                offer.slots?.filter(
+                  (s) => DateTime.fromISO(s.startTime) > DateTime.now().plus({ day: 1 }),
+                ) ?? [],
+            })),
+          })),
+          map((response) => ({
+            ...response,
+            content: response.content.filter((offer) => offer.slots.length > 0),
+          })),
+        ),
   });
 
   protected readonly shouldShowMap = signal(true);
@@ -92,8 +117,6 @@ export class WalkerOffersComponent {
   protected readonly count = computed(() =>
     this.offers.hasValue() ? this.offers.value().number : 0,
   );
-  protected readonly page = signal(1);
-  protected readonly size = signal(10).asReadonly();
 
   protected openReservationDialog({ offerId, slots }: WalkerOffer): void {
     this.dialog

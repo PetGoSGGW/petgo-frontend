@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { finalize, tap } from 'rxjs';
+import { finalize, switchMap, tap } from 'rxjs';
 import { Dog } from '../../../../models/dog.model';
 import { WalkerOffer } from '../../models/walker-offer.model';
 import { WalkerOffersApiService } from '../../services/walker-offers-api.service';
@@ -17,6 +17,8 @@ import { AvailableSlot } from '../../models/available-slot.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { PaymentApiService } from '../../../../services/payment-api.service';
+import { DogApiService } from '../../../../services/dog-api.service';
 
 export interface WalkerOfferReservationDialogData {
   offerId: WalkerOffer['offerId'];
@@ -41,7 +43,7 @@ export interface WalkerOfferReservationDialogData {
     MatIconModule,
     MatIconButton,
   ],
-  providers: [WalkerOffersApiService],
+  providers: [WalkerOffersApiService, PaymentApiService],
   styles: [
     `
       .form {
@@ -121,7 +123,7 @@ export interface WalkerOfferReservationDialogData {
 
           <mat-label>Wybierz pupila</mat-label>
           <mat-select [formControl]="form.controls.dog">
-            @for (dog of dogs(); track dog.dogId) {
+            @for (dog of dogs.value(); track dog.dogId) {
               <mat-option [value]="dog">{{ dog.name }}</mat-option>
             } @empty {
               <mat-option disabled>Brak pupila</mat-option>
@@ -146,9 +148,13 @@ export class WalkerOfferReservationDialogComponent {
   private readonly walkerOfferApi = inject(WalkerOffersApiService);
   protected readonly matSnackBar = inject(MatSnackBar);
   protected readonly dialogRef = inject(MatDialogRef);
+  private readonly paymentApi = inject(PaymentApiService);
+  private readonly dogApi = inject(DogApiService);
 
   protected readonly offerId = signal(this.data.offerId).asReadonly();
-  protected readonly dogs = signal<Dog[]>([]);
+  protected readonly dogs = rxResource({
+    stream: () => this.dogApi.getDogs$(),
+  });
 
   protected readonly loading = signal(false);
 
@@ -255,14 +261,18 @@ export class WalkerOfferReservationDialogComponent {
     this.loading.set(true);
 
     this.walkerOfferApi
-      .reserve({
+      .reserve$({
         offerId: this.data.offerId,
         dogId: dog.dogId,
-        availablilitySlots: [slot.slotId],
+        availabilitySlotIds: [slot.slotId],
       })
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(
+        switchMap(({ reservationId }) => this.paymentApi.initPayment$({ reservationId })),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
-        next: () => {
+        next: ({ paymentUrl }) => {
+          window.location.href = paymentUrl;
           this.matSnackBar.open('Zarezerowałeś spacer', 'OK');
           this.dialogRef.close(true);
         },

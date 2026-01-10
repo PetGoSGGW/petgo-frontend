@@ -1,107 +1,145 @@
-<div class="user-details-page">
+<app-section-wrapper header="Użytkownik">
   @if (user.isLoading()) {
     <mat-spinner />
   } @else if (user.error()) {
     <mat-error>Błąd podczas pobierania informacji o użytkowniku</mat-error>
-  } @else if (user.hasValue() && user.value(); as user) {
-    <div class="details-layout">
-      <mat-card class="content-card main-info-card">
-        <div class="user-header">
-          <div class="user-photo-wrapper">
-            @if (getAvatarUrl(); as avatar) {
-              <img class="user-photo-main" [src]="avatar" [alt]="user.firstName" />
-            } @else {
-              <div class="user-photo-placeholder">
-                <mat-icon>person</mat-icon>
-              </div>
-            }
+  } @else if (user.hasValue()) {
+    @let userValue = user.value();
+    <div class="user-header">
+      <div class="user-photo-wrapper">
+        @if (getAvatarUrl(); as avatar) {
+          <img class="user-photo-main" [src]="avatar" [alt]="userValue.firstName" />
+        } @else {
+          <div class="user-photo-placeholder">
+            <mat-icon>person</mat-icon>
           </div>
-
-          <div class="user-main-text">
-            <h2 class="user-name">
-              {{ user.firstName }}
-            </h2>
-
-            <mat-chip-set>
-              <mat-chip class="info-chip">
-                <mat-icon>elderly</mat-icon>
-                <span>wiek: {{ getAge(user.dateOfBirth) || '-' }}</span>
-              </mat-chip>
-            </mat-chip-set>
-          </div>
-        </div>
-
-        <mat-divider></mat-divider>
-        <div class="user-pets-section">
-          <h3>Moje psy</h3>
-          @if (dogs.isLoading()) {
-            <mat-spinner />
-          } @else if (dogs.error()) {
-            <mat-error>Błąd podczas pobierania pupilów</mat-error>
-          } @else if (dogs.hasValue()) {
-            <div class="pets-list">
-              @for (dog of dogs.value(); track dog.dogId) {
-                <a class="pet-card-mini" [routerLink]="['/pupile', dog.dogId]">
-                  <img [src]="dog.photos.at(0)?.url" [alt]="dog.name" class="pet-mini-photo" />
-                  <div class="pet-mini-info">
-                    <span class="pet-name">{{ dog.name }}</span>
-                    <span class="pet-details">{{ dog.breed.name }}, {{ dog.weightKg }}kg</span>
-                  </div>
-                </a>
-              } @empty {
-                <span class="empty">Nie znaleziono pupilów</span>
-              }
-            </div>
-          }
-        </div>
-      </mat-card>
-
-      <div class="right-column">
-        @if (reviews.isLoading()) {
-          <mat-spinner />
-        } @else if (reviews.error()) {
-          <mat-error>Błąd podczas pobierania opinii</mat-error>
-        } @else if (reviews.hasValue()) {
-          <mat-card class="content-card reviews-card">
-            <div class="reviews-title-row">
-              <h3>Opinie ({{ reviews.value().reviewDTOList.length }})</h3>
-              <div class="rating-badge">
-                <mat-icon>star</mat-icon>
-                {{ reviews.value().avgRating }}
-              </div>
-            </div>
-            <div class="reviews-list-container">
-              @for (review of reviews.value().reviewDTOList; track review; let last = $last) {
-                <div class="review-row">
-                  <div class="review-content-wrapper">
-                    <div class="review-main-content">
-                      <div class="review-header">
-                        <span class="author">{{ review.author.firstName }}</span>
-                        <span class="date">{{ review.createdAt | luxon: 'dd.LL.yyyy' }}</span>
-                        <div class="star-rating-display">
-                          @for (i of [1, 2, 3, 4, 5]; track i) {
-                            <mat-icon class="star-icon-small">
-                              {{ getRatingForReview(review.rating, i) }}
-                            </mat-icon>
-                          }
-                        </div>
-                      </div>
-
-                      <p class="text">{{ review.comment }}</p>
-                    </div>
-                  </div>
-                </div>
-
-                @if (!last) {
-                  <mat-divider></mat-divider>
-                }
-              } @empty {
-                <mat-hint>Użytkownik nie ma żadnej opinii</mat-hint>
-              }
-            </div>
-          </mat-card>
         }
+      </div>
+
+      <div class="user-main-text">
+        <h2 class="user-name">
+          {{ userValue.firstName }}
+        </h2>
+
+        <mat-chip-set>
+          <mat-chip class="info-chip">
+            <mat-icon>elderly</mat-icon>
+            <span>wiek: {{ getAge(userValue.dateOfBirth) || '-' }}</span>
+          </mat-chip>
+        </mat-chip-set>
       </div>
     </div>
   }
-</div>
+</app-section-wrapper>
+
+<app-section-wrapper header="Pupile">
+  @if (dogs.isLoading()) {
+    <mat-spinner />
+  } @else if (dogs.error()) {
+    <mat-error>Błąd podczas pobierania pupilów</mat-error>
+  } @else if (dogs.hasValue()) {
+    <app-dogs-grid [dogs]="dogs.value()">
+      <span class="empty">Nie znaleziono pupilów</span>
+    </app-dogs-grid>
+  }
+</app-section-wrapper>
+
+@if (id() === userId()) {
+  <app-section-wrapper header="Portfel">
+    @if (wallet.isLoading()) {
+      <mat-spinner />
+    } @else if (wallet.error()) {
+      <mat-error>Błąd podczas pobierania pupilów</mat-error>
+    } @else if (wallet.hasValue()) {
+      @if (wallet.value(); as walletValue) {
+        <div>
+          <mat-label>Stan konta</mat-label>
+          <span>{{ walletValue.balanceCents | fromCents }}</span>
+        </div>
+
+        <div>
+          <mat-label>Waluta</mat-label>
+          <span>{{ walletValue.currency }}</span>
+        </div>
+      } @else {
+        <span class="empty">Nie masz portfela</span>
+      }
+    }
+  </app-section-wrapper>
+}
+
+<app-section-wrapper [header]="reviewSectionHeader()">
+  <div slot="extras" class="rating-badge">
+    <mat-icon>star</mat-icon>
+    {{ reviews.hasValue() ? reviews.value().avgRating.toFixed(2) : 0 }}
+  </div>
+
+  @if (reviews.isLoading()) {
+    <mat-spinner />
+  } @else if (reviews.error()) {
+    <mat-error>Błąd podczas pobierania opinii</mat-error>
+  } @else if (reviews.hasValue()) {
+    <div class="reviews-list-container">
+      @for (review of reviews.value().reviewDTOList; track review; let last = $last) {
+        <div class="review-row">
+          <div class="review-content-wrapper">
+            <div class="review-main-content">
+              <div class="review-header">
+                <span class="author">{{ review.authorDto.firstName }}</span>
+                <span class="date">{{ review.createdAt | luxon: 'dd.LL.yyyy' }}</span>
+                <div class="star-rating-display">
+                  @for (i of [1, 2, 3, 4, 5]; track i) {
+                    <mat-icon class="star-icon-small">
+                      {{ getRatingForReview(review.rating, i) }}
+                    </mat-icon>
+                  }
+                </div>
+              </div>
+
+              <p class="text">{{ review.comment }}</p>
+            </div>
+          </div>
+        </div>
+
+        @if (!last) {
+          <mat-divider />
+        }
+      } @empty {
+        <mat-hint>Użytkownik nie ma żadnej opinii</mat-hint>
+      }
+    </div>
+  }
+</app-section-wrapper>
+
+<app-section-wrapper header="Transakcje">
+  @if (transactions.isLoading()) {
+    <mat-spinner />
+  } @else if (transactions.error()) {
+    <mat-error>Wystąpił błąd.</mat-error>
+  } @else if (transactions.hasValue()) {
+    <ul>
+      @for (transaction of transactions.value(); track transaction.transactionId) {
+        <li>
+          <div class="field">
+            <span>Data</span>
+            {{ transaction.createdAt | luxon: 'dd.LL.yyyy HH:mm' }}
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <span>Cena</span>
+              {{ transaction.amountCents | fromCents }}
+            </div>
+
+            <div class="field">
+              <span>Stan konta po transakcji</span>
+              {{ transaction.balanceAfterCents | fromCents }}
+            </div>
+          </div>
+        </li>
+      } @empty {
+        <li class="list-item-empty">Nie znaleziono transakcji</li>
+      }
+    </ul>
+  }
+</app-section-wrapper>
