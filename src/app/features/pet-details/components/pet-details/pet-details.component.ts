@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -29,10 +21,15 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { Dog } from '../../../../models/dog.model';
 import { EditDogDetailsDialogData } from './models/edit-dog-details-dialog-data.model';
-import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
-import { filter } from 'rxjs';
-
-import { DogApiService, DogUpdateRequestDto } from '../../../../services/dog-api.service';
+import {
+  EditDogDialogComponent,
+  EditDogDialogResult,
+} from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
+import { filter, switchMap } from 'rxjs';
+import { DogApiService } from '../../../../services/dog-api.service';
+import { AuthService } from '../../../../core/auth/services/auth.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
 
 interface DogReview {
   id: string;
@@ -41,8 +38,6 @@ interface DogReview {
   text: string;
   reported: boolean;
 }
-
-const CURRENT_USER_ID = 1;
 
 @Component({
   selector: 'app-pet-details',
@@ -67,12 +62,17 @@ const CURRENT_USER_ID = 1;
     MatDialogModule,
     MatSelectModule,
     MatSlideToggleModule,
+    MatProgressSpinner,
+    SectionWrapperComponent,
   ],
 })
 export class PetDetailsComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
   private readonly dogApi = inject(DogApiService);
+  private readonly authService = inject(AuthService);
+
+  protected readonly currentUserId = this.authService.userId;
 
   public readonly id = input.required<number, string>({
     transform: (id) => Number(id),
@@ -80,12 +80,8 @@ export class PetDetailsComponent {
 
   protected readonly dogResource = rxResource<Dog, { id: number }>({
     params: () => ({ id: this.id() }),
-    stream: ({ params }) => this.dogApi.getDog(params.id),
+    stream: ({ params }) => this.dogApi.getDog$(params.id),
   });
-
-  protected readonly dog = computed<Dog | null>(() =>
-    this.dogResource.hasValue() ? this.dogResource.value() : null,
-  );
 
   public readonly reviews = signal<DogReview[]>([]);
 
@@ -96,125 +92,40 @@ export class PetDetailsComponent {
     }),
   });
 
-  constructor() {
-    effect(() => {
-      const err = this.dogResource.error();
-      if (err) {
-        this.snackBar.open('Nie udało się pobrać danych psa.', 'OK', { duration: 4000 });
-      }
-    });
-  }
-
   public get textControl(): FormControl<string> {
     return this.reviewForm.controls.text;
   }
 
-  public isOwner(dog: Dog): boolean {
-    return dog.ownerId === CURRENT_USER_ID;
-  }
-
-  public getPhotos(dogId: number): string[] {
-    const currentDog = this.dog();
-    if (!currentDog || currentDog.dogId !== dogId) return [];
-    return (currentDog.photos ?? []).map((p) => p.url);
-  }
-
-  public getFirstPhotoUrl(): string | null {
-    const currentDog = this.dog();
-    if (!currentDog) return null;
-
-    const photos = this.getPhotos(currentDog.dogId);
-    return photos.length > 0 ? photos[0] : null;
-  }
-
-  public openEditDogDialog(currentDog: Dog): void {
-    if (!this.isOwner(currentDog)) return;
-
+  public openEditDogDialog(dog: Dog): void {
     const dialogRef = this.dialog.open(EditDogDialogComponent, {
-      width: '520px',
+      width: '600px',
       data: {
-        name: currentDog.name,
-        breed: currentDog.breed,
-        notes: currentDog.notes ?? '',
-        size: currentDog.size ?? 'M',
-        weightKg: Number(currentDog.weightKg ?? 0),
-        isActive: currentDog.isActive,
+        name: dog.name,
+        breed: dog.breed,
+        notes: dog.notes ?? '',
+        size: dog.size ?? 'M',
+        weightKg: Number(dog.weightKg ?? 0),
+        isActive: dog.isActive,
       } satisfies EditDogDetailsDialogData,
     });
 
     dialogRef
       .afterClosed()
-      .pipe(filter((result) => !!result))
-      .subscribe(
-        (result: {
-          name: string;
-          breed: string;
-          notes: string;
-          size: string;
-          weightKg: number;
-          isActive: boolean;
-        }) => {
-          this.dogResource.update((dog) => {
-            if (!dog) return dog;
-            return {
-              ...dog,
-              name: result.name,
-              breed: { ...dog.breed, name: result.breed },
-              notes: result.notes,
-              size: result.size,
-              weightKg: Number(result.weightKg),
-              isActive: result.isActive,
-              updatedAt: new Date().toISOString(),
-            };
-          });
-
-          const payload: DogUpdateRequestDto = {
-            breedCode: currentDog.breed.breedCode,
-            name: result.name,
-            size: result.size,
-            notes: result.notes,
-            weightKg: Number(result.weightKg),
-            isActive: result.isActive,
-          };
-
-          this.dogApi.updateDog(currentDog.dogId, payload).subscribe({
-            next: (updatedDog: Dog) => {
-              this.dogResource.set(updatedDog);
-              this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK', { duration: 4000 });
-            },
-            error: () => {
-              this.snackBar.open('Nie udało się zapisać zmian na serwerze.', 'OK', {
-                duration: 4000,
-              });
-            },
-          });
+      .pipe(
+        filter((result): result is EditDogDialogResult => !!result),
+        switchMap((result) =>
+          this.dogApi.updateDog$(dog.dogId, { ...result, breedCode: dog.breed.breedCode }),
+        ),
+      )
+      .subscribe({
+        next: (updatedDog: Dog) => {
+          this.dogResource.set(updatedDog);
+          this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK');
         },
-      );
-  }
-
-  public onSubmitReview(): void {
-    if (this.reviewForm.invalid) {
-      this.reviewForm.markAllAsTouched();
-      return;
-    }
-
-    const text = this.reviewForm.controls.text.value.trim();
-    if (!text) return;
-
-    const newReview: DogReview = {
-      id: Date.now().toString(),
-      authorName: 'Ty',
-      createdAt: new Date(),
-      text,
-      reported: false,
-    };
-
-    this.reviews.update((current) => [...current, newReview]);
-    this.reviewForm.reset();
-
-    this.snackBar.open('Twoja opinia została dodana i jest widoczna publicznie.', 'OK', {
-      duration: 4000,
-    });
+        error: () => {
+          this.snackBar.open('Nie udało się zapisać zmian.', 'OK');
+        },
+      });
   }
 
   public onReportReview(reviewId: string, reported: boolean): void {
@@ -227,7 +138,6 @@ export class PetDetailsComponent {
         ? 'Opinia została zgłoszona do weryfikacji przez administratora.'
         : 'Zgłoszenie opinii zostało cofnięte.',
       'OK',
-      { duration: 4000 },
     );
   }
 }

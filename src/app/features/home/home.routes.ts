@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { DogApiService } from '../../serivces/dog-api.service';
+import { DogApiService } from '../../services/dog-api.service';
 
 export const homeRoutes: Routes = [
   {
