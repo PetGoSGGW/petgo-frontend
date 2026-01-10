@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { WalkerOffer } from '../models/walker-offer.model';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { AvailableSlot } from '../models/available-slot.model';
 import { Dog } from '../../../models/dog.model';
 

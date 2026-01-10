@@ -4,12 +4,14 @@ import { ReservationApiService } from './services/reservation-api.service';
 import { DogApiService } from './services/dog-api.service';
 import { UserOfferService } from './services/user-offer.service';
 import { UserOfferApiService } from './services/user-offer-api.service';
+import { userOfferResolverFn } from './resolvers/user-offer.resolver';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./components/layout/layout.component'),
     canActivate: [authGuard],
+    resolve: { offerResolverFn: userOfferResolverFn },
     providers: [UserOfferService, UserOfferApiService],
     children: [
       {
@@ -24,6 +26,13 @@ export const routes: Routes = [
           import('./features/contact/contact.routes').then((r) => r.contactRoutes),
       },
       {
+        path: 'powiadomienia',
+        loadChildren: () =>
+          import('./features/notifications/notifications.routes').then(
+            (r) => r.notificationsRoutes,
+          ),
+      },
+      {
         path: 'spacer',
         loadChildren: () => import('./features/walk/walk.routes').then((r) => r.walkRoutes),
       },
@@ -33,9 +42,19 @@ export const routes: Routes = [
           import('./features/walker-offers/walker-offers.routes').then((r) => r.offersRoutes),
       },
       {
-        path: 'pies/:id',
-        loadChildren: () =>
-          import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+        path: 'pupile',
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadChildren: () => import('./features/pets/pets.routes').then((r) => r.petsRoutes),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+          },
+        ],
       },
       {
         path: 'uzytkownik',

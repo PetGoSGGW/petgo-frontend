@@ -10,6 +10,10 @@
   </div>
 
   <div class="profile">
+    <a [routerLink]="['/powiadomienia']" class="profile-username desktop">
+      <mat-icon>notifications</mat-icon>
+    </a>
+
     <a
       matIconButton
       [routerLink]="['/uzytkownik/', id()]"

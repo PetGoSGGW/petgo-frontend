@@ -1,0 +1,38 @@
+<app-section-wrapper header="Powiadomienia">
+  <button
+    matButton="tonal"
+    class="clear-button"
+    (click)="clearAll()"
+    [disabled]="notifications().length === 0"
+  >
+    Wyczyść powiadomienia
+  </button>
+  <div class="notifications-container">
+    @for (notification of notifications(); track $index) {
+      <mat-card class="notification-card" (click)="toggleExpand(notification)">
+        <mat-card-title>
+          {{ notification.title }}
+        </mat-card-title>
+        @if (notification.user) {
+          <mat-card-subtitle> Użytkownik: {{ notification.user }} </mat-card-subtitle>
+        }
+
+        @if (notification.expanded) {
+          <mat-card-content>
+            <p>{{ notification.content }}</p>
+            <button
+              mat-stroked-button
+              color="warn"
+              class="delete-button"
+              (click)="$event.stopImmediatePropagation(); deleteNotification(notification)"
+            >
+              Usuń
+            </button>
+          </mat-card-content>
+        }
+      </mat-card>
+    } @empty {
+      <p class="no-notifications">Brak powiadomień</p>
+    }
+  </div>
+</app-section-wrapper>
