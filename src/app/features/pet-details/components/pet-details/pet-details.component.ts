@@ -24,7 +24,7 @@ import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edi
 import { filter } from 'rxjs';
 
 import { ReviewApiService } from '../../../../services/review-api.service';
-import { CreateReviewRequest, DogReview, Review } from '../../../../models/review.model';
+import { DogReview, Review } from '../../../../models/review.model';
 
 const CURRENT_USER_ID = 1;
 
