@@ -57,6 +57,14 @@
 
           <div class="item-footer">
             <button
+              matButton="outlined"
+              class="reserve-btn"
+              (click)="$event.stopImmediatePropagation(); openDetailsDialog(offer)"
+            >
+              Szczegóły oferty
+            </button>
+
+            <button
               matButton="filled"
               class="reserve-btn"
               (click)="$event.stopImmediatePropagation(); openReservationDialog(offer)"

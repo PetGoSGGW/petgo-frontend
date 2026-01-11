@@ -70,6 +70,10 @@ export class UserDetailsComponent {
     stream: ({ params: { id } }) => this.userApiService.getUserReviews(id),
   });
 
+  protected get avgRating(): number {
+    return this.reviews.hasValue() ? this.reviews.value().avgRating : 0;
+  }
+
   protected readonly reviewSectionHeader = computed(() => {
     const count = this.reviews.hasValue() ? this.reviews.value().reviewDTOList.length : 0;
 

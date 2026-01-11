@@ -207,7 +207,7 @@ mat-list {
   }
 
   .reserve-btn {
-    margin-inline: auto;
+    margin-inline: 10px;
     max-width: fit-content;
   }
 }
