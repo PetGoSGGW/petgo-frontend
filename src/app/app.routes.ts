@@ -43,12 +43,18 @@ export const routes: Routes = [
       },
       {
         path: 'pupile',
-        loadChildren: () => import('./features/pets/pets.routes').then((r) => r.petsRoutes),
-      },
-      {
-        path: 'pies/:id',
-        loadChildren: () =>
-          import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadChildren: () => import('./features/pets/pets.routes').then((r) => r.petsRoutes),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+          },
+        ],
       },
       {
         path: 'uzytkownik',

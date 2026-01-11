@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
-import { UserReview } from '../models/userReview.model';
+import { WalkerReviewsResponse } from '../models/userReview.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,14 +19,9 @@ export class UserApiService {
     return this.http.get<User>(`${this.apiUrl}/users/${id}`);
   }
 
-  public getUserReviews(
-    id: User['id'],
-  ): Observable<{ reviewDTOList: UserReview[]; avgRating: number }> {
-    return this.http.get<{ reviewDTOList: UserReview[]; avgRating: number }>(
-      `${this.apiUrl}/reviews/walker`,
-      {
-        params: { walkerId: id },
-      },
-    );
+  public getUserReviews(id: User['id']): Observable<WalkerReviewsResponse> {
+    return this.http.get<WalkerReviewsResponse>(`${this.apiUrl}/reviews/walker`, {
+      params: { walkerId: id },
+    });
   }
 }

@@ -5,7 +5,7 @@ import { fromCents } from '../uilts/format-price';
   name: 'fromCents',
 })
 export class FromCentsPipe implements PipeTransform {
-  public transform(cents: number): number {
-    return Number(fromCents(cents));
+  public transform(cents: number): string {
+    return fromCents(cents);
   }
 }

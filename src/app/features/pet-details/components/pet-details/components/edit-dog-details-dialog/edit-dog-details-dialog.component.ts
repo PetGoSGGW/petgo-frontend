@@ -135,3 +135,12 @@ export class EditDogDialogComponent {
     this.dialogRef.close(this.form.getRawValue());
   }
 }
+
+export interface EditDogDialogResult {
+  name: string;
+  breed: string;
+  notes: string;
+  size: string;
+  weightKg: number;
+  isActive: boolean;
+}

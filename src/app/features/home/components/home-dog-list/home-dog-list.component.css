@@ -1,33 +1,12 @@
-.card {
-  max-width: 300px;
-}
-
-.container {
-  background-color: var(--mat-sys-surface-variant);
-  border-radius: 1rem;
-  padding: 1rem;
-  gap: 1rem;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  width: 100%;
-  max-width: calc(100vw - 2rem);
-}
-
 .dog-details-line {
   display: flex;
   gap: 1rem;
   justify-content: space-between;
 }
 
-.container-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-
 .dogs {
-  display: flex;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   width: 100%;
   gap: 1rem;
   padding-bottom: 1rem;
@@ -77,14 +56,4 @@ mat-card-content {
   color: var(--mat-sys-error);
   font-size: 1.25rem;
   font-weight: 500;
-}
-
-@media (min-width: 1024px) {
-  .card {
-    max-width: 400px;
-  }
-
-  .container {
-    max-width: calc(100vw - 2rem - 288px);
-  }
 }

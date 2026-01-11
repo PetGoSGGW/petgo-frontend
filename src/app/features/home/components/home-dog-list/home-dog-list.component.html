@@ -4,31 +4,12 @@
   } @else if (dogs.error()) {
     <span class="error">Błąd</span>
   } @else if (dogs.hasValue()) {
-    <div class="dogs">
-      @for (dog of dogs.value(); track dog.dogId) {
-        <mat-card class="card">
-          <img
-            mat-card-image
-            src="https://material.angular.dev/assets/img/examples/shiba2.jpg"
-            alt="Photo of a Shiba Inu"
-          />
-          <mat-card-content>
-            <h2>{{ dog.name }}</h2>
-            <div class="dog-details-line">
-              <span>{{ dog.breed.name }}</span>
-              <span>{{ dog.size }}</span>
-            </div>
-
-            <p>{{ dog.notes }}</p>
-          </mat-card-content>
-        </mat-card>
-      } @empty {
-        <div class="no-dog">
-          <mat-icon class="no-search-icon">search_off</mat-icon>
-          <span class="no-dog-message">Wygląda na to, że nie masz żadnego dodanego pupila!</span>
-          <button class="btn" matButton="tonal" (click)="openAddDogDialog()">Dodaj pupila</button>
-        </div>
-      }
-    </div>
+    <app-dogs-grid [dogs]="dogs.value()">
+      <div class="no-dog">
+        <mat-icon class="no-search-icon">search_off</mat-icon>
+        <span class="no-dog-message">Wygląda na to, że nie masz żadnego dodanego pupila!</span>
+        <button class="btn" matButton="tonal" (click)="openAddDogDialog()">Dodaj pupila</button>
+      </div>
+    </app-dogs-grid>
   }
 </app-section-wrapper>

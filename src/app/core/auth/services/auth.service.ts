@@ -15,6 +15,7 @@ export class AuthService {
   public readonly email = computed(() => this.session()?.email);
   public readonly accessToken = computed(() => this.session()?.accessToken);
   public readonly tokenType = computed(() => this.session()?.tokenType);
+  public readonly userId = computed(() => this.session()?.userId);
 
   public loadSession(): void {
     const session = localStorage.getItem(this._localStorageKey().session);

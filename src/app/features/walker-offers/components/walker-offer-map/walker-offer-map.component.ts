@@ -17,11 +17,13 @@ import {
 } from '../../../../components/map-controls/map-controls.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { WalkerOffer } from '../../models/walker-offer.model';
+import { LuxonPipe } from '../../../../pipes/luxon.pipe';
 
 @Component({
   selector: 'app-walker-offer-map',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MapControlsComponent],
+  providers: [LuxonPipe],
   styles: [
     `
       .map-container {
@@ -62,6 +64,7 @@ import { WalkerOffer } from '../../models/walker-offer.model';
 export class WalkerOfferMapComponent implements OnInit {
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly luxonDate = inject(LuxonPipe);
 
   public readonly userPosition = input.required<{ lat: number; lng: number }>();
   public readonly radiusKm = input.required<number>();
@@ -94,18 +97,20 @@ export class WalkerOfferMapComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([offers]) => {
         offers.forEach((offer) => {
-          const [{ latitude, longitude }] = offer.slots;
+          offer.slots
+            .filter(({ isReserved }) => !isReserved)
+            .forEach(({ latitude, longitude }) => {
+              const latlng: L.LatLngExpression = [latitude, longitude];
 
-          const latlng: L.LatLngExpression = [latitude, longitude];
+              if (!this.map) return;
 
-          if (!this.map) return;
-
-          L.circleMarker(latlng)
-            .addTo(this.map)
-            .bindTooltip(offer.walkerName, { permanent: true })
-            .openTooltip()
-            .on('click', () => {
-              this.markerClicked.emit(offer);
+              L.circleMarker(latlng)
+                .addTo(this.map)
+                .bindTooltip(offer.walkerName, { permanent: true })
+                .openTooltip()
+                .on('click', () => {
+                  this.markerClicked.emit(offer);
+                });
             });
         });
       });
