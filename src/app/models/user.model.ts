@@ -9,3 +9,9 @@ export interface User {
   role: Role;
   dateOfBirth: Date;
 }
+
+export interface BasicUserInfo {
+  userId: number;
+  firstName: string;
+  lastName: string;
+}

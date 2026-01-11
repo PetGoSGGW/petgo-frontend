@@ -23,24 +23,19 @@ import { EditDogDetailsDialogData } from './models/edit-dog-details-dialog-data.
 import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
 import { filter } from 'rxjs';
 
-interface DogReview {
+import { ReviewApiService } from '../../../../services/review-api.service';
+import { DogReview, Review } from '../../../../models/review.model';
+
+const CURRENT_USER_ID = 1;
+
+interface DogReviewItem {
   id: string;
   authorName: string;
   createdAt: Date;
   text: string;
+  rating: number;
   reported: boolean;
 }
-
-const CURRENT_USER_ID = 1;
-
-const DOG_PHOTOS: Record<number, string[]> = {
-  1: [
-    'https://placedog.net/600/400?id=1',
-    'https://placedog.net/400/300?id=11',
-    'https://placedog.net/400/300?id=12',
-  ],
-  2: ['https://placedog.net/600/400?id=2', 'https://placedog.net/400/300?id=21'],
-};
 
 @Component({
   selector: 'app-pet-details',
@@ -70,6 +65,7 @@ const DOG_PHOTOS: Record<number, string[]> = {
 export class PetDetailsComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
+  private readonly reviewApi = inject(ReviewApiService);
 
   public readonly dog = signal<Dog | null>(null);
 
@@ -77,20 +73,19 @@ export class PetDetailsComponent {
     transform: (id) => Number(id),
   });
 
-  public readonly reviews = signal<DogReview[]>([
-    {
-      id: '1',
-      authorName: 'Jan Kowalski',
-      createdAt: new Date(),
-      text: 'Świetny, bardzo przyjazny pies!',
-      reported: false,
-    },
-  ]);
+  public readonly reviews = signal<DogReviewItem[]>([]);
 
-  public readonly reviewForm = new FormGroup<{ text: FormControl<string> }>({
+  public readonly reviewForm = new FormGroup<{
+    text: FormControl<string>;
+    rating: FormControl<number>;
+  }>({
     text: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(5)],
+    }),
+    rating: new FormControl<number>(5, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1), Validators.max(5)],
     }),
   });
 
@@ -98,20 +93,51 @@ export class PetDetailsComponent {
     return this.reviewForm.controls.text;
   }
 
+  public get ratingControl(): FormControl<number> {
+    return this.reviewForm.controls.rating;
+  }
+
+  constructor() {
+    this.loadDogReviews();
+  }
+
+  private loadDogReviews(): void {
+    this.reviewApi.getDogReview(this.id()).subscribe({
+      next: (dto: DogReview) => {
+        this.reviews.set(this.mapReviews(dto.reviewDTOList));
+      },
+      error: () => {
+        this.snackBar.open('Nie udało się pobrać opinii o psie.', 'OK', { duration: 4000 });
+      },
+    });
+  }
+
+  private mapReviews(list: Review[]): DogReviewItem[] {
+    return (list ?? []).map((r) => ({
+      id: `${r.createdAt}-${r.authorDto?.userId ?? 'unknown'}-${r.rating ?? '0'}`,
+      authorName:
+        `${r.authorDto?.firstName ?? ''} ${r.authorDto?.lastName ?? ''}`.trim() || 'Nieznany',
+      createdAt: new Date(r.createdAt),
+      text: r.comment ?? '',
+      rating: r.rating ?? 0,
+      reported: false,
+    }));
+  }
+
   public isOwner(dog: Dog): boolean {
     return dog.ownerId === CURRENT_USER_ID;
   }
 
   public getPhotos(dogId: number): string[] {
-    return DOG_PHOTOS[dogId] ?? [];
+    if (!dogId) {
+      return [];
+    }
+
+    return this.dog()?.photos?.map((e) => e.url) ?? [];
   }
 
   public getFirstPhotoUrl(): string | null {
-    const currentDog = this.dog();
-    if (!currentDog) return null;
-
-    const photos = this.getPhotos(currentDog.dogId);
-    return photos.length > 0 ? photos[0] : null;
+    return this.dog()?.photos?.[0]?.url ?? null;
   }
 
   public openEditDogDialog(currentDog: Dog): void {
@@ -152,40 +178,13 @@ export class PetDetailsComponent {
       });
   }
 
-  public onSubmitReview(): void {
-    if (this.reviewForm.invalid) {
-      this.reviewForm.markAllAsTouched();
-      return;
-    }
-
-    const text = this.reviewForm.controls.text.value.trim();
-    if (!text) return;
-
-    const newReview: DogReview = {
-      id: Date.now().toString(),
-      authorName: 'Ty',
-      createdAt: new Date(),
-      text,
-      reported: false,
-    };
-
-    this.reviews.update((current) => [...current, newReview]);
-    this.reviewForm.reset();
-
-    this.snackBar.open('Twoja opinia została dodana i jest widoczna publicznie.', 'OK', {
-      duration: 4000,
-    });
-  }
-
   public onReportReview(reviewId: string, reported: boolean): void {
     this.reviews.update((current) =>
       current.map((review) => (review.id === reviewId ? { ...review, reported } : review)),
     );
 
     this.snackBar.open(
-      reported
-        ? 'Opinia została zgłoszona do weryfikacji przez administratora.'
-        : 'Zgłoszenie opinii zostało cofnięte.',
+      reported ? 'Opinia została oznaczona jako zgłoszona.' : 'Zgłoszenie opinii zostało cofnięte.',
       'OK',
       { duration: 4000 },
     );
