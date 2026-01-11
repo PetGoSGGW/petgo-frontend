@@ -17,6 +17,8 @@ import { AvailableSlot } from '../../models/available-slot.model';
 import { FromCentsPipe } from '../../../../pipes/from-cents.pipe';
 import { LuxonPipe } from '../../../../pipes/luxon.pipe';
 import { DateTime } from 'luxon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatError } from '@angular/material/form-field';
 
 export interface WalkerOfferDetailsDialogData {
   offer: WalkerOffer;
@@ -32,6 +34,8 @@ export interface WalkerOfferDetailsDialogData {
     MatIconModule,
     FromCentsPipe,
     LuxonPipe,
+    MatProgressSpinner,
+    MatError,
   ],
   templateUrl: './walker-offer-details-dialog.component.html',
   styleUrls: ['./walker-offer-details-dialog.component.css'],
@@ -53,16 +57,18 @@ export class WalkerOfferDetailsDialogComponent {
     stream: () => this.userApi.getUser(this.offer.walkerId),
   });
 
-  protected readonly reviewsList = computed<UserReview[]>(
-    () => this.reviewsResource.value()?.reviewDTOList ?? [],
+  protected readonly reviewsList = computed<UserReview[]>(() =>
+    this.reviewsResource.hasValue() ? (this.reviewsResource.value()?.reviewDTOList ?? []) : [],
   );
 
-  protected readonly avgRating = computed<number>(
-    () => this.reviewsResource.value()?.avgRating ?? 0,
+  protected readonly avgRating = computed<number>(() =>
+    this.reviewsResource.hasValue() ? (this.reviewsResource.value()?.avgRating ?? 0) : 0,
   );
 
   protected readonly age = computed<number>(() => {
-    const birth = this.walkerInfoResource.value()?.dateOfBirth;
+    const birth = this.walkerInfoResource.hasValue()
+      ? this.walkerInfoResource.value()?.dateOfBirth
+      : null;
     if (!birth) return 0;
 
     const dob = DateTime.fromISO(birth);
@@ -78,7 +84,7 @@ export class WalkerOfferDetailsDialogComponent {
   }
 
   private haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-    const toRad = (value: number) => (value * Math.PI) / 180;
+    const toRad = (value: number): number => (value * Math.PI) / 180;
     const R = 6371;
     const dLat = toRad(lat2 - lat1);
     const dLng = toRad(lng2 - lng1);
