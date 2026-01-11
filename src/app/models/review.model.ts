@@ -16,10 +16,3 @@ export interface DogReview {
 }
 
 export type ReviewType = 'DOG' | 'WALK' | 'WALKER';
-
-export interface CreateReviewRequest {
-  reservationId: number;
-  reviewType: ReviewType;
-  rating: number;
-  comment?: string;
-}
