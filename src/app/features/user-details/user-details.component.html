@@ -26,7 +26,7 @@
         <mat-chip-set>
           <mat-chip class="info-chip">
             <mat-icon>elderly</mat-icon>
-            <span>wiek: {{ getAge(userValue.dateOfBirth) || '-' }}</span>
+            <span>wiek: {{ getAge(userValue?.dateOfBirth ?? null) || '-' }}</span>
           </mat-chip>
         </mat-chip-set>
       </div>
