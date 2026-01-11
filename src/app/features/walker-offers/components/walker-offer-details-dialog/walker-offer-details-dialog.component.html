@@ -4,7 +4,7 @@
   <section class="offer-section">
     <h3 class="walker-name">{{ offer.walkerName }}</h3>
 
-    <p class="price"><strong>Wiek:</strong> {{ age() }} l.</p>
+    <p class="price"><strong>Wiek:</strong> {{ age() || '-' }} l.</p>
 
     <p class="price"><strong>Cena:</strong> {{ offer.priceCents | fromCents }} zł / h</p>
 
@@ -27,7 +27,6 @@
 
   <mat-divider></mat-divider>
 
-  <!-- ================= OPINIE ================= -->
   <section class="reviews-section">
     <div class="reviews-title-row">
       <h3>Opinie ({{ reviewsList().length }})</h3>

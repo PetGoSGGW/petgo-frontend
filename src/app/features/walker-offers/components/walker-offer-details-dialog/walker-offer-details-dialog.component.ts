@@ -5,7 +5,6 @@ import { MatDivider } from '@angular/material/divider';
 import { DecimalPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
 
 import { WalkerOffer } from '../../models/walker-offer.model';
 import {
@@ -17,6 +16,7 @@ import { UserReview } from '../../../../models/userReview.model';
 import { AvailableSlot } from '../../models/available-slot.model';
 import { FromCentsPipe } from '../../../../pipes/from-cents.pipe';
 import { LuxonPipe } from '../../../../pipes/luxon.pipe';
+import { DateTime } from 'luxon';
 
 export interface WalkerOfferDetailsDialogData {
   offer: WalkerOffer;
@@ -50,10 +50,7 @@ export class WalkerOfferDetailsDialogComponent {
   });
 
   protected readonly walkerInfoResource = rxResource({
-    stream: () =>
-      this.userApi
-        .getUser(this.offer.walkerId)
-        .pipe(map((user) => ({ dateOfBirth: user.dateOfBirth.toISOString() }))),
+    stream: () => this.userApi.getUser(this.offer.walkerId),
   });
 
   protected readonly reviewsList = computed<UserReview[]>(
@@ -68,14 +65,10 @@ export class WalkerOfferDetailsDialogComponent {
     const birth = this.walkerInfoResource.value()?.dateOfBirth;
     if (!birth) return 0;
 
-    const dob = new Date(birth);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const monthDiff = today.getMonth() - dob.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-    return age;
+    const dob = DateTime.fromISO(birth);
+    if (!dob.isValid) return 0;
+
+    return Math.floor(DateTime.now().diff(dob, 'years').years);
   });
 
   protected getRatingForReview(rating: number, index: number): string {
