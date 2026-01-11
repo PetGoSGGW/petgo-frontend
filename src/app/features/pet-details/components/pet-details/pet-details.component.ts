@@ -178,49 +178,13 @@ export class PetDetailsComponent {
       });
   }
 
-  public onSubmitReview(): void {
-    if (this.reviewForm.invalid) {
-      this.reviewForm.markAllAsTouched();
-      return;
-    }
-
-    const text = this.textControl.value.trim();
-    const rating = this.ratingControl.value;
-
-    if (!text) return;
-
-    const payload: CreateReviewRequest = {
-      reservationId: 0,
-      reviewType: 'DOG',
-      rating,
-      comment: text,
-    };
-
-    this.reviewApi.createReview(payload).subscribe({
-      next: () => {
-        this.reviewForm.reset({ text: '', rating: 5 });
-        this.snackBar.open('Twoja opinia została dodana.', 'OK', { duration: 4000 });
-        this.loadDogReviews();
-      },
-      error: () => {
-        this.snackBar.open(
-          'Nie udało się dodać opinii (backend mógł odrzucić reservationId=0).',
-          'OK',
-          { duration: 5000 },
-        );
-      },
-    });
-  }
-
   public onReportReview(reviewId: string, reported: boolean): void {
     this.reviews.update((current) =>
       current.map((review) => (review.id === reviewId ? { ...review, reported } : review)),
     );
 
     this.snackBar.open(
-      reported
-        ? 'Opinia została oznaczona jako zgłoszona (lokalnie).'
-        : 'Zgłoszenie opinii zostało cofnięte (lokalnie).',
+      reported ? 'Opinia została oznaczona jako zgłoszona.' : 'Zgłoszenie opinii zostało cofnięte.',
       'OK',
       { duration: 4000 },
     );

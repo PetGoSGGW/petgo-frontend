@@ -116,34 +116,6 @@
             }
           </mat-list>
         }
-
-        <mat-divider class="reviews-divider"></mat-divider>
-
-        <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form" novalidate>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Dodaj opinię o tym psie</mat-label>
-            <textarea matInput rows="4" formControlName="text"></textarea>
-            @if (textControl.touched && textControl.invalid) {
-              <mat-error>Opinia jest wymagana (min. 5 znaków).</mat-error>
-            }
-          </mat-form-field>
-          <div class="rating-row">
-            <span class="rating-label">Ocena:</span>
-            <mat-button-toggle-group formControlName="rating" aria-label="Ocena 1 do 5">
-              <mat-button-toggle [value]="1">1</mat-button-toggle>
-              <mat-button-toggle [value]="2">2</mat-button-toggle>
-              <mat-button-toggle [value]="3">3</mat-button-toggle>
-              <mat-button-toggle [value]="4">4</mat-button-toggle>
-              <mat-button-toggle [value]="5">5</mat-button-toggle>
-            </mat-button-toggle-group>
-          </div>
-
-          <div class="review-actions">
-            <button mat-raised-button color="primary" type="submit" [disabled]="reviewForm.invalid">
-              Dodaj opinię
-            </button>
-          </div>
-        </form>
       </mat-card>
     </div>
   } @else {
