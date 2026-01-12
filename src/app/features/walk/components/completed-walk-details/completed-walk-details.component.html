@@ -1,0 +1,114 @@
+<div class="completed-walk-details">
+  <app-section-wrapper header="Szczegoly spaceru">
+    <div class="dog-summary">
+      <div class="avatar">
+        @if (walkDetails().dogAvatarUrl; as avatarUrl) {
+          <img class="dog-avatar" [src]="avatarUrl" [alt]="walkDetails().dogName" />
+        } @else {
+          <div class="dog-avatar placeholder">
+            <mat-icon>pets</mat-icon>
+          </div>
+        }
+      </div>
+
+      <div class="dog-info">
+        <h3 class="dog-name">{{ walkDetails().dogName }}</h3>
+        <div class="status-badge">
+          <mat-icon>check_circle</mat-icon>
+          <span>Status: {{ walkDetails().walkStatus }}</span>
+        </div>
+      </div>
+    </div>
+  </app-section-wrapper>
+
+  <app-section-wrapper header="Podsumowanie spaceru">
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="label">Start spaceru</span>
+        <span class="value">
+          {{ walkDetails().startAt | luxon: 'dd.LL.yyyy HH:mm' }}
+        </span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Koniec spaceru</span>
+        <span class="value">
+          {{ walkDetails().endAt | luxon: 'dd.LL.yyyy HH:mm' }}
+        </span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Czas trwania</span>
+        <span class="value">{{ formatDuration(walkDetails().durationMinutes) }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Dystans</span>
+        <span class="value">{{ formatDistance(walkDetails().distanceKm) }}</span>
+      </div>
+
+      <div class="detail-item full-width">
+        <span class="label">Zdarzenia</span>
+        <div class="events">
+          @for (event of walkDetails().events; track event) {
+            <mat-chip class="event-chip">{{ event }}</mat-chip>
+          } @empty {
+            <span class="muted">Brak zdarzen</span>
+          }
+        </div>
+      </div>
+
+      <div class="detail-item full-width">
+        <span class="label">Uwagi wyprowadzajacego</span>
+        <p class="notes">{{ walkDetails().walkerNotes }}</p>
+      </div>
+    </div>
+  </app-section-wrapper>
+
+  <app-section-wrapper header="Wystaw ocene">
+    <div class="rating-card">
+      <div class="rating-row">
+        <span class="label">Ocena</span>
+        <div class="rating-stars" role="radiogroup" aria-label="Ocena spaceru">
+          @for (star of stars; track star) {
+            <button
+              class="star-button"
+              mat-icon-button
+              type="button"
+              [class.active]="star <= rating()"
+              [attr.aria-pressed]="star === rating()"
+              (click)="setRating(star)"
+            >
+              <mat-icon>{{ star <= rating() ? 'star' : 'star_border' }}</mat-icon>
+            </button>
+          }
+        </div>
+        <span class="rating-value">Wybrana: {{ rating() || '-' }}</span>
+      </div>
+
+      <mat-form-field appearance="outline" class="comment-field">
+        <mat-label>Komentarz do spaceru</mat-label>
+        <textarea
+          matInput
+          rows="4"
+          [maxlength]="250"
+          [formControl]="commentControl"
+        ></textarea>
+        <mat-hint align="end">{{ commentControl.value.length }}/250</mat-hint>
+        @if (commentControl.invalid && commentControl.touched) {
+          <mat-error>Wpisz co najmniej 5 znakow.</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        [disabled]="isSubmitDisabled()"
+        (click)="submitReview()"
+      >
+        Wyslij ocene
+      </button>
+    </div>
+  </app-section-wrapper>
+</div>

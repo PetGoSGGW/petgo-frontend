@@ -12,6 +12,13 @@ export const walkRoutes: Routes = [
           import('./components/track-walk/track-walk.component').then((c) => c.TrackWalkComponent),
       },
       {
+        path: 'szczegoly/:reservationId',
+        loadComponent: () =>
+          import('./components/completed-walk-details/completed-walk-details.component').then(
+            (c) => c.CompletedWalkDetailsComponent,
+          ),
+      },
+      {
         path: ':reservationId',
         loadComponent: () =>
           import('./components/view-walk/view-walk.component').then((c) => c.ViewWalkComponent),
