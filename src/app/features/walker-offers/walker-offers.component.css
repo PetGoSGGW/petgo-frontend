@@ -3,8 +3,13 @@
   gap: 1rem;
   grid-template-columns: 1fr;
 
-  max-height: calc(100svh - var(--header-height));
+  max-height: calc(100svh - var(--header-height) - 2rem);
   height: 100%;
+}
+
+mat-spinner,
+mat-error {
+  grid-column: 1 / -1;
 }
 
 .container {
@@ -30,11 +35,11 @@ ul {
 }
 
 .height-full {
-  height: calc(((100svh - var(--header-height) - 1rem)) - 5.5rem);
+  height: calc(((100svh - var(--header-height) - 1rem)) - 9.5rem);
 }
 
 .height-half {
-  height: calc(((100svh - var(--header-height) - 2rem) / 2) - 5.5rem);
+  height: calc(((100svh - var(--header-height) - 2rem) / 2) - 9.5rem);
 }
 
 .row-title {
@@ -202,7 +207,7 @@ mat-list {
   }
 
   .reserve-btn {
-    margin-inline: auto;
+    margin-inline: 10px;
     max-width: fit-content;
   }
 }

@@ -32,6 +32,10 @@ a.active-link {
   color: var(--mat-sys-on-primary);
 }
 
+li:first-child {
+  margin-bottom: 1rem;
+}
+
 @media (min-width: 35rem) {
   a {
     font-size: 1.15rem;

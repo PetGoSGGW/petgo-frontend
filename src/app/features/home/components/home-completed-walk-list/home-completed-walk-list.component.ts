@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { AuthService } from '../../../../core/auth/services/auth.service';
-import { ReservationApiService } from '../../../../serivces/reservation-api.service';
+import { ReservationApiService } from '../../../../services/reservation-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatList, MatListItem, MatListItemAvatar, MatListItemTitle } from '@angular/material/list';
-import { DatePipe } from '@angular/common';
+import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
+import { LuxonPipe } from '../../../../pipes/luxon.pipe';
 
 @Component({
   selector: 'app-home-completed-walk-list',
@@ -18,7 +19,8 @@ import { DatePipe } from '@angular/common';
     MatListItem,
     MatListItemAvatar,
     MatListItemTitle,
-    DatePipe,
+    LuxonPipe,
+    SectionWrapperComponent,
   ],
 })
 export class HomeCompletedWalkListComponent {
@@ -33,7 +35,7 @@ export class HomeCompletedWalkListComponent {
         .getReservations$()
         .pipe(
           map((reservations) =>
-            reservations.filter((reservation) => reservation.reservationStatus === 'COMPLETED'),
+            reservations.filter((reservation) => reservation.status === 'COMPLETED'),
           ),
         ),
   });

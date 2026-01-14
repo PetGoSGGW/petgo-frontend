@@ -1,7 +1,13 @@
 <span matDialogTitle>Dodaj pupila</span>
 
 <mat-dialog-content>
-  <app-dog-form />
+  @if (breeds.isLoading()) {
+    <mat-spinner />
+  } @else if (breeds.error()) {
+    <mat-error>Wystąpił błąd!</mat-error>
+  } @else if (breeds.hasValue()) {
+    <app-dog-form [breeds]="breeds.value()" />
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions>

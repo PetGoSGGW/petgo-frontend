@@ -7,11 +7,11 @@ import {
   input,
   OnInit,
 } from '@angular/core';
-import { LocationService } from '../../../../serivces/location.service';
+import { LocationService } from '../../../../services/location.service';
 import { ReplaySubject } from 'rxjs';
 import * as L from 'leaflet';
 import { MatButton } from '@angular/material/button';
-import { SessionService } from '../../../../serivces/session.service';
+import { SessionService } from '../../../../services/session.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({

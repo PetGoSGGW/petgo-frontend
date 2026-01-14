@@ -1,142 +1,137 @@
-<div class="dog-details-page">
-  @if (dog(); as currentDog) {
-    <div class="dog-layout">
-      <mat-card class="dog-card main-card">
-        <div class="dog-header">
-          <div class="dog-photo-wrapper">
-            @if (getFirstPhotoUrl(); as mainPhoto) {
-              <img class="dog-photo-main" [src]="mainPhoto" [alt]="currentDog.name" />
-            } @else {
-              <div class="dog-photo-placeholder">
-                <mat-icon>pets</mat-icon>
-              </div>
-            }
+@if (dogResource.isLoading()) {
+  <mat-spinner />
+} @else if (dogResource.error()) {
+  <mat-error>Nie udało się pobrać danych psa.</mat-error>
+} @else if (dogResource.hasValue()) {
+  @let dog = dogResource.value();
+
+  <app-section-wrapper header="Pupil">
+    <div class="dog-header">
+      <div class="dog-photo-wrapper">
+        @if (dog.photos.at(0); as photo) {
+          <img class="dog-photo-main" [src]="photo.url" [alt]="dog.name" />
+        } @else {
+          <div class="dog-photo-placeholder">
+            <mat-icon>pets</mat-icon>
           </div>
+        }
+      </div>
 
-          <div class="dog-main-info">
-            <div class="dog-name-row">
-              <h2 class="dog-name">{{ currentDog.name }}</h2>
+      <div class="dog-main-info">
+        <div class="dog-name-row">
+          <h2 class="dog-name">{{ dog.name }}</h2>
 
-              @if (isOwner(currentDog)) {
-                <button
-                  mat-icon-button
-                  matTooltip="Edytuj szczegóły psa"
-                  (click)="openEditDogDialog(currentDog)"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-              }
-            </div>
-
-            <mat-chip-set>
-              <mat-chip color="primary" selected>
-                <mat-icon>category</mat-icon>
-                <span>{{ currentDog.breed.name }}</span>
-              </mat-chip>
-
-              @if (currentDog.size) {
-                <mat-chip>
-                  <mat-icon>straighten</mat-icon>
-                  <span>{{ currentDog.size }}</span>
-                </mat-chip>
-              }
-
-              @if (currentDog.weightKg !== null) {
-                <mat-chip>
-                  <mat-icon>scale</mat-icon>
-                  <span>{{ currentDog.weightKg }} kg</span>
-                </mat-chip>
-              }
-
-              <mat-chip>
-                <mat-icon>{{ currentDog.isActive ? 'check_circle' : 'cancel' }}</mat-icon>
-                <span>{{ currentDog.isActive ? 'Aktywny' : 'Nieaktywny' }}</span>
-              </mat-chip>
-            </mat-chip-set>
-          </div>
+          @if (dog.ownerId === currentUserId()) {
+            <button
+              mat-icon-button
+              matTooltip="Edytuj szczegóły psa"
+              (click)="openEditDogDialog(dog)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+          }
         </div>
 
-        @if (currentDog.notes) {
-          <mat-divider></mat-divider>
-          <div class="dog-description">
-            <h3>Notatki</h3>
-            <p>{{ currentDog.notes }}</p>
-          </div>
-        }
+        <mat-chip-set>
+          <mat-chip color="primary" selected>
+            <mat-icon>category</mat-icon>
+            <span>{{ dog.breed.name }}</span>
+          </mat-chip>
 
-        @if (getPhotos(currentDog.dogId).length > 1) {
-          <mat-divider></mat-divider>
-          <div class="dog-photos-extra">
-            <h3>Zdjęcia</h3>
-            <div class="photos-row">
-              @for (photo of getPhotos(currentDog.dogId); track photo; let idx = $index) {
-                @if (idx > 0) {
-                  <img
-                    class="dog-photo-thumb"
-                    [src]="photo"
-                    [alt]="currentDog.name + ' zdjęcie ' + (idx + 1)"
-                  />
-                }
-              }
-            </div>
-          </div>
-        }
-      </mat-card>
+          @if (dog.size) {
+            <mat-chip>
+              <mat-icon>straighten</mat-icon>
+              <span>{{ dog.size }}</span>
+            </mat-chip>
+          }
 
-      <mat-card class="dog-card reviews-card">
-        <h3>Opinie</h3>
+          @if (dog.weightKg !== null) {
+            <mat-chip>
+              <mat-icon>scale</mat-icon>
+              <span>{{ dog.weightKg }} kg</span>
+            </mat-chip>
+          }
 
-        @if (reviews().length === 0) {
-          <p class="no-reviews">Ten pies nie ma jeszcze opinii.</p>
-        } @else {
-          <mat-list>
-            @for (review of reviews(); track review.id) {
-              <mat-list-item class="review-item">
-                <div class="review-item-container">
-                  <div class="review-content">
-                    <div class="review-header">
-                      <span class="author">{{ review.authorName }}</span>
-                      <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
-                    </div>
-                    <p class="text">{{ review.text }}</p>
-                  </div>
-
-                  <mat-button-toggle
-                    matTooltip="Zgłoś opinię do weryfikacji"
-                    [checked]="review.reported"
-                    (change)="onReportReview(review.id, $event.source.checked)"
-                  >
-                    <mat-icon [class.reported]="review.reported">flag</mat-icon>
-                  </mat-button-toggle>
-                </div>
-              </mat-list-item>
-            }
-          </mat-list>
-        }
-
-        <mat-divider class="reviews-divider"></mat-divider>
-
-        <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form" novalidate>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Dodaj opinię o tym psie</mat-label>
-            <textarea matInput rows="4" formControlName="text"></textarea>
-            @if (textControl.touched && textControl.invalid) {
-              <mat-error>Opinia jest wymagana (min. 5 znaków).</mat-error>
-            }
-          </mat-form-field>
-
-          <div class="review-actions">
-            <button mat-raised-button color="primary" type="submit" [disabled]="reviewForm.invalid">
-              Dodaj opinię
-            </button>
-          </div>
-        </form>
-      </mat-card>
+          <mat-chip>
+            <mat-icon>{{ dog.isActive ? 'check_circle' : 'cancel' }}</mat-icon>
+            <span>{{ dog.isActive ? 'Aktywny' : 'Nieaktywny' }}</span>
+          </mat-chip>
+        </mat-chip-set>
+      </div>
     </div>
-  } @else {
-    <mat-card class="dog-card">
-      <h2>Pies nie istnieje</h2>
-      <p>Nie znaleziono psa o podanym identyfikatorze.</p>
-    </mat-card>
-  }
-</div>
+
+    @if (dog.notes) {
+      <mat-divider></mat-divider>
+      <div class="dog-description">
+        <p>{{ dog.notes }}</p>
+      </div>
+    }
+
+    @if (dog.photos.length > 0) {
+      <mat-divider></mat-divider>
+      <div class="dog-photos-extra">
+        <div class="photos-row">
+          @for (photo of dog.photos; track photo.photoId; let idx = $index) {
+            @if (idx > 0) {
+              <img
+                class="dog-photo-thumb"
+                [src]="photo.url"
+                [alt]="dog.name + ' zdjęcie ' + (idx + 1)"
+              />
+            }
+          }
+
+          @if (dog.photos.length <= 1) {
+            <span class="empty">Nie dodano więcej zdjęć</span>
+          }
+        </div>
+      </div>
+    }
+  </app-section-wrapper>
+
+  <app-section-wrapper header="Opinie">
+    <mat-list>
+      @for (review of reviews(); track review.id) {
+        <mat-list-item class="review-item">
+          <div class="review-item-container">
+            <div class="review-content">
+              <div class="review-header">
+                <span class="author">{{ review.authorName }}</span>
+                <span class="date">{{ review.createdAt | date: 'shortDate' }}</span>
+              </div>
+              <p class="text">{{ review.text }}</p>
+            </div>
+
+            <mat-button-toggle
+              matTooltip="Zgłoś opinię do weryfikacji"
+              [checked]="review.reported"
+              (change)="onReportReview(review.id, $event.source.checked)"
+            >
+              <mat-icon [class.reported]="review.reported">flag</mat-icon>
+            </mat-button-toggle>
+          </div>
+        </mat-list-item>
+      } @empty {
+        <span class="empty">Ten pies nie ma jeszcze opinii.</span>
+      }
+    </mat-list>
+
+    <!-- <mat-divider class="reviews-divider"></mat-divider> -->
+
+    <!-- <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()" class="review-form" novalidate> -->
+    <!--   <mat-form-field appearance="outline" class="full-width"> -->
+    <!--     <mat-label>Dodaj opinię o tym psie</mat-label> -->
+    <!--     <textarea matInput rows="4" formControlName="text"></textarea> -->
+    <!--     @if (textControl.touched && textControl.invalid) { -->
+    <!--       <mat-error>Opinia jest wymagana (min. 5 znaków).</mat-error> -->
+    <!--     } -->
+    <!--   </mat-form-field> -->
+    <!---->
+    <!--   <div class="review-actions"> -->
+    <!--     <button mat-raised-button color="primary" type="submit" [disabled]="reviewForm.invalid"> -->
+    <!--       Dodaj opinię -->
+    <!--     </button> -->
+    <!--   </div> -->
+    <!-- </form> -->
+  </app-section-wrapper>
+}

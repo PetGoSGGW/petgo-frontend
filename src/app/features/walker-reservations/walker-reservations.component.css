@@ -1,99 +1,99 @@
 .walker-reservations-page {
-    padding: var(--default-padding);
-    max-width: 1400px;
-    margin: 0 auto;
+  padding: var(--default-padding);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .page-header {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .page-header h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--mat-sys-on-surface);
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
 }
 
 .subtitle {
-    margin: 0.5rem 0 0 0;
-    font-size: 1rem;
-    color: var(--mat-sys-on-surface-variant);
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
 }
 
 .error-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
 }
 
 .error-icon {
-    font-size: 4rem;
-    width: 4rem;
-    height: 4rem;
-    color: var(--mat-sys-error);
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  color: var(--mat-sys-error);
 }
 
 .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    gap: 1rem;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+  text-align: center;
 }
 
 .empty-icon {
-    font-size: 5rem;
-    width: 5rem;
-    height: 5rem;
-    color: var(--mat-sys-on-surface-variant);
-    opacity: 0.5;
+  font-size: 5rem;
+  width: 5rem;
+  height: 5rem;
+  color: var(--mat-sys-on-surface-variant);
+  opacity: 0.5;
 }
 
 .empty-state h3 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--mat-sys-on-surface);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
 }
 
 .empty-state p {
-    margin: 0;
-    font-size: 1rem;
-    color: var(--mat-sys-on-surface-variant);
+  margin: 0;
+  font-size: 1rem;
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .reservations-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .reservations-grid {
-        grid-template-columns: 1fr;
-    }
+  .reservations-grid {
+    grid-template-columns: 1fr;
+  }
 
-    .page-header h1 {
-        font-size: 1.5rem;
-    }
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
 }
 
 @media (min-width: 1200px) {
-    .reservations-grid {
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    }
+  .reservations-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
 }

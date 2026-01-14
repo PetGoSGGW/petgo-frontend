@@ -1,7 +1,4 @@
-export interface Breed {
-  breedCode: string;
-  name: string;
-}
+import { Breed } from './breed.model';
 
 export interface Photo {
   photoId: number;
