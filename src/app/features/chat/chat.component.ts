@@ -19,7 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { map, switchMap } from 'rxjs/operators';
-import { of, timer } from 'rxjs';
+import { timer } from 'rxjs';
 import { ChatApiService } from '../../services/chat-api.service';
 import { ChatUser } from '../../models/chat.model';
 import { AuthService } from '../../core/auth/services/auth.service';
@@ -52,16 +52,10 @@ export class ChatComponent {
   public readonly messagesContainer = viewChild<ElementRef>('messagesContainer');
   public readonly currentUserId = computed(() => this.authService.session()?.userId);
 
-  // --- ZASÓB GŁÓWNY (Czat + Wiadomości) ---
   public readonly chatResource = rxResource({
     params: () => ({ id: this.reservationId() }),
-    stream: ({ params: { id } }) => {
-      if (!id) return of(undefined);
-
-      // Uruchamiamy timer, który będzie emitował sygnał co 5 sekund
-      return timer(0, 3000).pipe(
-        // switchMap anuluje poprzednie zapytanie, jeśli nowy "cykl" timera się zacznie
-        // (lub gdy zmieni się id), i wykonuje nową logikę pobierania
+    stream: ({ params: { id } }) =>
+      timer(0, 3000).pipe(
         switchMap(() =>
           this.chatService
             .getChatByReservationId(id)
@@ -73,8 +67,7 @@ export class ChatComponent {
               ),
             ),
         ),
-      );
-    },
+      ),
   });
 
   // --- OBLICZANIE ROZMÓWCY (Interlocutor) ---
