@@ -98,6 +98,11 @@ export const routes: Routes = [
             (r) => r.walkerReservationsRoutes,
           ),
       },
+      {
+        path: 'plan-spacerow',
+        loadChildren: () =>
+          import('./features/walkers-plan/walkers-plan.routes').then((r) => r.walkersPlanRoutes),
+      },
     ],
   },
   {

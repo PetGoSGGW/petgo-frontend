@@ -1,0 +1,9 @@
+<app-section-wrapper header="Plan spacerów">
+  @if (dogsWithReservations.isLoading()) {
+    <mat-spinner />
+  } @else if (dogsWithReservations.error()) {
+    <mat-error>Wystąpił błąd!</mat-error>
+  } @else if (dogsWithReservations.hasValue()) {
+    @for (reservation of dogsWithReservations.value(); track reservation.dogId) {}
+  }
+</app-section-wrapper>

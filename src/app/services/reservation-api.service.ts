@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Dog } from '../models/dog.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ReservationApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
