@@ -4,8 +4,8 @@ import { Dog } from './dog.model';
 
 export interface Reservation {
   reservationId: number;
-  scheduledStart: string;
-  scheduledEnd: string;
+  scheduleStart: string;
+  scheduleEnd: string;
   status: ReservationStatus;
   walkerId: User['userId'];
   ownerId: User['userId'];
@@ -13,6 +13,16 @@ export interface Reservation {
   offerId: WalkerOffer['walkerId'];
   createdAt: string;
   updatedAt: string;
+  bookedSlots: BookedSlot[];
 }
 
 export type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
+
+export interface BookedSlot {
+  slotId: number;
+  startTime: string;
+  endTime: string;
+  latitude: number;
+  longitude: number;
+  isReserved: boolean;
+}

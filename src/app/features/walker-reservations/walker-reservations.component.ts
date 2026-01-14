@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatError } from '@angular/material/form-field';
-import { ReservationCardComponent } from './components/reservation-card/reservation-card.component';
+import { ReservationCardComponent } from '../../components/reservation-card/reservation-card.component';
 import { MatIcon } from '@angular/material/icon';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 import { ReservationApiService } from '../../services/reservation-api.service';
 import { DogApiService } from '../../services/dog-api.service';
+import { ReservationGridComponent } from '../../components/reservation-grid/reservation-grid.component';
 
 @Component({
   selector: 'app-walker-reservations',
@@ -16,6 +17,7 @@ import { DogApiService } from '../../services/dog-api.service';
     ReservationCardComponent,
     MatIcon,
     SectionWrapperComponent,
+    ReservationGridComponent,
   ],
   templateUrl: './walker-reservations.component.html',
   styleUrl: './walker-reservations.component.css',

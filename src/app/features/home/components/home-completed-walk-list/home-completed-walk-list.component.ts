@@ -4,9 +4,9 @@ import { ReservationApiService } from '../../../../services/reservation-api.serv
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatList, MatListItem, MatListItemAvatar, MatListItemTitle } from '@angular/material/list';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
-import { LuxonPipe } from '../../../../pipes/luxon.pipe';
+import { ReservationCardComponent } from '../../../../components/reservation-card/reservation-card.component';
+import { ReservationGridComponent } from '../../../../components/reservation-grid/reservation-grid.component';
 
 @Component({
   selector: 'app-home-completed-walk-list',
@@ -15,12 +15,9 @@ import { LuxonPipe } from '../../../../pipes/luxon.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatProgressSpinner,
-    MatList,
-    MatListItem,
-    MatListItemAvatar,
-    MatListItemTitle,
-    LuxonPipe,
     SectionWrapperComponent,
+    ReservationCardComponent,
+    ReservationGridComponent,
   ],
 })
 export class HomeCompletedWalkListComponent {

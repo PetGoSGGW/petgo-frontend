@@ -2,15 +2,15 @@ import { Component, computed, inject, input } from '@angular/core';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
-import { DatePipe } from '@angular/common';
-import { Reservation } from '../../../../models/reservation.model';
 import { RouterLink } from '@angular/router';
-import { UserApiService } from '../../../../services/user-api.service';
-import { DogApiService } from '../../../../services/dog-api.service';
-import { WalkerOffersApiService } from '../../../walker-offers/services/walker-offers-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatError } from '@angular/material/form-field';
+import { UserApiService } from '../../services/user-api.service';
+import { DogApiService } from '../../services/dog-api.service';
+import { Reservation } from '../../models/reservation.model';
+import { LuxonPipe } from '../../pipes/luxon.pipe';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-reservation-card',
@@ -22,10 +22,10 @@ import { MatError } from '@angular/material/form-field';
     MatChipSet,
     MatChip,
     MatIcon,
-    DatePipe,
     RouterLink,
     MatProgressSpinner,
     MatError,
+    LuxonPipe,
   ],
   templateUrl: './reservation-card.component.html',
   styleUrl: './reservation-card.component.css',
@@ -33,29 +33,44 @@ import { MatError } from '@angular/material/form-field';
 export class ReservationCardComponent {
   private readonly userApi = inject(UserApiService);
   private readonly dogApi = inject(DogApiService);
-  private readonly walkerOfferApi = inject(WalkerOffersApiService);
 
   public readonly reservation = input.required<Reservation>();
 
+  protected readonly locations = computed(() => {
+    const slots = this.reservation().bookedSlots;
+
+    const seen = new Set<string>();
+
+    return slots.filter((slot) => {
+      const key = `${slot.latitude}-${slot.longitude}`;
+
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
+    });
+  });
+
   protected readonly walkDuration = computed(() => {
-    const res = this.reservation();
-    const start = new Date(res.scheduledStart);
-    const end = new Date(res.scheduledEnd);
-    const durationMs = end.getTime() - start.getTime();
-    const durationMinutes = Math.floor(durationMs / 1000 / 60);
+    const reservation = this.reservation();
 
-    if (durationMinutes < 60) {
-      return `${durationMinutes} min`;
+    const start = DateTime.fromISO(reservation.scheduleStart).startOf('minute');
+    const end = DateTime.fromISO(reservation.scheduleEnd).startOf('minute');
+
+    const diff = end.diff(start, ['hours', 'minutes']);
+    const { hours, minutes } = diff.toObject();
+
+    if (hours === 0) {
+      return `${minutes}m`;
     }
-
-    const hours = Math.floor(durationMinutes / 60);
-    const minutes = durationMinutes % 60;
 
     if (minutes === 0) {
       return `${hours}h`;
     }
 
-    return `${hours}h ${minutes}min`;
+    return `${hours}h ${minutes}m`;
   });
 
   protected readonly statusLabel = computed(() => {
