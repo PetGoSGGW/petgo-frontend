@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { AvailableSlot } from '../models/available-slot.model';
 import { Dog } from '../../../models/dog.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class WalkerOffersApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
@@ -29,5 +29,9 @@ export class WalkerOffersApiService {
     availabilitySlotIds: AvailableSlot['slotId'][];
   }): Observable<{ reservationId: number }> {
     return this.http.post<{ reservationId: number }>(`${this.apiUrl}/reservations`, body);
+  }
+
+  public getOffer$(id: WalkerOffer['offerId']): Observable<WalkerOffer> {
+    return this.http.get<WalkerOffer>(`${this.apiUrl}/reservations/${id}`);
   }
 }

@@ -85,14 +85,6 @@
     <mat-error>Błąd podczas pobierania opinii</mat-error>
   } @else if (reviews.hasValue()) {
     <mat-card class="content-card reviews-card">
-      <div class="reviews-title-row">
-        <h3>Opinie ({{ reviews.value().reviewDTOList.length }})</h3>
-        <div class="rating-badge">
-          <mat-icon>star</mat-icon>
-          {{ reviews.value().avgRating }}
-        </div>
-      </div>
-
       <div class="reviews-list-container">
         @for (review of reviews.value().reviewDTOList; track review.createdAt; let last = $last) {
           <div class="review-row">

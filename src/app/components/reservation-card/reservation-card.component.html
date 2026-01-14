@@ -1,0 +1,51 @@
+@if (owner.isLoading() || walker.isLoading() || dog.isLoading()) {
+  <mat-spinner />
+} @else if (owner.error() || walker.error() || dog.error()) {
+  <mat-error>Wystąpił błąd!</mat-error>
+} @else if (owner.hasValue() && walker.hasValue() && dog.hasValue()) {
+  <mat-card class="reservation-card">
+    <mat-card-header>
+      <div class="header-content">
+        <a class="user-info" [routerLink]="['/uzytkownik', reservation().ownerId]">
+          <span class="username">{{ owner.value().firstName }} {{ owner.value().lastName }}</span>
+        </a>
+        <mat-chip [highlighted]="true" [class]="statusClass()">
+          {{ statusLabel() }}
+        </mat-chip>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <a class="dog-section" [routerLink]="['/pupile', reservation().dogId]">
+        <img [src]="dog.value().photos[0].url" [alt]="dog.value().name" class="dog-photo" />
+        <div class="dog-info">
+          <h4 class="dog-name">{{ dog.value().name }}</h4>
+          <p class="dog-breed">{{ dog.value().breed.name }}</p>
+          <p class="dog-details">{{ dog.value().size }} • {{ dog.value().weightKg }}kg</p>
+        </div>
+      </a>
+
+      <div class="details-chips">
+        <mat-chip-set>
+          <mat-chip>
+            <mat-icon>schedule</mat-icon>
+            <span>
+              {{ reservation().scheduleStart | luxon: 'dd.LL.yyyy HH:mm' }} -
+              {{ reservation().scheduleEnd | luxon: 'HH:mm' }}</span
+            >
+          </mat-chip>
+          <mat-chip>
+            <mat-icon>timer</mat-icon>
+            <span>{{ walkDuration() }}</span>
+          </mat-chip>
+          @for (location of locations(); track location.slotId) {
+            <mat-chip>
+              <mat-icon>location_on</mat-icon>
+              <span>{{ location.latitude }} - {{ location.longitude }}</span>
+            </mat-chip>
+          }
+        </mat-chip-set>
+      </div>
+    </mat-card-content>
+  </mat-card>
+}
