@@ -14,11 +14,19 @@ export class ReservationApiService {
     return this.http.get<Reservation[]>(`${this.apiUrl}/reservations`);
   }
 
+  public getWalkerReservations$(): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/reservations/walker`);
+  }
+
   public getDogReservations$(dogId: Dog['dogId']): Observable<Reservation[]> {
     return this.http.get<Reservation[]>(`${this.apiUrl}/dog/${dogId}/reservations`);
   }
 
-  public cancelReservation$(reservationId: Reservation['reservationId']): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/reservations/${reservationId}/cancel`, {});
+  public confirm$(id: Reservation['reservationId']) {
+    return this.http.post(`${this.apiUrl}/reservations/${id}/confirm`, {});
+  }
+
+  public cancel$(id: Reservation['reservationId']) {
+    return this.http.post(`${this.apiUrl}/reservations/${id}/cancel`, {});
   }
 }

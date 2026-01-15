@@ -1,13 +1,13 @@
 import { Component, computed, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { LuxonPipe } from '../../../pipes/luxon.pipe';
 import { ReservationApiService } from '../../../services/reservation-api.service';
 import { Reservation, BookedSlot } from '../../../models/reservation.model';
 import { User } from '../../../models/user.model';
 import { Dog } from '../../../models/dog.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface ReservationDialogData {
   reservation: Reservation;
@@ -19,16 +19,16 @@ interface ReservationDialogData {
 @Component({
   standalone: true,
   providers: [ReservationApiService],
-  imports: [MatDialogModule, MatButtonModule, LuxonPipe, NgIf],
+  imports: [MatDialogModule, MatButtonModule, LuxonPipe, RouterLink],
   templateUrl: './reservation-details-dialog.component.html',
   styleUrls: ['./reservation-details-dialog.component.css'],
 })
 export class ReservationDetailsDialogComponent {
   public readonly data = inject<ReservationDialogData>(MAT_DIALOG_DATA);
 
-  private readonly dialogRef = inject(MatDialogRef<ReservationDetailsDialogComponent>);
-  private readonly router = inject(Router);
+  protected readonly dialogRef = inject(MatDialogRef<ReservationDetailsDialogComponent>);
   private readonly reservationApi = inject(ReservationApiService);
+  private readonly matSnackBar = inject(MatSnackBar);
 
   public readonly isPendingReservation = computed(() => this.data.reservation.status === 'PENDING');
 
@@ -49,14 +49,12 @@ export class ReservationDetailsDialogComponent {
   }
 
   public cancelReservation(): void {
-    this.reservationApi.cancelReservation$(this.data.reservation.reservationId).subscribe({
-      next: () => this.dialogRef.close('cancelled'),
-      error: () => console.error('Nie udało się anulować rezerwacji'),
+    this.reservationApi.cancel$(this.data.reservation.reservationId).subscribe({
+      next: () => {
+        this.dialogRef.close('cancelled');
+        this.matSnackBar.open('Anulowano rezerwację', 'OK');
+      },
+      error: () => this.matSnackBar.open('Nie udało się anulować rezerwacji', 'OK'),
     });
-  }
-
-  public goToChat(): void {
-    this.dialogRef.close();
-    this.router.navigate(['/chat', this.data.reservation.reservationId]);
   }
 }

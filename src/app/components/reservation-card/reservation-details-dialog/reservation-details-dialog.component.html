@@ -41,18 +41,18 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close()">Zamknij</button>
+  <button matButton="outlined" (click)="close()">Zamknij</button>
 
-  <button mat-stroked-button color="primary" (click)="goToChat()" *ngIf="isPendingReservation()">
-    Przejdź do chatu
-  </button>
-
-  <button
-    mat-stroked-button
+  <a
+    matButton
     color="primary"
-    (click)="cancelReservation()"
-    *ngIf="isPendingReservation()"
+    [routerLink]="['/czat', data.reservation.reservationId]"
+    (click)="dialogRef.close()"
   >
-    Odwołaj spacer
-  </button>
+    Przejdź do chatu
+  </a>
+
+  @if (isPendingReservation()) {
+    <button matButton="tonal" color="primary" (click)="cancelReservation()">Odwołaj spacer</button>
+  }
 </mat-dialog-actions>

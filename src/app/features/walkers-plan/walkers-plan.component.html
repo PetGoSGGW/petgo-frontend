@@ -1,0 +1,65 @@
+<app-section-wrapper header="Plan spacerów">
+  @if (dogsWithReservations.isLoading()) {
+    <mat-spinner />
+  } @else if (dogsWithReservations.error()) {
+    <mat-error>Wystąpił błąd!</mat-error>
+  } @else if (dogsWithReservations.hasValue()) {
+    <mat-form-field>
+      <mat-label>Wybierz datę</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="filterDate" />
+      <mat-hint>dd/mm/rrrr</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker touchUi #picker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="list">
+      @for (dog of dogsWithReservations.value(); track dog.dogId) {
+        <div class="item">
+          <div class="dog">
+            @if (dog.photos[0]) {
+              <img [src]="dog.photos[0].url" [alt]="dog.name" />
+            } @else {
+              <div class="image-placeholder">
+                <span>Brak zdjęcia</span>
+              </div>
+            }
+
+            <span>{{ dog.name }}</span>
+          </div>
+
+          <div class="reservations">
+            @for (
+              reservation of dog.reservations;
+              track reservation.reservationId;
+              let index = $index
+            ) {
+              <span>Spacer #{{ index + 1 }}</span>
+              <mat-chip-set>
+                <mat-chip>
+                  <mat-icon>schedule</mat-icon>
+                  <span>
+                    {{ reservation.scheduleStart | luxon: 'dd.LL.yyyy HH:mm' }} -
+                    {{ reservation.scheduleEnd | luxon: 'HH:mm' }}</span
+                  >
+                </mat-chip>
+                <mat-chip>
+                  <mat-icon>timer</mat-icon>
+                  <span>{{ reservation | walkDuration }}</span>
+                </mat-chip>
+
+                @for (location of reservation | walkLocations; track location.slotId) {
+                  <mat-chip>
+                    <mat-icon>location_on</mat-icon>
+                    <span>{{ location.latitude }} - {{ location.longitude }}</span>
+                  </mat-chip>
+                }
+              </mat-chip-set>
+            } @empty {
+              <span>Nie ma spacerów</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</app-section-wrapper>

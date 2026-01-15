@@ -99,6 +99,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'plan-spacerow',
+        loadChildren: () =>
+          import('./features/walkers-plan/walkers-plan.routes').then((r) => r.walkersPlanRoutes),
+      },
+      {
         path: 'czat',
         loadChildren: () => import('./features/chat/chat.routes').then((r) => r.chatRoutes),
       },
