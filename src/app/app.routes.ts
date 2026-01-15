@@ -43,12 +43,18 @@ export const routes: Routes = [
       },
       {
         path: 'pupile',
-        loadChildren: () => import('./features/pets/pets.routes').then((r) => r.petsRoutes),
-      },
-      {
-        path: 'pies/:id',
-        loadChildren: () =>
-          import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadChildren: () => import('./features/pets/pets.routes').then((r) => r.petsRoutes),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./features/pet-details/pet-details.routes').then((r) => r.petDetailsRoutes),
+          },
+        ],
       },
       {
         path: 'uzytkownik',
@@ -84,6 +90,22 @@ export const routes: Routes = [
           import('./features/user-walker-offer-details/user-walker-offer-details.routes').then(
             (r) => r.userWalkerOfferDetails,
           ),
+      },
+      {
+        path: 'umowione-spacery',
+        loadChildren: () =>
+          import('./features/walker-reservations/walker-reservations.routes').then(
+            (r) => r.walkerReservationsRoutes,
+          ),
+      },
+      {
+        path: 'plan-spacerow',
+        loadChildren: () =>
+          import('./features/walkers-plan/walkers-plan.routes').then((r) => r.walkersPlanRoutes),
+      },
+      {
+        path: 'czat',
+        loadChildren: () => import('./features/chat/chat.routes').then((r) => r.chatRoutes),
       },
     ],
   },
