@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>
+  {{ isPendingReservation() ? 'Zaplanowany spacer' : 'Szczegóły spaceru' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <section>
+    <h3>Pies</h3>
+    <p>
+      <strong>{{ data.dog.name }}</strong> – {{ data.dog.breed.name }}
+    </p>
+    <p>{{ data.dog.size }} • {{ data.dog.weightKg }} kg</p>
+  </section>
+
+  <section>
+    <h3>Termin</h3>
+    <p>
+      {{ data.reservation.scheduleStart | luxon: 'dd.LL.yyyy HH:mm' }}
+      –
+      {{ data.reservation.scheduleEnd | luxon: 'HH:mm' }}
+    </p>
+  </section>
+
+  @for (location of locations(); track location.slotId) {
+    <section>
+      <h3>Lokalizacja</h3>
+      <p>
+        <span>{{ location.latitude }} - {{ location.longitude }}</span>
+      </p>
+    </section>
+  }
+
+  <section>
+    <h3>Właściciel</h3>
+    <p>{{ data.owner.firstName }} {{ data.owner.lastName }}</p>
+  </section>
+
+  <section>
+    <h3>Osoba wyprowadzająca</h3>
+    <p>{{ data.walker.firstName }} {{ data.walker.lastName }}</p>
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Zamknij</button>
+
+  <button mat-stroked-button color="primary" (click)="goToChat()" *ngIf="isPendingReservation()">
+    Przejdź do chatu
+  </button>
+
+  <button
+    mat-stroked-button
+    color="primary"
+    (click)="cancelReservation()"
+    *ngIf="isPendingReservation()"
+  >
+    Odwołaj spacer
+  </button>
+</mat-dialog-actions>

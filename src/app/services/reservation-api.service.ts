@@ -17,4 +17,8 @@ export class ReservationApiService {
   public getDogReservations$(dogId: Dog['dogId']): Observable<Reservation[]> {
     return this.http.get<Reservation[]>(`${this.apiUrl}/dog/${dogId}/reservations`);
   }
+
+  public cancelReservation$(reservationId: Reservation['reservationId']): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/reservations/${reservationId}/cancel`, {});
+  }
 }
