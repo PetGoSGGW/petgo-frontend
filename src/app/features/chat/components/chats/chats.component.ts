@@ -8,12 +8,13 @@ import { MatError } from '@angular/material/form-field';
 import { AuthService } from '../../../../core/auth/services/auth.service';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
 
 @Component({
   selector: 'app-chats',
   templateUrl: './chats.component.html',
   styleUrl: './chats.component.css',
-  imports: [MatProgressSpinner, MatError, MatIcon, RouterLink],
+  imports: [MatProgressSpinner, MatError, MatIcon, RouterLink, SectionWrapperComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ChatsComponent {
