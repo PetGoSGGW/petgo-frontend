@@ -98,6 +98,10 @@ export const routes: Routes = [
             (r) => r.walkerReservationsRoutes,
           ),
       },
+      {
+        path: 'czat',
+        loadChildren: () => import('./features/chat/chat.routes').then((r) => r.chatRoutes),
+      },
     ],
   },
   {

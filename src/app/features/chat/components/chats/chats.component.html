@@ -1,0 +1,16 @@
+@if (reservations.isLoading()) {
+  <mat-spinner />
+} @else if (reservations.error()) {
+  <mat-error>Wystąpił błąd!</mat-error>
+} @else if (reservations.hasValue()) {
+  <ul>
+    @for (chat of chats(); track chat.chatId) {
+      <li>
+        <a [routerLink]="['/czat', chat.chatId]">
+          <mat-icon>chat</mat-icon>
+          {{ chat.walker.firstName }} {{ chat.walker.lastName }}
+        </a>
+      </li>
+    }
+  </ul>
+}

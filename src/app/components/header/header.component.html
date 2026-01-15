@@ -10,7 +10,16 @@
   </div>
 
   <div class="profile">
-    <a [routerLink]="['/powiadomienia']" class="profile-username desktop">
+    <a matIconButton aria-label="Czaty" [routerLink]="['/czat']" class="profile-username">
+      <mat-icon>chat</mat-icon>
+    </a>
+
+    <a
+      matIconButton
+      [routerLink]="['/powiadomienia']"
+      class="profile-username"
+      aria-label="Powiadomienia"
+    >
       <mat-icon>notifications</mat-icon>
     </a>
 
