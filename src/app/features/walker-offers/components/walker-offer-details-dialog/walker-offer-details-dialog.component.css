@@ -1,0 +1,130 @@
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 480px;
+}
+
+@media (max-width: 600px) {
+  .dialog-content {
+    min-width: unset;
+  }
+}
+
+.offer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.walker-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #212121;
+}
+
+.price {
+  margin: 0;
+  font-size: 15px;
+}
+
+.description-label {
+  margin: 8px 0 0;
+}
+
+.description {
+  margin: 0;
+  color: #424242;
+  line-height: 1.5;
+}
+
+.reviews-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviews-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reviews-title-row h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.rating-badge {
+  background: #fff3e0;
+  color: #f57c00;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.rating-badge mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-row {
+  padding: 12px 0;
+}
+
+.review-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 8px;
+  margin-bottom: 6px;
+}
+
+.author {
+  font-weight: 600;
+  color: #212121;
+}
+
+.date {
+  font-size: 12px;
+  color: #78909c;
+  margin-left: auto;
+}
+
+.star-rating-display {
+  width: 100%;
+  display: flex;
+  margin-top: 2px;
+  color: #f57c00;
+}
+
+.star-icon-small {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  margin-right: 1px;
+}
+
+.text {
+  margin: 0;
+  color: #424242;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.empty {
+  font-size: 14px;
+  color: #78909c;
+  padding: 8px 0;
+}

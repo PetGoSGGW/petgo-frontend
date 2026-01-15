@@ -1,0 +1,15 @@
+<app-section-wrapper header="Pupile">
+  <button matButton="outlined" slot="extras" class="add-btn" (click)="openAddDogDialog()">
+    Dodaj pupila
+  </button>
+
+  @if (dogs.isLoading()) {
+    <mat-spinner />
+  } @else if (dogs.error()) {
+    <mat-error>Wystąpił błąd!</mat-error>
+  } @else if (dogs.hasValue()) {
+    <app-dogs-grid [dogs]="dogs.value()">
+      <mat-hint>Nie masz żadnego pupila</mat-hint>
+    </app-dogs-grid>
+  }
+</app-section-wrapper>

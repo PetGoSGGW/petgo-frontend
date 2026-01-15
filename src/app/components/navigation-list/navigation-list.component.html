@@ -1,4 +1,27 @@
 <ul>
+  @if (!loading()) {
+    <li>
+      @if (!hasOffer()) {
+        <a
+          matButton="tonal"
+          routerLink="/dodaj-spacer"
+          routerLinkActive="active-link"
+          (click)="clicked.emit()"
+        >
+          <mat-icon>add</mat-icon>Dodaj ofertę
+        </a>
+      } @else {
+        <a
+          matButton="tonal"
+          routerLink="/moja-oferta"
+          routerLinkActive="active-link"
+          (click)="clicked.emit()"
+        >
+          <mat-icon>redeem</mat-icon>Moja oferta
+        </a>
+      }
+    </li>
+  }
   <li>
     <a
       routerLink="/"
@@ -16,8 +39,26 @@
       Oferty</a
     >
   </li>
+  <li>
+    <a routerLink="/umowione-spacery" routerLinkActive="active-link" (click)="clicked.emit()">
+      <mat-icon>event_available</mat-icon>
+      Umówione spacery</a
+    >
+  </li>
+  <li>
+    <a routerLink="/pupile" routerLinkActive="active-link" (click)="clicked.emit()">
+      <mat-icon>pets</mat-icon>
+      Pupile</a
+    >
+  </li>
+  <li>
+    <a routerLink="/uzytkownik" routerLinkActive="active-link" (click)="clicked.emit()">
+      <mat-icon>group</mat-icon>
+      Użytkownicy
+    </a>
+  </li>
 </ul>
 
 <a routerLink="/kontakt" routerLinkActive="active-link" (click)="clicked.emit()">
-  <mat-icon>question_mark</mat-icon>Skontaktuj się z nami</a
->
+  <mat-icon>question_mark</mat-icon>Skontaktuj się z nami
+</a>

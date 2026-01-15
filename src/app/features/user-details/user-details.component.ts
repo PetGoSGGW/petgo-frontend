@@ -7,13 +7,18 @@ import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatError, MatFormFieldModule } from '@angular/material/form-field';
+import { MatError, MatFormFieldModule, MatHint } from '@angular/material/form-field';
 import { UserApiService } from '../../services/user-api.service';
 import { DogApiService } from '../../services/dog-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { LuxonPipe } from '../../pipes/luxon.pipe';
+import { WalletApiService } from '../../services/wallet-api.service';
+import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
+import { FromCentsPipe } from '../../pipes/from-cents.pipe';
+import { DogsGridComponent } from '../../components/dog-grid/dogs-grid.component';
+import { AuthService } from '../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-user-details',
@@ -28,9 +33,15 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     MatListModule,
     MatDividerModule,
     MatTooltipModule,
-    RouterLink,
     MatProgressSpinner,
     MatError,
+    LuxonPipe,
+    MatHint,
+    SectionWrapperComponent,
+    FromCentsPipe,
+    LuxonPipe,
+    SectionWrapperComponent,
+    DogsGridComponent,
   ],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
@@ -38,8 +49,12 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 export class UserDetailsComponent {
   private readonly userApiService = inject(UserApiService);
   private readonly dogApiService = inject(DogApiService);
+  private readonly walletApi = inject(WalletApiService);
+  private readonly authService = inject(AuthService);
 
   public readonly id = input.required<number, string>({ transform: numberAttribute });
+
+  protected readonly userId = this.authService.userId;
 
   protected readonly user = rxResource({
     params: () => ({ id: this.id() }),
@@ -55,15 +70,22 @@ export class UserDetailsComponent {
     stream: ({ params: { id } }) => this.userApiService.getUserReviews(id),
   });
 
-  protected readonly score = computed(() => {
-    const reviews = this.reviews.hasValue() ? this.reviews.value() : [];
+  protected get avgRating(): number {
+    return this.reviews.hasValue() ? this.reviews.value().avgRating : 0;
+  }
 
-    if (!reviews || reviews.length === 0) {
-      return 0;
-    }
+  protected readonly reviewSectionHeader = computed(() => {
+    const count = this.reviews.hasValue() ? this.reviews.value().reviewDTOList.length : 0;
 
-    const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / reviews.length) * 10) / 10;
+    return `Opinie ${count ? '(' + count + ')' : ''}`;
+  });
+
+  protected readonly transactions = rxResource({
+    stream: () => this.walletApi.getTransactions$(),
+  });
+
+  protected readonly wallet = rxResource({
+    stream: () => this.walletApi.getWallet$(),
   });
 
   protected getAvatarUrl(): string | null {
