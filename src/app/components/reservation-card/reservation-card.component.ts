@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReservationDetailsDialogComponent } from './reservation-details-dialog/reservation-details-dialog.component';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatError } from '@angular/material/form-field';
@@ -37,6 +37,7 @@ export class ReservationCardComponent {
   private readonly userApi = inject(UserApiService);
   private readonly dogApi = inject(DogApiService);
   private readonly dialog = inject(MatDialog);
+  protected readonly router = inject(Router);
 
   public readonly reservation = input.required<Reservation>();
 
@@ -127,5 +128,9 @@ export class ReservationCardComponent {
         dog: this.dog.value(),
       },
     });
+  }
+
+  protected async openChat(id: Reservation['reservationId']): Promise<void> {
+    await this.router.navigate(['/czat', id]);
   }
 }

@@ -17,7 +17,7 @@
 
     <mat-card-content>
       <a class="dog-section" [routerLink]="['/pupile', reservation().dogId]">
-        <img [src]="dog.value().photos[0].url" [alt]="dog.value().name" class="dog-photo" />
+        <img [src]="dog.value().photos[0]?.url" [alt]="dog.value().name" class="dog-photo" />
         <div class="dog-info">
           <h4 class="dog-name">{{ dog.value().name }}</h4>
           <p class="dog-breed">{{ dog.value().breed.name }}</p>
@@ -46,8 +46,15 @@
           }
           <mat-chip class="details-chip" (click)="openDetails()">
             <mat-icon>info</mat-icon>
-            <span>Szczegóły</span>
+            <span>Przejdź do szczegółów</span>
           </mat-chip>
+
+          @if (reservation().status !== 'PENDING' && reservation().status !== 'CANCELLED') {
+            <mat-chip class="details-chip" (click)="openChat(reservation().reservationId)">
+              <mat-icon>chat</mat-icon>
+              <span>Przejdź do czatu</span>
+            </mat-chip>
+          }
         </mat-chip-set>
       </div>
     </mat-card-content>

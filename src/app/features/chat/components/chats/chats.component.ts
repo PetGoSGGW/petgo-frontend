@@ -42,9 +42,51 @@ export default class ChatsComponent {
       .flatMap((reservation) => reservation.chat);
   });
 
+  protected readonly walkerChats = computed(() => {
+    const walkerReservations = this.walkerReservations.hasValue()
+      ? this.walkerReservations.value()
+      : [];
+
+    const seen = new Set<number>();
+
+    return walkerReservations
+      .filter((reservation) => {
+        const key = reservation.walkerId;
+
+        if (seen.has(key)) return false;
+
+        seen.add(key);
+
+        return true;
+      })
+      .flatMap((reservation) => reservation.chat);
+  });
+
   protected readonly reservations = rxResource({
     stream: () =>
       this.reservationApi.getReservations$().pipe(
+        switchMap((reservations) => {
+          if (reservations.length === 0) return [];
+
+          return forkJoin(
+            reservations
+              .filter(({ status }) => status === 'CONFIRMED' || status === 'COMPLETED')
+              .map((reservation) =>
+                this.chatApi.getChatByReservationId(reservation.reservationId).pipe(
+                  map((chat) => ({
+                    ...reservation,
+                    chat,
+                  })),
+                ),
+              ),
+          );
+        }),
+      ),
+  });
+
+  protected readonly walkerReservations = rxResource({
+    stream: () =>
+      this.reservationApi.getWalkerReservations$().pipe(
         switchMap((reservations) => {
           if (reservations.length === 0) return [];
 
