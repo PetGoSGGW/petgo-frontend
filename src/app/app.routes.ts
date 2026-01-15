@@ -40,7 +40,7 @@ export const routes: Routes = [
           import('./features/user-details/user-details.routes').then((r) => r.userDetailsRoutes),
       },
       {
-        path: 'czat/:reservationId',
+        path: 'czat',
         loadChildren: () => import('./features/chat/chat.routes').then((r) => r.chatRoutes),
       },
     ],
