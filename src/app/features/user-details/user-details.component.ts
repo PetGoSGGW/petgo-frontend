@@ -63,7 +63,7 @@ export class UserDetailsComponent {
 
   protected readonly dogs = rxResource({
     params: () => ({ id: this.id() }),
-    stream: ({ params: { id } }) => this.dogApiService.getDogsByUserId(id),
+    stream: ({ params: { id } }) => this.dogApiService.getDogsByUserId$(id),
   });
   protected readonly reviews = rxResource({
     params: () => ({ id: this.id() }),

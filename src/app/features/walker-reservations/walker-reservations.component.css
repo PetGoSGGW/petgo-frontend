@@ -1,3 +1,14 @@
+.buttons {
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+
+  & > button {
+    width: 100%;
+  }
+}
+
 .walker-reservations-page {
   padding: var(--default-padding);
   max-width: 1400px;
@@ -52,6 +63,7 @@
   min-height: 400px;
   gap: 1rem;
   text-align: center;
+  grid-column: 1 / -1;
 }
 
 .empty-icon {

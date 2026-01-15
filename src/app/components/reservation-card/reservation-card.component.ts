@@ -1,5 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
+import { MatCard, MatCardContent, MatCardFooter, MatCardHeader } from '@angular/material/card';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -26,6 +26,7 @@ import { DateTime } from 'luxon';
     MatProgressSpinner,
     MatError,
     LuxonPipe,
+    MatCardFooter,
   ],
   templateUrl: './reservation-card.component.html',
   styleUrl: './reservation-card.component.css',

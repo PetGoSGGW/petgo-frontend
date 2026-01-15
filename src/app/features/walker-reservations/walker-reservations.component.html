@@ -11,7 +11,26 @@
   } @else if (reservations.hasValue()) {
     <app-reservation-grid>
       @for (reservation of reservations.value(); track reservation.reservationId) {
-        <app-reservation-card [reservation]="reservation" />
+        <app-reservation-card [reservation]="reservation">
+          @if (reservation.status === 'PENDING' && reservation.walkerId === userId()) {
+            <div class="buttons">
+              <button
+                matButton="outlined"
+                [disabled]="loading() === reservation.reservationId"
+                (click)="cancel(reservation.reservationId)"
+              >
+                Odrzuć
+              </button>
+              <button
+                matButton="tonal"
+                [disabled]="loading() === reservation.reservationId"
+                (click)="confirm(reservation.reservationId)"
+              >
+                Zaakceptuj
+              </button>
+            </div>
+          }
+        </app-reservation-card>
       } @empty {
         <div class="empty-state">
           <mat-icon class="empty-icon">event_busy</mat-icon>
