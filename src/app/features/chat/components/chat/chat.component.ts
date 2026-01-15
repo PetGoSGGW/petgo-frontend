@@ -20,10 +20,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { map, switchMap } from 'rxjs/operators';
 import { timer } from 'rxjs';
-import { ChatApiService } from '../../services/chat-api.service';
-import { ChatUser } from '../../models/chat.model';
-import { AuthService } from '../../core/auth/services/auth.service';
+import { ChatApiService } from '../../../../services/chat-api.service';
+import { ChatUser } from '../../../../models/chat.model';
+import { AuthService } from '../../../../core/auth/services/auth.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-chat',
@@ -41,10 +42,11 @@ import { Router } from '@angular/router';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
-export class ChatComponent {
+export default class ChatComponent {
   private readonly chatService = inject(ChatApiService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly matSnackBar = inject(MatSnackBar);
 
   public readonly reservationId = input.required<number>();
 
@@ -84,11 +86,13 @@ export class ChatComponent {
   });
 
   constructor() {
-    effect(() => {
+    effect(async () => {
       if (this.chatResource.error()) {
-        this.router.navigate(['/']);
+        this.matSnackBar.open('Wystąpił błąd!', 'OK');
+        await this.router.navigate(['/czat']);
       }
     });
+
     effect(() => {
       if (this.chatResource.error()) return;
       const data = this.chatResource.value();
@@ -105,7 +109,6 @@ export class ChatComponent {
     const currentData = this.chatResource.value();
     const senderId = this.currentUserId();
 
-    // currentData.chat.chatId zamiast samego chatId
     if (!text || !currentData?.chat.chatId || !senderId) return;
 
     const payload = {
@@ -114,12 +117,11 @@ export class ChatComponent {
       sentAt: new Date(),
     };
 
-    // Optymistyczna aktualizacja
     this.chatResource.update((state) => {
       if (!state) return state;
       return {
         ...state,
-        messages: [...state.messages, payload], // casting jeśli typy się gryzą
+        messages: [...state.messages, payload],
       };
     });
 
@@ -139,7 +141,6 @@ export class ChatComponent {
     }, 100);
   }
 
-  // Helper do awatara
   public getAvatarUrl(firstName: string, lastName: string): string {
     return `https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=random&color=fff`;
   }

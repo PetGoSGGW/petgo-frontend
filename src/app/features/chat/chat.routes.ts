@@ -1,8 +1,12 @@
 import { Routes } from '@angular/router';
-import { ChatComponent } from './chat.component';
 export const chatRoutes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () => import('./components/chats/chats.component'),
+  },
+  {
     path: ':reservationId',
-    component: ChatComponent,
+    loadComponent: () => import('./components/chat/chat.component'),
   },
 ];
