@@ -44,6 +44,10 @@
               <span>{{ location.latitude }} - {{ location.longitude }}</span>
             </mat-chip>
           }
+          <mat-chip class="details-chip" (click)="openDetails()">
+            <mat-icon>info</mat-icon>
+            <span>Szczegóły</span>
+          </mat-chip>
         </mat-chip-set>
       </div>
     </mat-card-content>
