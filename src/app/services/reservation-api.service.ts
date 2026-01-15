@@ -14,6 +14,10 @@ export class ReservationApiService {
     return this.http.get<Reservation[]>(`${this.apiUrl}/reservations`);
   }
 
+  public getWalkerReservations$(): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/reservations/walker`);
+  }
+
   public getDogReservations$(dogId: Dog['dogId']): Observable<Reservation[]> {
     return this.http.get<Reservation[]>(`${this.apiUrl}/dog/${dogId}/reservations`);
   }

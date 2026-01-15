@@ -39,7 +39,7 @@ export default class WalkerReservationsComponent {
   protected readonly userId = this.authService.userId;
 
   protected readonly reservations = rxResource({
-    stream: () => this.reservationApi.getReservations$(),
+    stream: () => this.reservationApi.getWalkerReservations$(),
   });
 
   protected cancel(reservationId: Reservation['reservationId']): void {
