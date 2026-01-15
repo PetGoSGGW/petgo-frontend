@@ -1,5 +1,7 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { MatCard, MatCardContent, MatCardFooter, MatCardHeader } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { ReservationDetailsDialogComponent } from './reservation-details-dialog/reservation-details-dialog.component';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -34,6 +36,7 @@ import { DateTime } from 'luxon';
 export class ReservationCardComponent {
   private readonly userApi = inject(UserApiService);
   private readonly dogApi = inject(DogApiService);
+  private readonly dialog = inject(MatDialog);
 
   public readonly reservation = input.required<Reservation>();
 
@@ -112,4 +115,17 @@ export class ReservationCardComponent {
     params: () => ({ id: this.reservation().dogId }),
     stream: ({ params: { id } }) => this.dogApi.getDog$(id),
   });
+
+  protected openDetails(): void {
+    this.dialog.open(ReservationDetailsDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      data: {
+        reservation: this.reservation(),
+        owner: this.owner.value(),
+        walker: this.walker.value(),
+        dog: this.dog.value(),
+      },
+    });
+  }
 }

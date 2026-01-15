@@ -103,6 +103,10 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/walkers-plan/walkers-plan.routes').then((r) => r.walkersPlanRoutes),
       },
+      {
+        path: 'czat',
+        loadChildren: () => import('./features/chat/chat.routes').then((r) => r.chatRoutes),
+      },
     ],
   },
   {

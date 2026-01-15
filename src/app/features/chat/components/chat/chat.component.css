@@ -1,0 +1,152 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100svh - var(--header-height) - 2rem);
+  background-color: #f5f5f5;
+  max-width: 800px;
+  margin: 0 auto;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+}
+
+/* Nagłówek */
+.chat-header {
+  background: white;
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.interlocutor-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #ddd;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-details h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #757575;
+}
+
+.header-content h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Obszar wiadomości */
+.messages-area {
+  flex: 1; /* Zajmuje całą dostępną przestrzeń */
+  overflow-y: auto; /* Pozwala na scrollowanie */
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Wiersze wiadomości */
+.message-row {
+  display: flex;
+  width: 100%;
+}
+
+.my-message-row {
+  justify-content: flex-end; /* Moje wiadomości do prawej */
+}
+
+.other-message-row {
+  justify-content: flex-start; /* Inne do lewej */
+}
+
+/* Dymki */
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  position: relative;
+  word-wrap: break-word;
+}
+
+/* Kolory dymków */
+.my-message-row .message-bubble {
+  background-color: #1e88e5; /* Primary color */
+  color: white;
+  border-bottom-right-radius: 4px; /* Mały "dzióbek" */
+}
+
+.other-message-row .message-bubble {
+  background-color: white;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  border-bottom-left-radius: 4px;
+}
+
+/* Stopka z inputem */
+.input-area {
+  background: white;
+  padding: 12px 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Usuwamy puste miejsce pod inputem Materiala */
+.no-subscript ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Stany puste i ładowania */
+.loading-state,
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #9e9e9e;
+  gap: 16px;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}

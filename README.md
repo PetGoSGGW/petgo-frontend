@@ -60,6 +60,7 @@ For more information on using the Angular CLI, including detailed command refere
 
 ## Folder structure
 
+```
 petgo-front/
 ├── .angular/
 ├── .vscode/
@@ -135,7 +136,4 @@ petgo-front/
 ├── tsconfig.json
 ├── tsconfig.spec.json
 └── README.md
-
-```
-
 ```
