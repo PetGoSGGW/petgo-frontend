@@ -8,6 +8,11 @@
   text-align: center;
 }
 
+.link {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
 .dog {
   display: flex;
   flex-direction: column;
@@ -45,5 +50,9 @@ img {
 @media (min-width: 768px) {
   .dog {
     flex-direction: row;
+  }
+
+  .link {
+    width: fit-content;
   }
 }

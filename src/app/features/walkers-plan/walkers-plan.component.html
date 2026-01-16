@@ -27,6 +27,8 @@
             <span>{{ dog.name }}</span>
           </div>
 
+          <a matButton="tonal" class="link" [routerLink]="['/pupile', dog.dogId]">Zobacz</a>
+
           <div class="reservations">
             @for (
               reservation of dog.reservations;
