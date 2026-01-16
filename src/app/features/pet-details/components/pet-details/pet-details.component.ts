@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -74,8 +82,18 @@ export class PetDetailsComponent {
 
   protected readonly currentUserId = this.authService.userId;
 
+  private readonly MAX_SIZE_MB = 2;
+  private readonly ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+  protected readonly uploadError = signal<string | null>(null);
+  protected readonly currentFile = signal<File | null>(null);
+  protected readonly previewUrl = signal<string | ArrayBuffer | null>(null);
+
   public readonly id = input.required<number, string>({
     transform: (id) => Number(id),
+  });
+
+  private readonly uploadInput = viewChild('uploadInputRef', {
+    read: ElementRef<HTMLInputElement>,
   });
 
   protected readonly dogResource = rxResource<Dog, { id: number }>({
@@ -139,5 +157,57 @@ export class PetDetailsComponent {
         : 'Zgłoszenie opinii zostało cofnięte.',
       'OK',
     );
+  }
+
+  protected onFileSelected(event: Event): void {
+    const file: File | undefined = (event.target as HTMLInputElement).files?.[0];
+
+    if (file) {
+      if (!this.ALLOWED_TYPES.includes(file.type)) {
+        this.uploadError.set('Invalid file type. Only JPG, PNG, and GIF are allowed.');
+        this.currentFile.set(null);
+        return;
+      }
+
+      const sizeInMB = file.size / (1024 * 1024);
+      if (sizeInMB > this.MAX_SIZE_MB) {
+        this.uploadError.set(`File is too large. Max size is ${this.MAX_SIZE_MB}MB.`);
+        this.currentFile.set(null);
+        return;
+      }
+
+      this.currentFile.set(file);
+
+      const reader = new FileReader();
+      reader.onload = (e) => this.previewUrl.set(e.target?.result ?? null);
+      reader.readAsDataURL(file);
+    }
+  }
+
+  protected upload(): void {
+    const photo = this.currentFile();
+
+    if (!photo) return;
+
+    this.dogApi.uploadPhoto$(this.id(), photo).subscribe({
+      next: () => {
+        this.snackBar.open('Dodano zdjęcie');
+        this.dogResource.reload();
+      },
+      error: () => {
+        this.snackBar.open('Wystąpił błąd!');
+      },
+    });
+  }
+
+  protected cancel(): void {
+    const ref = this.uploadInput();
+
+    if (!ref) return;
+
+    this.uploadError.set(null);
+    this.previewUrl.set(null);
+    this.currentFile.set(null);
+    ref.nativeElement.value = '';
   }
 }

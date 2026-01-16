@@ -55,10 +55,12 @@
                 }
               </mat-chip-set>
             } @empty {
-              <span>Nie ma spacerów</span>
+              <span class="global-empty">Ten pupil nie ma zaplanowanych spacerów</span>
             }
           </div>
         </div>
+      } @empty {
+        <span class="global-empty">Twoje pupile nie mają zaplanowanych żadnych spacerów</span>
       }
     </div>
   }

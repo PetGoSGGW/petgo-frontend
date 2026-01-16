@@ -51,4 +51,12 @@ export class DogApiService {
   public getBreeds$(): Observable<Breed[]> {
     return this.http.get<Breed[]>(`${this.apiUrl}/dogs/breeds`);
   }
+
+  public uploadPhoto$(dogId: Dog['dogId'], file: File): Observable<unknown> {
+    const formData: FormData = new FormData();
+
+    formData.append('files', file);
+
+    return this.http.post<unknown>(`${this.apiUrl}/dogs/${dogId}/photos`, formData);
+  }
 }

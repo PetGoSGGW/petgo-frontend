@@ -9,7 +9,7 @@
     <mat-error>Wystąpił błąd!</mat-error>
   } @else if (dogs.hasValue()) {
     <app-dogs-grid [dogs]="dogs.value()">
-      <mat-hint>Nie masz żadnego pupila</mat-hint>
+      <mat-hint class="global-empty">Nie masz żadnego pupila</mat-hint>
     </app-dogs-grid>
   }
 </app-section-wrapper>
