@@ -7,6 +7,13 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
 import { ReservationCardComponent } from '../../../../components/reservation-card/reservation-card.component';
 import { ReservationGridComponent } from '../../../../components/reservation-grid/reservation-grid.component';
+import {
+  ReviewDialogComponent,
+  ReviewDialogData,
+} from '../../../../components/review-dialog/review-dialog.component';
+import { Reservation } from '../../../../models/reservation.model';
+import { MatButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-home-completed-walk-list',
@@ -15,6 +22,7 @@ import { ReservationGridComponent } from '../../../../components/reservation-gri
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatProgressSpinner,
+    MatButton,
     SectionWrapperComponent,
     ReservationCardComponent,
     ReservationGridComponent,
@@ -22,6 +30,7 @@ import { ReservationGridComponent } from '../../../../components/reservation-gri
 })
 export class HomeCompletedWalkListComponent {
   private readonly authService = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
   private readonly reservationApi = inject(ReservationApiService);
 
   protected readonly userId = computed(() => this.authService.session()?.userId);
@@ -36,4 +45,13 @@ export class HomeCompletedWalkListComponent {
           ),
         ),
   });
+
+  protected openReviewDialog(reservationId: Reservation['reservationId']) {
+    this.dialog.open(ReviewDialogComponent, {
+      data: {
+        type: 'WALKER',
+        reservationId,
+      } satisfies ReviewDialogData,
+    });
+  }
 }

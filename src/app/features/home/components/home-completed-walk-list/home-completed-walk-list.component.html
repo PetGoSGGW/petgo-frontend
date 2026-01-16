@@ -6,7 +6,11 @@
   } @else if (completedWalks.hasValue()) {
     <app-reservation-grid>
       @for (reservation of completedWalks.value(); track reservation.reservationId) {
-        <app-reservation-card [reservation]="reservation" />
+        <app-reservation-card [reservation]="reservation">
+          <button matButton="tonal" (click)="openReviewDialog(reservation.reservationId)">
+            Oceń wyprowadzacza
+          </button>
+        </app-reservation-card>
         <!-- <mat-list-item> -->
         <!--   <img -->
         <!--     matListItemAvatar -->

@@ -12,6 +12,12 @@ import { Reservation } from '../../models/reservation.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButton } from '@angular/material/button';
 import { AuthService } from '../../core/auth/services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  ReviewDialogComponent,
+  ReviewDialogData,
+} from '../../components/review-dialog/review-dialog.component';
+import { ReviewType } from '../../models/review-type.model';
 
 @Component({
   selector: 'app-walker-reservations',
@@ -33,6 +39,7 @@ export default class WalkerReservationsComponent {
   protected readonly dogApi = inject(DogApiService);
   private readonly matSnackBar = inject(MatSnackBar);
   private readonly authService = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly loading = signal<Reservation['reservationId'] | null>(null);
 
@@ -71,6 +78,16 @@ export default class WalkerReservationsComponent {
         this.loading.set(null);
         this.matSnackBar.open('Wystąpił błąd!', 'OK');
       },
+    });
+  }
+
+  protected openReviewDialog(reservationId: Reservation['reservationId'], type: ReviewType) {
+    this.dialog.open(ReviewDialogComponent, {
+      data: {
+        type,
+        reservationId,
+      } satisfies ReviewDialogData,
+      width: '600px',
     });
   }
 }
