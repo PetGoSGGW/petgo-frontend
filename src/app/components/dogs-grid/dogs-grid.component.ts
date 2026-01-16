@@ -3,6 +3,7 @@ import { MatCard, MatCardActions, MatCardContent, MatCardImage } from '@angular/
 import { Dog } from '../../models/dog.model';
 import { RouterLink } from '@angular/router';
 import { MatButton } from '@angular/material/button';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dogs-grid',
@@ -10,7 +11,7 @@ import { MatButton } from '@angular/material/button';
     <div class="dogs">
       @for (dog of dogs(); track dog.dogId) {
         <mat-card>
-          <img mat-card-image [src]="dog.photos.at(0)?.url" [alt]="dog.name" />
+          <img mat-card-image [src]="apiUrl + dog.photos.at(0)?.url" [alt]="dog.name" />
           <mat-card-content>
             <h2>{{ dog.name }}</h2>
             <div class="dog-details-line">
@@ -35,4 +36,6 @@ import { MatButton } from '@angular/material/button';
 })
 export class DogsGridComponent {
   public readonly dogs = input.required<Dog[]>();
+
+  protected readonly apiUrl = environment.apiUrl;
 }

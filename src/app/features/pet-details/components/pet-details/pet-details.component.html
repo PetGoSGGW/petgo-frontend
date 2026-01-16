@@ -9,7 +9,7 @@
     <div class="dog-header">
       <div class="dog-photo-wrapper">
         @if (dog.photos.at(0); as photo) {
-          <img class="dog-photo-main" [src]="photo.url" [alt]="dog.name" />
+          <img class="dog-photo-main" [src]="apiUrl + photo.url" [alt]="dog.name" />
         } @else {
           <div class="dog-photo-placeholder">
             <mat-icon>pets</mat-icon>

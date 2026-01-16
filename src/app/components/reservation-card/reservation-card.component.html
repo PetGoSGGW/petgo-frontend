@@ -17,7 +17,11 @@
 
     <mat-card-content>
       <a class="dog-section" [routerLink]="['/pupile', reservation().dogId]">
-        <img [src]="dog.value().photos[0]?.url" [alt]="dog.value().name" class="dog-photo" />
+        <img
+          [src]="apiUrl + dog.value().photos[0]?.url"
+          [alt]="dog.value().name"
+          class="dog-photo"
+        />
         <div class="dog-info">
           <h4 class="dog-name">{{ dog.value().name }}</h4>
           <p class="dog-breed">{{ dog.value().breed.name }}</p>

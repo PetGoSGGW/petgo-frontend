@@ -38,6 +38,7 @@ import { DogApiService } from '../../../../services/dog-api.service';
 import { AuthService } from '../../../../core/auth/services/auth.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
+import { environment } from '../../../../../environments/environment';
 
 interface DogReview {
   id: string;
@@ -79,6 +80,7 @@ export class PetDetailsComponent {
   private readonly dialog = inject(MatDialog);
   private readonly dogApi = inject(DogApiService);
   private readonly authService = inject(AuthService);
+  protected readonly apiUrl = environment.apiUrl;
 
   protected readonly currentUserId = this.authService.userId;
 

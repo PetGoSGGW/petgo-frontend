@@ -17,7 +17,7 @@
         <div class="item">
           <div class="dog">
             @if (dog.photos[0]) {
-              <img [src]="dog.photos[0].url" [alt]="dog.name" />
+              <img [src]="apiUrl + dog.photos[0].url" [alt]="dog.name" />
             } @else {
               <div class="image-placeholder">
                 <span>Brak zdjęcia</span>
