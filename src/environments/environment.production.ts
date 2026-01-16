@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'https://petgo.eu-north-1.elasticbeanstalk.com/api',
+  apiUrl: 'http://api.petgo.com.pl/api',
   production: true,
 };
