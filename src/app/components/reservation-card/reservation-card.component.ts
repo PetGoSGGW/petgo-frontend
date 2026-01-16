@@ -13,6 +13,7 @@ import { DogApiService } from '../../services/dog-api.service';
 import { Reservation } from '../../models/reservation.model';
 import { LuxonPipe } from '../../pipes/luxon.pipe';
 import { DateTime } from 'luxon';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-reservation-card',
@@ -37,6 +38,7 @@ export class ReservationCardComponent {
   private readonly userApi = inject(UserApiService);
   private readonly dogApi = inject(DogApiService);
   private readonly dialog = inject(MatDialog);
+  protected readonly apiUrl = environment.apiUrl;
   protected readonly router = inject(Router);
 
   public readonly reservation = input.required<Reservation>();

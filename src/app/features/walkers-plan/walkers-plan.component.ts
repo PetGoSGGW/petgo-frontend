@@ -12,11 +12,10 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { forkJoin, map, of, switchMap } from 'rxjs';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatError, MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatError } from '@angular/material/form-field';
 import { AuthService } from '../../core/auth/services/auth.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
 import { LuxonPipe } from '../../pipes/luxon.pipe';
@@ -24,6 +23,7 @@ import { BookedSlot, Reservation } from '../../models/reservation.model';
 import { DateTime } from 'luxon';
 import { RouterLink } from '@angular/router';
 import { MatButton } from '@angular/material/button';
+import { environment } from '../../../environments/environment';
 
 @Pipe({
   name: 'walkDuration',
@@ -79,12 +79,7 @@ export class WalkLocationsPipe implements PipeTransform {
     MatButton,
     MatError,
     MatDatepickerModule,
-    MatFormField,
-    MatHint,
-    MatLabel,
     FormsModule,
-    MatInput,
-    MatSuffix,
     MatChipsModule,
     MatIcon,
     LuxonPipe,
@@ -97,6 +92,7 @@ export default class WalkersPlanComponent {
   private readonly dogApi = inject(DogApiService);
   private readonly reservationApi = inject(ReservationApiService);
   private readonly authService = inject(AuthService);
+  protected readonly apiUrl = environment.apiUrl;
 
   protected readonly filterDate = signal<string | null>(null);
 
