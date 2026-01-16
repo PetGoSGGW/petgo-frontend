@@ -43,14 +43,16 @@
 <mat-dialog-actions align="end">
   <button matButton="outlined" (click)="close()">Zamknij</button>
 
-  <a
-    matButton
-    color="primary"
-    [routerLink]="['/czat', data.reservation.reservationId]"
-    (click)="dialogRef.close()"
-  >
-    Przejdź do chatu
-  </a>
+  @if (!isPendingReservation() && data.reservation.status !== 'CANCELLED') {
+    <a
+      matButton="tonal"
+      color="primary"
+      [routerLink]="['/czat', data.reservation.reservationId]"
+      (click)="dialogRef.close()"
+    >
+      Przejdź do chatu
+    </a>
+  }
 
   @if (isPendingReservation()) {
     <button matButton="tonal" color="primary" (click)="cancelReservation()">Odwołaj spacer</button>

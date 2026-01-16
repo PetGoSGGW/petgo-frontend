@@ -67,6 +67,34 @@
       </div>
     }
 
+    @if (dog.ownerId === currentUserId()) {
+      <mat-divider></mat-divider>
+      <div class="image-upload">
+        <input #uploadInputRef type="file" accept="image/*" (change)="onFileSelected($event)" />
+        @if (uploadError()) {
+          <div class="alert error">
+            {{ uploadError() }}
+          </div>
+        }
+
+        @if (previewUrl()) {
+          <div class="preview-area">
+            <img [src]="previewUrl()" alt="Image Preview" />
+          </div>
+        }
+
+        <div class="buttons">
+          <button matButton="outlined" [disabled]="!currentFile()" (click)="cancel()">
+            Anuluj
+          </button>
+
+          <button matButton="tonal" [disabled]="!currentFile()" (click)="upload()">
+            Wrzuć zdjęcie
+          </button>
+        </div>
+      </div>
+    }
+
     @if (dog.photos.length > 0) {
       <mat-divider></mat-divider>
       <div class="dog-photos-extra">
@@ -75,7 +103,7 @@
             @if (idx > 0) {
               <img
                 class="dog-photo-thumb"
-                [src]="photo.url"
+                [src]="'https://test.petgo.com.pl/api/api' + photo.url"
                 [alt]="dog.name + ' zdjęcie ' + (idx + 1)"
               />
             }

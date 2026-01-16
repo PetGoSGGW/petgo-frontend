@@ -26,3 +26,11 @@ mat-card-content {
   gap: 1rem;
   justify-content: space-between;
 }
+
+mat-card-footer {
+  padding: 1rem 1rem 0.75rem 1rem;
+
+  & > a {
+    width: 100%;
+  }
+}

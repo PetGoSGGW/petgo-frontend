@@ -22,6 +22,8 @@ import { MatIcon } from '@angular/material/icon';
 import { LuxonPipe } from '../../pipes/luxon.pipe';
 import { BookedSlot, Reservation } from '../../models/reservation.model';
 import { DateTime } from 'luxon';
+import { RouterLink } from '@angular/router';
+import { MatButton } from '@angular/material/button';
 
 @Pipe({
   name: 'walkDuration',
@@ -73,6 +75,8 @@ export class WalkLocationsPipe implements PipeTransform {
   imports: [
     SectionWrapperComponent,
     MatProgressSpinner,
+    RouterLink,
+    MatButton,
     MatError,
     MatDatepickerModule,
     MatFormField,

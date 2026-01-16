@@ -4,13 +4,13 @@
   } @else if (dogsWithReservations.error()) {
     <mat-error>Wystąpił błąd!</mat-error>
   } @else if (dogsWithReservations.hasValue()) {
-    <mat-form-field>
-      <mat-label>Wybierz datę</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="filterDate" />
-      <mat-hint>dd/mm/rrrr</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker touchUi #picker></mat-datepicker>
-    </mat-form-field>
+    <!-- <mat-form-field> -->
+    <!--   <mat-label>Wybierz datę</mat-label> -->
+    <!--   <input matInput [matDatepicker]="picker" [(ngModel)]="filterDate" /> -->
+    <!--   <mat-hint>dd/mm/rrrr</mat-hint> -->
+    <!--   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle> -->
+    <!--   <mat-datepicker touchUi #picker></mat-datepicker> -->
+    <!-- </mat-form-field> -->
 
     <div class="list">
       @for (dog of dogsWithReservations.value(); track dog.dogId) {
@@ -26,6 +26,8 @@
 
             <span>{{ dog.name }}</span>
           </div>
+
+          <a matButton="tonal" class="link" [routerLink]="['/pupile', dog.dogId]">Zobacz</a>
 
           <div class="reservations">
             @for (
@@ -55,10 +57,12 @@
                 }
               </mat-chip-set>
             } @empty {
-              <span>Nie ma spacerów</span>
+              <span class="global-empty">Ten pupil nie ma zaplanowanych spacerów</span>
             }
           </div>
         </div>
+      } @empty {
+        <span class="global-empty">Twoje pupile nie mają zaplanowanych żadnych spacerów</span>
       }
     </div>
   }

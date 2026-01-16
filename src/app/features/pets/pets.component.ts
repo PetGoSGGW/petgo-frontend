@@ -28,10 +28,18 @@ export default class PetsComponent {
   private authService = inject(AuthService);
   private readonly dogApi = inject(DogApiService);
   private readonly matDialog = inject(MatDialog);
+
   protected readonly userId = computed(() => this.authService.session()?.userId);
 
   protected dogs = rxResource({
-    stream: () => this.dogApi.getDogs$(),
+    params: () => {
+      const userId = this.userId();
+
+      if (!userId) return undefined;
+
+      return { userId };
+    },
+    stream: ({ params: { userId } }) => this.dogApi.getDogsByUserId$(userId),
   });
 
   protected openAddDogDialog(): void {

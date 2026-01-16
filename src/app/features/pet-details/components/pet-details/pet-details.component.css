@@ -4,6 +4,24 @@
   gap: 1rem;
 }
 
+.preview-area img {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+
 .dog-details-page {
   min-height: calc(100vh - 64px);
   padding: 24px 16px;
@@ -99,8 +117,8 @@
 }
 
 .dog-photo-thumb {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 8px;
   object-fit: cover;
 }
