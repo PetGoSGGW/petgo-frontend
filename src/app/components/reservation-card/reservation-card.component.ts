@@ -30,6 +30,7 @@ import { environment } from '../../../environments/environment';
     MatError,
     LuxonPipe,
     MatCardFooter,
+    MatIcon,
   ],
   templateUrl: './reservation-card.component.html',
   styleUrl: './reservation-card.component.css',

@@ -17,11 +17,15 @@
 
     <mat-card-content>
       <a class="dog-section" [routerLink]="['/pupile', reservation().dogId]">
-        <img
-          [src]="apiUrl + dog.value().photos[0]?.url"
-          [alt]="dog.value().name"
-          class="dog-photo"
-        />
+        @if (dog.value().photos.length > 0) {
+          <img
+            [src]="apiUrl + dog.value().photos[0]?.url"
+            [alt]="dog.value().name"
+            class="dog-photo"
+          />
+        } @else {
+          <mat-icon class="img-placeholder">pets</mat-icon>
+        }
         <div class="dog-info">
           <h4 class="dog-name">{{ dog.value().name }}</h4>
           <p class="dog-breed">{{ dog.value().breed.name }}</p>

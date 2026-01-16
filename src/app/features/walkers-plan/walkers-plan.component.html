@@ -16,12 +16,10 @@
       @for (dog of dogsWithReservations.value(); track dog.dogId) {
         <div class="item">
           <div class="dog">
-            @if (dog.photos[0]) {
+            @if (dog.photos.length > 0) {
               <img [src]="apiUrl + dog.photos[0].url" [alt]="dog.name" />
             } @else {
-              <div class="image-placeholder">
-                <span>Brak zdjęcia</span>
-              </div>
+              <mat-icon class="img-placeholder">pets</mat-icon>
             }
 
             <span>{{ dog.name }}</span>

@@ -17,7 +17,7 @@ import { LuxonPipe } from '../../pipes/luxon.pipe';
 import { WalletApiService } from '../../services/wallet-api.service';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 import { FromCentsPipe } from '../../pipes/from-cents.pipe';
-import { DogsGridComponent } from '../../components/dog-grid/dogs-grid.component';
+import { DogsGridComponent } from '../../components/dogs-grid/dogs-grid.component';
 import { AuthService } from '../../core/auth/services/auth.service';
 
 @Component({

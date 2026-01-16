@@ -11,9 +11,7 @@
         @if (dog.photos.at(0); as photo) {
           <img class="dog-photo-main" [src]="apiUrl + photo.url" [alt]="dog.name" />
         } @else {
-          <div class="dog-photo-placeholder">
-            <mat-icon>pets</mat-icon>
-          </div>
+          <mat-icon class="img-placeholder">pets</mat-icon>
         }
       </div>
 
