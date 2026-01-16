@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  Pipe,
+  PipeTransform,
+} from '@angular/core';
 import { ReservationApiService } from '../../../../services/reservation-api.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { forkJoin, map, switchMap } from 'rxjs';
@@ -9,12 +16,23 @@ import { AuthService } from '../../../../core/auth/services/auth.service';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
+import { ChatUser } from '../../../../models/chat.model';
+
+@Pipe({
+  name: 'avatar',
+})
+export class AvatarPipe implements PipeTransform {
+  public transform(user: ChatUser): string {
+    if (!user) return `https://ui-avatars.com/api/?name=AA&background=random&color=fff&size=200`;
+    return `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&color=fff&size=200`;
+  }
+}
 
 @Component({
   selector: 'app-chats',
   templateUrl: './chats.component.html',
   styleUrl: './chats.component.css',
-  imports: [MatProgressSpinner, MatError, MatIcon, RouterLink, SectionWrapperComponent],
+  imports: [MatProgressSpinner, MatError, MatIcon, RouterLink, SectionWrapperComponent, AvatarPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ChatsComponent {
@@ -51,7 +69,7 @@ export default class ChatsComponent {
 
     return walkerReservations
       .filter((reservation) => {
-        const key = reservation.walkerId;
+        const key = reservation.ownerId;
 
         if (seen.has(key)) return false;
 
@@ -70,7 +88,10 @@ export default class ChatsComponent {
 
           return forkJoin(
             reservations
-              .filter(({ status }) => status === 'CONFIRMED' || status === 'COMPLETED')
+              .filter(
+                ({ status, bookedSlots }) =>
+                  (status === 'CONFIRMED' || status === 'COMPLETED') && bookedSlots.length > 0,
+              )
               .map((reservation) =>
                 this.chatApi.getChatByReservationId(reservation.reservationId).pipe(
                   map((chat) => ({
@@ -92,7 +113,10 @@ export default class ChatsComponent {
 
           return forkJoin(
             reservations
-              .filter(({ status }) => status === 'CONFIRMED' || status === 'COMPLETED')
+              .filter(
+                ({ status, bookedSlots }) =>
+                  (status === 'CONFIRMED' || status === 'COMPLETED') && bookedSlots.length > 0,
+              )
               .map((reservation) =>
                 this.chatApi.getChatByReservationId(reservation.reservationId).pipe(
                   map((chat) => ({

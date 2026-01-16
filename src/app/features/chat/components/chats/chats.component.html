@@ -9,7 +9,11 @@
         @for (chat of chats(); track chat.chatId) {
           <li>
             <a [routerLink]="['/czat', chat.chatId]">
-              <mat-icon>chat</mat-icon>
+              <img
+                class="user-photo-main"
+                [src]="chat.walker | avatar"
+                [alt]="chat.walker.firstName"
+              />
               {{ chat.walker.firstName }} {{ chat.walker.lastName }}
             </a>
           </li>
@@ -30,8 +34,12 @@
         @for (chat of walkerChats(); track chat.chatId) {
           <li>
             <a [routerLink]="['/czat', chat.chatId]">
-              <mat-icon>chat</mat-icon>
-              {{ chat.walker.firstName }} {{ chat.walker.lastName }}
+              <img
+                class="user-photo-main"
+                [src]="chat.owner | avatar"
+                [alt]="chat.owner.firstName"
+              />
+              {{ chat.owner.firstName }} {{ chat.owner.lastName }}
             </a>
           </li>
         }
