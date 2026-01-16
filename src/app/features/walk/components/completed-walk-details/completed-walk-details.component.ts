@@ -56,8 +56,7 @@ export class CompletedWalkDetailsComponent {
     durationMinutes: 65,
     distanceKm: 4.2,
     events: ['Pauza na wode', 'Spotkanie z innym psem', 'Zabawa w parku'],
-    walkerNotes:
-      'Spacer spokojny, pies chetnie szedl przy nodze. Warto zabrac wiecej wody.',
+    walkerNotes: 'Spacer spokojny, pies chetnie szedl przy nodze. Warto zabrac wiecej wody.',
   });
 
   protected readonly rating = signal<number>(0);
