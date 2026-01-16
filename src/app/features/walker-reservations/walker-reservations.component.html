@@ -30,6 +30,24 @@
               </button>
             </div>
           }
+
+          <div class="buttons-col">
+            @if (reservation.status === 'COMPLETED') {
+              <button
+                matButton="tonal"
+                (click)="openReviewDialog(reservation.reservationId, 'DOG')"
+              >
+                Dodaj opinię o pupilu
+              </button>
+
+              <button
+                matButton="tonal"
+                (click)="openReviewDialog(reservation.reservationId, 'WALK')"
+              >
+                Dodaj opinię o spacerze
+              </button>
+            }
+          </div>
         </app-reservation-card>
       } @empty {
         <div class="empty-state">

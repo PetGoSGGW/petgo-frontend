@@ -29,6 +29,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { FromCentsPipe } from '../../pipes/from-cents.pipe';
 import { LocationService } from '../../services/location.service';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
+import { AuthService } from '../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-walker-offers',
@@ -59,6 +60,9 @@ export class WalkerOffersComponent {
   private readonly offersService = inject(WalkerOffersApiService);
   private readonly dialog = inject(MatDialog);
   private readonly locationService = inject(LocationService);
+  private readonly authService = inject(AuthService);
+
+  private readonly userId = this.authService.userId;
 
   protected readonly loading = signal(true);
 
@@ -107,7 +111,9 @@ export class WalkerOffersComponent {
           })),
           map((response) => ({
             ...response,
-            content: response.content.filter((offer) => offer.slots.length > 0),
+            content: response.content.filter(
+              (offer) => offer.slots.length > 0 && offer.walkerId !== this.userId(),
+            ),
           })),
         ),
   });

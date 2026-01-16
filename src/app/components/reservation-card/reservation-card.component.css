@@ -3,6 +3,10 @@
   transition: box-shadow 0.3s ease;
 }
 
+mat-card-footer {
+  padding: 1rem;
+}
+
 mat-card {
   padding-bottom: 1rem;
 }
