@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { PaymentApiService } from '../../../../services/payment-api.service';
 import { DogApiService } from '../../../../services/dog-api.service';
+import { AuthService } from '../../../../core/auth/services/auth.service';
 
 export interface WalkerOfferReservationDialogData {
   offerId: WalkerOffer['offerId'];
@@ -150,10 +151,20 @@ export class WalkerOfferReservationDialogComponent {
   protected readonly dialogRef = inject(MatDialogRef);
   private readonly paymentApi = inject(PaymentApiService);
   private readonly dogApi = inject(DogApiService);
+  private readonly authService = inject(AuthService);
+
+  private readonly userId = this.authService.userId;
 
   protected readonly offerId = signal(this.data.offerId).asReadonly();
   protected readonly dogs = rxResource({
-    stream: () => this.dogApi.getDogs$(),
+    params: () => {
+      const userId = this.userId();
+
+      if (!userId) return;
+
+      return { userId };
+    },
+    stream: ({ params: { userId } }) => this.dogApi.getDogsByUserId$(userId),
   });
 
   protected readonly loading = signal(false);

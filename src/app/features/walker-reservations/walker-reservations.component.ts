@@ -18,6 +18,7 @@ import {
   ReviewDialogData,
 } from '../../components/review-dialog/review-dialog.component';
 import { ReviewType } from '../../models/review-type.model';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-walker-reservations',
@@ -46,7 +47,10 @@ export default class WalkerReservationsComponent {
   protected readonly userId = this.authService.userId;
 
   protected readonly reservations = rxResource({
-    stream: () => this.reservationApi.getWalkerReservations$(),
+    stream: () =>
+      this.reservationApi
+        .getWalkerReservations$()
+        .pipe(map((reservations) => reservations.sort((a, b) => b.status.localeCompare(a.status)))),
   });
 
   protected cancel(reservationId: Reservation['reservationId']): void {
