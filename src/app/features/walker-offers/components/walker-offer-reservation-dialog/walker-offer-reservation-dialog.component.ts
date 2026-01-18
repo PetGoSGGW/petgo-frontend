@@ -20,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { PaymentApiService } from '../../../../services/payment-api.service';
 import { DogApiService } from '../../../../services/dog-api.service';
 import { AuthService } from '../../../../core/auth/services/auth.service';
+import { DateTime } from 'luxon';
 
 export interface WalkerOfferReservationDialogData {
   offerId: WalkerOffer['offerId'];
@@ -202,15 +203,22 @@ export class WalkerOfferReservationDialogComponent {
   );
 
   protected readonly availableSlots = computed(() => {
-    const date = this.dateValue();
+    const selectedDate = this.dateValue();
     const slots = this.slots();
 
-    if (!date) return slots;
+    if (!selectedDate) {
+      return slots.sort((a, b) => a.startTime.localeCompare(b.startTime));
+    }
 
-    return slots.filter(
-      ({ startTime, endTime }) =>
-        this.compareDates(startTime, date) && this.compareDates(endTime, date),
-    );
+    const targetDay = DateTime.fromISO(selectedDate).startOf('day');
+
+    return slots
+      .filter(({ startTime }) => {
+        const slotTime = DateTime.fromISO(startTime);
+
+        return slotTime.hasSame(targetDay, 'day');
+      })
+      .sort((a, b) => a.startTime.localeCompare(b.startTime));
   });
 
   protected dateFilter: DateFilterFn<string | null> = (date): boolean => {
