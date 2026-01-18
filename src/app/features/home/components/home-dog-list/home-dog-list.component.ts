@@ -10,6 +10,7 @@ import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
 import { DogsGridComponent } from '../../../../components/dogs-grid/dogs-grid.component';
+import { AuthService } from '../../../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-home-dog-list',
@@ -28,9 +29,19 @@ import { DogsGridComponent } from '../../../../components/dogs-grid/dogs-grid.co
 export class HomeDogListComponent {
   private readonly matDialog = inject(MatDialog);
   private readonly dogApi = inject(DogApiService);
+  private readonly authService = inject(AuthService);
+
+  private readonly userId = this.authService.userId;
 
   protected dogs = rxResource({
-    stream: () => this.dogApi.getDogs$(),
+    params: () => {
+      const userId = this.userId();
+
+      if (!userId) return undefined;
+
+      return { userId };
+    },
+    stream: ({ params: { userId } }) => this.dogApi.getDogsByUserId$(userId),
   });
 
   protected openAddDogDialog(): void {

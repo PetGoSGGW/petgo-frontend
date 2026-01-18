@@ -33,6 +33,7 @@ mat-card-content {
   gap: 1rem;
   align-items: center;
   margin-inline: auto;
+  grid-column: 1 / -1;
 }
 
 .no-dog-message {

@@ -97,26 +97,28 @@ export interface WalkerOfferReservationDialogData {
           <mat-datepicker [touchUi]="isMobile()" #picker></mat-datepicker>
         </mat-form-field>
 
-        <div class="slots">
-          @let slotTouched = form.controls.slot.touched;
-          @let slotErrors = form.controls.slot.errors;
+        @if (form.value.date) {
+          <div class="slots">
+            @let slotTouched = form.controls.slot.touched;
+            @let slotErrors = form.controls.slot.errors;
 
-          <mat-label>Dostępne godziny</mat-label>
-          <mat-chip-listbox [value]="form.value.slot" (change)="changeSlot($event)">
-            @for (availableSlot of availableSlots(); track availableSlot) {
-              <mat-chip-option [disabled]="availableSlot.isReserved" [value]="availableSlot">
-                {{ availableSlot.startTime | date: 'dd.MM.yyyy HH:mm' }} -
-                {{ availableSlot.endTime | date: 'HH:mm' }}</mat-chip-option
-              >
-            } @empty {
-              <span>Brak dostępnych slotów</span>
+            <mat-label>Dostępne godziny</mat-label>
+            <mat-chip-listbox [value]="form.value.slot" (change)="changeSlot($event)">
+              @for (availableSlot of availableSlots(); track availableSlot) {
+                <mat-chip-option [disabled]="availableSlot.isReserved" [value]="availableSlot">
+                  {{ availableSlot.startTime | date: 'dd.MM.yyyy HH:mm' }} -
+                  {{ availableSlot.endTime | date: 'HH:mm' }}</mat-chip-option
+                >
+              } @empty {
+                <span>Brak dostępnych slotów</span>
+              }
+            </mat-chip-listbox>
+
+            @if (slotTouched && slotErrors?.['required'] && slots().length > 0) {
+              <mat-error>Wybierz slot</mat-error>
             }
-          </mat-chip-listbox>
-
-          @if (slotTouched && slotErrors?.['required'] && slots().length > 0) {
-            <mat-error>Wybierz slot</mat-error>
-          }
-        </div>
+          </div>
+        }
 
         <mat-form-field>
           @let dogTouched = form.controls.dog.touched;
