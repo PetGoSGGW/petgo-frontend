@@ -11,7 +11,7 @@ export class WalletApiService {
   private readonly apiUrl = environment.apiUrl;
 
   public getTransactions$(): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.apiUrl}/wallet/me/transactions`).pipe(
+    return this.http.get<Transaction[]>(`${this.apiUrl}/wallets/me/transactions`).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 404) {
           return of([]);
@@ -22,7 +22,7 @@ export class WalletApiService {
   }
 
   public getWallet$(): Observable<Wallet | null> {
-    return this.http.get<Wallet | null>(`${this.apiUrl}/wallet/me`).pipe(
+    return this.http.get<Wallet | null>(`${this.apiUrl}/wallets/me`).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 404) {
           return of(null);
