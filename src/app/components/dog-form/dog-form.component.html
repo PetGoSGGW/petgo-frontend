@@ -63,4 +63,8 @@
     <mat-label>Opis pupila</mat-label>
     <textarea matInput [formControl]="form.controls.notes"></textarea>
   </mat-form-field>
+
+  @if (form.controls.isActive) {
+    <mat-checkbox [formControl]="form.controls.isActive">Aktywny</mat-checkbox>
+  }
 </form>

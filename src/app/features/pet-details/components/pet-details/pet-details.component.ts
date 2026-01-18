@@ -138,8 +138,8 @@ export class PetDetailsComponent {
         ),
       )
       .subscribe({
-        next: (updatedDog: Dog) => {
-          this.dogResource.set(updatedDog);
+        next: () => {
+          this.dogResource.reload();
           this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK');
         },
         error: () => {

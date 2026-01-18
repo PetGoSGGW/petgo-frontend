@@ -15,6 +15,10 @@ form {
   grid-template-columns: 1fr;
 }
 
+mat-checkbox {
+  padding-bottom: 1rem;
+}
+
 @media (min-width: 680px) {
   .row {
     grid-template-columns: repeat(2, 1fr);

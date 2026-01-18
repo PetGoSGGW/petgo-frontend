@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -9,12 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { EditDogDetailsDialogData } from '../../models/edit-dog-details-dialog-data.model';
-import { DogFormComponent } from '../../../../../../components/dog-form/dog-form.component';
+import {
+  DogForm,
+  DogFormComponent,
+} from '../../../../../../components/dog-form/dog-form.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { DogApiService } from '../../../../../../services/dog-api.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { Breed } from '../../../../../../models/breed.model';
-import { DogSize } from '../../../../../../models/dog.model';
 
 @Component({
   selector: 'app-edit-dog-dialog',
@@ -104,20 +105,7 @@ export class EditDogDialogComponent {
   private readonly dogApi = inject(DogApiService);
 
   protected readonly invalid = signal(true);
-  protected readonly value = signal<{
-    name?: string;
-    weight?: number | null;
-    breedCode?: Breed['breedCode'] | null;
-    size?: DogSize | null;
-    notes?: string;
-  } | null>(null);
-
-  constructor() {
-    effect(() => {
-      console.log(this.invalid());
-      console.log(this.value());
-    });
-  }
+  protected readonly value = signal<DogForm | null>(null);
 
   protected breeds = rxResource({
     stream: () => this.dogApi.getBreeds$(),
