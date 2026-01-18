@@ -21,6 +21,7 @@ import { fromCents, toCents } from '../../uilts/format-price';
 import { AvailableSlot } from '../walker-offers/models/available-slot.model';
 import { LocationService } from '../../services/location.service';
 import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-offer-details-map/user-walker-offer-details-map.component';
+import { SortSlotsPipe } from '../../pipes/sort-slots.pipe';
 
 @Component({
   selector: 'app-user-walker-offer-details',
@@ -42,6 +43,7 @@ import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-off
     MatCheckbox,
     UserWalkerOfferDetailsMapComponent,
     MatSuffix,
+    SortSlotsPipe,
   ],
   template: `
     <div class="main" [class.updating]="updating()">
@@ -105,7 +107,7 @@ import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-off
           }
 
           <div class="slots">
-            @for (slot of offer.slots; track slot) {
+            @for (slot of offer.slots | sortSlots; track slot) {
               <button matButton="tonal" (click)="removeSlot(slot)">
                 <mat-icon>delete</mat-icon>
                 {{ slot | slotDate }}
