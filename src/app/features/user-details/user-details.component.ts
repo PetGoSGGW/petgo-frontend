@@ -19,6 +19,13 @@ import { SectionWrapperComponent } from '../../components/section-wrapper/sectio
 import { FromCentsPipe } from '../../pipes/from-cents.pipe';
 import { DogsGridComponent } from '../../components/dogs-grid/dogs-grid.component';
 import { AuthService } from '../../core/auth/services/auth.service';
+import { filter, map } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  WalletDialogComponent,
+  WalletDialogData,
+} from './components/wallet-dialog/wallet-dialog.component';
+import { Wallet } from '../../models/wallet.model';
 
 @Component({
   selector: 'app-user-details',
@@ -51,6 +58,7 @@ export class UserDetailsComponent {
   private readonly dogApiService = inject(DogApiService);
   private readonly walletApi = inject(WalletApiService);
   private readonly authService = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
 
   public readonly id = input.required<number, string>({ transform: numberAttribute });
 
@@ -81,7 +89,15 @@ export class UserDetailsComponent {
   });
 
   protected readonly transactions = rxResource({
-    stream: () => this.walletApi.getTransactions$(),
+    stream: () =>
+      this.walletApi.getTransactions$().pipe(
+        map((transactions) =>
+          transactions.map((transaction) => ({
+            ...transaction,
+            amountCents: Math.abs(transaction.amountCents),
+          })),
+        ),
+      ),
   });
 
   protected readonly wallet = rxResource({
@@ -121,5 +137,22 @@ export class UserDetailsComponent {
     }
 
     return age;
+  }
+
+  protected openWalletDialog(wallet: Wallet, action: WalletDialogData['action']): void {
+    this.dialog
+      .open(WalletDialogComponent, {
+        width: '400px',
+        data: {
+          action,
+          wallet,
+        } satisfies WalletDialogData,
+      })
+      .afterClosed()
+      .pipe(filter((results) => !!results))
+      .subscribe(() => {
+        this.wallet.reload();
+        this.transactions.reload();
+      });
   }
 }
