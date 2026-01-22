@@ -33,6 +33,7 @@
         <button
           matIconButton
           matSuffix
+          type="button"
           (click)="showHide($event, 'password')"
           [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hidePassword()"
@@ -60,6 +61,7 @@
         <button
           matIconButton
           matSuffix
+          type="button"
           (click)="showHide($event, 'password-confirmation')"
           [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hidePasswordConfirmation()"
