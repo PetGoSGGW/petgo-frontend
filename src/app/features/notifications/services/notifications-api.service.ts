@@ -19,13 +19,13 @@ export class NotificationsApiService {
         `Bearer ${this.authService.accessToken()}`,
       );
 
-      this.sseClient
+      (this.sseClient
         .stream(
           `${this.apiUrl}/notifications/stream`,
           { keepAlive: true, reconnectionDelay: 1000, responseType: 'event' },
           { headers },
           'GET',
-        )
+        ) as Observable<MessageEvent | ErrorEvent>)
         .subscribe((event) => {
           if (event.type === 'error') {
             const errorEvent = event as ErrorEvent;
