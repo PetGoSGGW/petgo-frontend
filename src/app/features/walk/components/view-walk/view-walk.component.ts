@@ -7,7 +7,7 @@ import {
   inject,
   input,
   OnInit,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { WalkApiService } from '../../services/walk-api.service';
@@ -29,7 +29,7 @@ export class ViewWalkComponent implements OnInit, AfterViewInit {
   private readonly walkApi = inject(WalkApiService);
   private readonly destroyRef = inject(DestroyRef);
 
-  @ViewChild('mapContainer') private mapContainer?: ElementRef<HTMLDivElement>;
+  private readonly mapContainer = viewChild<ElementRef<HTMLDivElement>>('mapContainer');
 
   public readonly reservationId = input.required<number, number | string>({
     transform: (sessionId) => Number(sessionId),
@@ -75,7 +75,7 @@ export class ViewWalkComponent implements OnInit, AfterViewInit {
   }
 
   private initMap(): void {
-    const container = this.mapContainer?.nativeElement;
+    const container = this.mapContainer()?.nativeElement;
     if (!container) return;
 
     const warsawCoordinates: L.LatLngExpression = [52.2297, 21.0122];

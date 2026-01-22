@@ -3,7 +3,11 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
-export type WalkRoutePoint = { latitude: number; longitude: number; recordedAt: string };
+export interface WalkRoutePoint {
+  latitude: number;
+  longitude: number;
+  recordedAt: string;
+}
 
 @Injectable()
 export class WalkApiService {
