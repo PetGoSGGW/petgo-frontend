@@ -106,6 +106,10 @@ export default class WalkerReservationsComponent {
     });
   }
 
+  protected openCompletedDetails(reservationId: Reservation['reservationId']): void {
+    void this.router.navigate(['/spacer/szczegoly', reservationId]);
+  }
+
   protected startWalk(reservationId: Reservation['reservationId']): void {
     void this.router.navigate(['/spacer/sledzenie', reservationId]);
   }

@@ -7,8 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
 import { LuxonPipe } from '../../../../pipes/luxon.pipe';
+import { ViewWalkComponent } from '../view-walk/view-walk.component';
 
 interface CompletedWalkDetails {
   dogName: string;
@@ -36,6 +38,8 @@ interface CompletedWalkDetails {
     MatIconModule,
     MatInputModule,
     MatSnackBarModule,
+    MatTabsModule,
+    ViewWalkComponent,
     SectionWrapperComponent,
     LuxonPipe,
   ],

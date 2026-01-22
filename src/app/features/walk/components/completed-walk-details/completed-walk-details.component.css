@@ -5,6 +5,30 @@
   padding: 1rem;
 }
 
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 1rem;
+}
+
+.map-tab {
+  padding-top: 1rem;
+  height: 50vh;
+  min-height: 260px;
+}
+
+.map-tab ::ng-deep app-view-walk {
+  display: block;
+  height: 100%;
+}
+
+.map-tab ::ng-deep .map-container,
+.map-tab ::ng-deep .map-frame,
+.map-tab ::ng-deep #map {
+  height: 100%;
+}
+
 .dog-summary {
   display: grid;
   gap: 1rem;

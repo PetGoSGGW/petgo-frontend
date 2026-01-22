@@ -1,11 +1,13 @@
 import {
-  afterNextRender,
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   inject,
   input,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { WalkApiService } from '../../services/walk-api.service';
@@ -23,11 +25,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MapControlsComponent],
 })
-export class ViewWalkComponent implements OnInit {
+export class ViewWalkComponent implements OnInit, AfterViewInit {
   private readonly walkApi = inject(WalkApiService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly reservationId = input.required<number, string>({
+  @ViewChild('mapContainer') private mapContainer?: ElementRef<HTMLDivElement>;
+
+  public readonly reservationId = input.required<number, number | string>({
     transform: (sessionId) => Number(sessionId),
   });
   protected routeCoordinates = rxResource({
@@ -41,8 +45,6 @@ export class ViewWalkComponent implements OnInit {
   private pathHistory: L.LatLngExpression[] = [];
   private path: L.Polyline | undefined;
 
-  public readonly coordinates = input.required<{ latitude: number; longitude: number }[]>();
-
   private readonly isMapInit$ = new ReplaySubject<boolean>(1);
 
   private readonly coordinates$ = combineLatest([
@@ -50,12 +52,8 @@ export class ViewWalkComponent implements OnInit {
     this.isMapInit$.pipe(filter(Boolean)),
   ]);
 
-  constructor() {
-    afterNextRender({
-      write: () => {
-        this.initMap();
-      },
-    });
+  public ngAfterViewInit(): void {
+    this.initMap();
   }
 
   public ngOnInit(): void {
@@ -77,13 +75,16 @@ export class ViewWalkComponent implements OnInit {
   }
 
   private initMap(): void {
+    const container = this.mapContainer?.nativeElement;
+    if (!container) return;
+
     const warsawCoordinates: L.LatLngExpression = [52.2297, 21.0122];
 
     const initialCenter = this.userPosition
       ? ([this.userPosition.lat, this.userPosition.lng] as L.LatLngExpression)
       : warsawCoordinates;
 
-    this.map = L.map('map', {
+    this.map = L.map(container, {
       center: initialCenter,
       zoom: 13,
       zoomControl: false,
