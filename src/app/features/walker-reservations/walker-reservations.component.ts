@@ -19,6 +19,7 @@ import {
 } from '../../components/review-dialog/review-dialog.component';
 import { ReviewType } from '../../models/review-type.model';
 import { map } from 'rxjs';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-walker-reservations',
@@ -30,6 +31,7 @@ import { map } from 'rxjs';
     SectionWrapperComponent,
     ReservationGridComponent,
     MatButton,
+    MatTabsModule,
   ],
   templateUrl: './walker-reservations.component.html',
   styleUrl: './walker-reservations.component.css',
@@ -46,7 +48,14 @@ export default class WalkerReservationsComponent {
 
   protected readonly userId = this.authService.userId;
 
-  protected readonly reservations = rxResource({
+  protected readonly ownerReservations = rxResource({
+    stream: () =>
+      this.reservationApi
+        .getReservations$()
+        .pipe(map((reservations) => reservations.sort((a, b) => b.status.localeCompare(a.status)))),
+  });
+
+  protected readonly walkerReservations = rxResource({
     stream: () =>
       this.reservationApi
         .getWalkerReservations$()
@@ -60,7 +69,7 @@ export default class WalkerReservationsComponent {
       next: () => {
         this.loading.set(null);
         this.matSnackBar.open('Anulowano', 'OK');
-        this.reservations.reload();
+        this.walkerReservations.reload();
       },
       error: () => {
         this.loading.set(null);
@@ -76,7 +85,7 @@ export default class WalkerReservationsComponent {
       next: () => {
         this.loading.set(null);
         this.matSnackBar.open('Potwierdzono', 'OK');
-        this.reservations.reload();
+        this.walkerReservations.reload();
       },
       error: () => {
         this.loading.set(null);

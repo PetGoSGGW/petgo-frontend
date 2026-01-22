@@ -1,67 +1,128 @@
-<app-section-wrapper header="Plan spacerów">
+﻿<app-section-wrapper header="Kalendarz spacerów">
   @if (dogsWithReservations.isLoading()) {
     <mat-spinner />
   } @else if (dogsWithReservations.error()) {
-    <mat-error>Wystąpił błąd!</mat-error>
+    <mat-error>Wystąpił błąd.</mat-error>
   } @else if (dogsWithReservations.hasValue()) {
-    <!-- <mat-form-field> -->
-    <!--   <mat-label>Wybierz datę</mat-label> -->
-    <!--   <input matInput [matDatepicker]="picker" [(ngModel)]="filterDate" /> -->
-    <!--   <mat-hint>dd/mm/rrrr</mat-hint> -->
-    <!--   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle> -->
-    <!--   <mat-datepicker touchUi #picker></mat-datepicker> -->
-    <!-- </mat-form-field> -->
+    <div class="plan">
+      <div class="month-nav">
+        <button type="button" matIconButton aria-label="Poprzedni miesiąc" (click)="shiftMonth(-1)">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
 
-    <div class="list">
-      @for (dog of dogsWithReservations.value(); track dog.dogId) {
-        <div class="item">
-          <div class="dog">
-            @if (dog.photos.length > 0) {
-              <img [src]="apiUrl + dog.photos[0].url" [alt]="dog.name" />
-            } @else {
-              <mat-icon class="img-placeholder">pets</mat-icon>
-            }
+        <span class="month-label">{{ monthLabel() }}</span>
 
-            <span>{{ dog.name }}</span>
-          </div>
+        <button type="button" matIconButton aria-label="Następny miesiąc" (click)="shiftMonth(1)">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
 
-          <a matButton="tonal" class="link" [routerLink]="['/pupile', dog.dogId]">Zobacz</a>
-
-          <div class="reservations">
-            @for (
-              reservation of dog.reservations;
-              track reservation.reservationId;
-              let index = $index
-            ) {
-              <span>Spacer #{{ index + 1 }}</span>
-              <mat-chip-set>
-                <mat-chip>
-                  <mat-icon>schedule</mat-icon>
-                  <span>
-                    {{ reservation.scheduleStart | luxon: 'dd.LL.yyyy HH:mm' }} -
-                    {{ reservation.scheduleEnd | luxon: 'HH:mm' }}</span
-                  >
-                </mat-chip>
-                <mat-chip>
-                  <mat-icon>timer</mat-icon>
-                  <span>{{ reservation | walkDuration }}</span>
-                </mat-chip>
-
-                @for (location of reservation | walkLocations; track location.slotId) {
-                  <mat-chip>
-                    <mat-icon>location_on</mat-icon>
-                    <span>{{ location.latitude }} - {{ location.longitude }}</span>
-                  </mat-chip>
-                }
-              </mat-chip-set>
-            } @empty {
-              <span class="global-empty">Ten pupil nie ma zaplanowanych spacerów</span>
-            }
-          </div>
+      <div class="calendar">
+        <div class="weekdays">
+          @for (label of weekDays; track label) {
+            <span>{{ label }}</span>
+          }
         </div>
-      } @empty {
-        <span class="global-empty">Twoje pupile nie mają zaplanowanych żadnych spacerów</span>
-      }
+
+        <div class="grid">
+          @for (cell of calendarCells(); track $index) {
+            @if (cell.day) {
+              <button
+                type="button"
+                class="day-cell"
+                [class.owner]="cell.isOwner"
+                [class.walker]="cell.isWalker"
+                [class.both]="cell.isOwner && cell.isWalker"
+                [class.completed]="cell.isCompleted"
+                [class.clickable]="cell.reservationId"
+                [disabled]="!cell.reservationId"
+                [attr.aria-label]="cell.ariaLabel"
+                (click)="openReservation(cell.reservationId)"
+              >
+                <span class="day-number">{{ cell.day }}</span>
+                @if (cell.isOwner || cell.isWalker) {
+                  <span class="dot-row">
+                    @if (cell.isOwner) {
+                      <span class="dot owner"></span>
+                    }
+                    @if (cell.isWalker) {
+                      <span class="dot walker"></span>
+                    }
+                  </span>
+                }
+                @if (cell.isCompleted) {
+                  <mat-icon class="completed-icon" aria-hidden="true">check</mat-icon>
+                }
+              </button>
+            } @else {
+              <div class="day-cell empty"></div>
+            }
+          }
+        </div>
+
+        <div class="legend">
+          <span class="legend-item">
+            <span class="dot owner"></span>
+            <span>Właściciel</span>
+          </span>
+          <span class="legend-item">
+            <span class="dot walker"></span>
+            <span>Walker</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="upcoming">
+        <span class="upcoming-title">Nadchodzące spacery</span>
+        <mat-tab-group>
+          <mat-tab label="WŁAŚCICIEL">
+            @if (plannedOwner().length) {
+              <div class="planned-list">
+                @for (item of plannedOwner(); track item.reservationId) {
+                  <button
+                    type="button"
+                    class="planned-item owner"
+                    (click)="openReservation(item.reservationId)"
+                  >
+                    <mat-icon class="planned-icon">event_available</mat-icon>
+                    <div class="planned-text">
+                      <span class="planned-title">{{ item.dateLabel }} • {{ item.time }}</span>
+                      <span class="planned-subtitle">Pies: {{ item.dogName }}</span>
+                      <span class="planned-status">Status: {{ statusLabel(item.status) }}</span>
+                    </div>
+                    <mat-icon class="chevron">chevron_right</mat-icon>
+                  </button>
+                }
+              </div>
+            } @else {
+              <div class="empty">Brak zaplanowanych spacerów.</div>
+            }
+          </mat-tab>
+          <mat-tab label="WALKER">
+            @if (plannedWalker().length) {
+              <div class="planned-list">
+                @for (item of plannedWalker(); track item.reservationId) {
+                  <button
+                    type="button"
+                    class="planned-item walker"
+                    (click)="openReservation(item.reservationId)"
+                  >
+                    <mat-icon class="planned-icon">event_available</mat-icon>
+                    <div class="planned-text">
+                      <span class="planned-title">{{ item.dateLabel }} • {{ item.time }}</span>
+                      <span class="planned-subtitle">Pies: {{ item.dogName }}</span>
+                      <span class="planned-status">Status: {{ statusLabel(item.status) }}</span>
+                    </div>
+                    <mat-icon class="chevron">chevron_right</mat-icon>
+                  </button>
+                }
+              </div>
+            } @else {
+              <div class="empty">Brak zaplanowanych spacerów.</div>
+            }
+          </mat-tab>
+        </mat-tab-group>
+      </div>
     </div>
   }
 </app-section-wrapper>

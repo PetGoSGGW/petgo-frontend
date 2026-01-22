@@ -13,10 +13,17 @@ form {
 }
 
 .slots {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 0.5rem;
   width: 100%;
+  max-height: 280px;
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+.slot-button {
+  justify-content: flex-start;
 }
 
 .section {
