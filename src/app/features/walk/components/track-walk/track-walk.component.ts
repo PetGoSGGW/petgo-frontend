@@ -7,7 +7,6 @@ import {
   input,
   OnInit,
 } from '@angular/core';
-import { LocationService } from '../../../../services/location.service';
 import { ReplaySubject } from 'rxjs';
 import * as L from 'leaflet';
 import { MatButton } from '@angular/material/button';
@@ -22,7 +21,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [MatButton],
 })
 export class TrackWalkComponent implements OnInit {
-  private readonly locationService = inject(LocationService);
   private readonly sessionService = inject(SessionService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -32,8 +30,8 @@ export class TrackWalkComponent implements OnInit {
   private pathHistory: L.LatLngExpression[] = [];
   private path: L.Polyline | undefined;
 
-  public readonly sessionId = input.required<number, string>({
-    transform: (sessionId) => Number(sessionId),
+  public readonly reservationId = input.required<number, string>({
+    transform: (reservationId) => Number(reservationId),
   });
   private readonly isMapInit$ = new ReplaySubject<boolean>(1);
 
@@ -46,8 +44,8 @@ export class TrackWalkComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.locationService
-      .getCurrentLocation$()
+    this.sessionService
+      .startWalk$(this.reservationId())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ latitude, longitude }) => {
@@ -80,9 +78,8 @@ export class TrackWalkComponent implements OnInit {
 
     this.isMapInit$.next(true);
 
-    if (this.userPosition) {
-      this.addUserMarker();
-    }
+    this.map.invalidateSize();
+    this.renderExistingPath();
   }
 
   private centerMapOnUser(args?: { zoom?: number }): void {
@@ -106,9 +103,8 @@ export class TrackWalkComponent implements OnInit {
   }
 
   private updatePath(lat: number, lng: number): void {
-    if (!this.map) return;
-
     this.pathHistory.push([lat, lng]);
+    if (!this.map) return;
 
     if (!this.path) {
       this.path = L.polyline(this.pathHistory, {
@@ -120,9 +116,28 @@ export class TrackWalkComponent implements OnInit {
     } else {
       this.path.setLatLngs(this.pathHistory);
     }
+
+    this.addUserMarker();
   }
 
-  protected finishWalk(sessionId: number): void {
-    this.sessionService.stopWalk(sessionId);
+  private renderExistingPath(): void {
+    if (!this.map || this.pathHistory.length === 0) return;
+
+    if (!this.path) {
+      this.path = L.polyline(this.pathHistory, {
+        color: 'blue',
+        weight: 4,
+        opacity: 0.7,
+        smoothFactor: 1,
+      }).addTo(this.map);
+    } else {
+      this.path.setLatLngs(this.pathHistory);
+    }
+
+    this.addUserMarker();
+  }
+
+  protected finishWalk(): void {
+    this.sessionService.stopWalk();
   }
 }
