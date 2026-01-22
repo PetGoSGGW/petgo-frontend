@@ -1,4 +1,3 @@
-<!-- ================= UŻYTKOWNIK ================= -->
 <app-section-wrapper header="Użytkownik">
   @if (user.isLoading()) {
     <mat-spinner />
@@ -34,7 +33,6 @@
   }
 </app-section-wrapper>
 
-<!-- ================= PUPILE ================= -->
 <app-section-wrapper header="Pupile">
   @if (dogs.isLoading()) {
     <mat-spinner />
@@ -47,7 +45,6 @@
   }
 </app-section-wrapper>
 
-<!-- ================= PORTFEL ================= -->
 @if (id() === userId()) {
   <app-section-wrapper header="Portfel">
     @if (wallet.isLoading()) {
@@ -56,14 +53,23 @@
       <mat-error>Błąd podczas pobierania portfela</mat-error>
     } @else if (wallet.hasValue()) {
       @if (wallet.value(); as walletValue) {
-        <div>
+        <div class="wallet-row">
           <mat-label>Stan konta</mat-label>
           <span>{{ walletValue.balanceCents | fromCents }}</span>
         </div>
 
-        <div>
+        <div class="wallet-row">
           <mat-label>Waluta</mat-label>
           <span>{{ walletValue.currency }}</span>
+        </div>
+
+        <div class="buttons">
+          <button matButton="outlined" (click)="openWalletDialog(walletValue, 'withdraw')">
+            Wypłać
+          </button>
+          <button matButton="tonal" (click)="openWalletDialog(walletValue, 'deposit')">
+            Wpłać
+          </button>
         </div>
       } @else {
         <span class="empty">Nie masz portfela</span>
@@ -72,7 +78,6 @@
   </app-section-wrapper>
 }
 
-<!-- ================= OPINIE ================= -->
 <app-section-wrapper [header]="reviewSectionHeader()">
   <div slot="extras" class="rating-badge">
     <mat-icon>star</mat-icon>
@@ -84,56 +89,53 @@
   } @else if (reviews.error()) {
     <mat-error>Błąd podczas pobierania opinii</mat-error>
   } @else if (reviews.hasValue()) {
-    <mat-card class="content-card reviews-card">
-      <div class="reviews-list-container">
-        @for (review of reviews.value().reviewDTOList; track review.createdAt; let last = $last) {
-          <div class="review-row">
-            <div class="review-content-wrapper">
-              <div class="review-main-content">
-                <div class="review-header">
-                  <span class="author">
-                    {{ review.authorDto.firstName }}
-                  </span>
+    <div class="reviews-list-container">
+      @for (review of reviews.value().reviewDTOList; track review.createdAt; let last = $last) {
+        <div class="review-row">
+          <div class="review-content-wrapper">
+            <div class="review-main-content">
+              <div class="review-header">
+                <span class="author">
+                  {{ review.authorDto.firstName }}
+                </span>
 
-                  <span class="date">
-                    {{ review.createdAt | date: 'shortDate' }}
-                  </span>
+                <span class="date">
+                  {{ review.createdAt | date: 'shortDate' }}
+                </span>
 
-                  <div class="star-rating-display">
-                    @for (i of [1, 2, 3, 4, 5]; track i) {
-                      <mat-icon class="star-icon-small">
-                        {{ getRatingForReview(review.rating, i) }}
-                      </mat-icon>
-                    }
-                  </div>
+                <div class="star-rating-display">
+                  @for (i of [1, 2, 3, 4, 5]; track i) {
+                    <mat-icon class="star-icon-small">
+                      {{ getRatingForReview(review.rating, i) }}
+                    </mat-icon>
+                  }
                 </div>
-
-                <p class="text">
-                  {{ review.comment }}
-                </p>
               </div>
+
+              <p class="text">
+                {{ review.comment }}
+              </p>
             </div>
           </div>
+        </div>
 
-          @if (!last) {
-            <mat-divider />
-          }
-        } @empty {
-          <mat-hint>Użytkownik nie ma żadnej opinii</mat-hint>
+        @if (!last) {
+          <mat-divider />
         }
-      </div>
-    </mat-card>
+      } @empty {
+        <mat-hint>Użytkownik nie ma żadnej opinii</mat-hint>
+      }
+    </div>
   }
 </app-section-wrapper>
 
-<!-- ================= TRANSAKCJE ================= -->
 <app-section-wrapper header="Transakcje">
   @if (transactions.isLoading()) {
     <mat-spinner />
   } @else if (transactions.error()) {
     <mat-error>Wystąpił błąd.</mat-error>
   } @else if (transactions.hasValue()) {
-    <ul>
+    <ul class="transaction-list">
       @for (transaction of transactions.value(); track transaction.transactionId) {
         <li>
           <div class="field">

@@ -27,7 +27,7 @@ nav {
 .profile {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.25rem;
 }
 
 .profile-username {
@@ -49,6 +49,10 @@ img {
 
     &.mobile {
       display: none;
+    }
+
+    .profile {
+      gap: 1rem;
     }
   }
 }

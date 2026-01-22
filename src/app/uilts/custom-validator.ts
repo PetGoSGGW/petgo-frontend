@@ -32,6 +32,24 @@ export class CustomValidator {
     };
   }
 
+  public static maxCommaValidator(max: number): ValidatorFn {
+    return ({ value }: AbstractControl): ValidationErrors | null => {
+      if (value === null || value === '' || value === undefined) {
+        return null;
+      }
+
+      const numericValue = parseFloat(value.toString().replace(',', '.'));
+
+      if (!isNaN(numericValue) && numericValue > max) {
+        return {
+          max: { max, actual: numericValue },
+        };
+      }
+
+      return null;
+    };
+  }
+
   public static minDateTodayValidator(): ValidatorFn {
     return ({ value }: AbstractControl): ValidationErrors | null => {
       if (!value) return null;
