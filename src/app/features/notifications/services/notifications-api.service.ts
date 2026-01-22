@@ -19,25 +19,25 @@ export class NotificationsApiService {
         `Bearer ${this.authService.accessToken()}`,
       );
 
-      (this.sseClient
-        .stream(
+      (
+        this.sseClient.stream(
           `${this.apiUrl}/notifications/stream`,
           { keepAlive: true, reconnectionDelay: 1000, responseType: 'event' },
           { headers },
           'GET',
-        ) as Observable<MessageEvent | ErrorEvent>)
-        .subscribe((event) => {
-          if (event.type === 'error') {
-            const errorEvent = event as ErrorEvent;
-            console.error(errorEvent.error, errorEvent.message);
-          } else {
-            const messageEvent = event as MessageEvent;
-            observer.next({
-              title: messageEvent.type,
-              content: messageEvent.data,
-            });
-          }
-        });
+        ) as Observable<MessageEvent | ErrorEvent>
+      ).subscribe((event) => {
+        if (event.type === 'error') {
+          const errorEvent = event as ErrorEvent;
+          console.error(errorEvent.error, errorEvent.message);
+        } else {
+          const messageEvent = event as MessageEvent;
+          observer.next({
+            title: messageEvent.type,
+            content: messageEvent.data,
+          });
+        }
+      });
     });
   }
 }

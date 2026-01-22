@@ -114,11 +114,7 @@ import { UserWalkerOfferDetailsApiService } from './services/user-walker-offer-d
           @if (futureSlots().length) {
             <div class="slots">
               @for (slot of futureSlots() | sortSlots; track slot) {
-                <button
-                  matButton="tonal"
-                  class="slot-button"
-                  (click)="removeSlot(slot)"
-                >
+                <button matButton="tonal" class="slot-button" (click)="removeSlot(slot)">
                   <mat-icon>delete</mat-icon>
                   {{ slot | slotDate }}
                 </button>
@@ -152,7 +148,12 @@ import { UserWalkerOfferDetailsApiService } from './services/user-walker-offer-d
               @let dateTouched = form.controls.date;
               @let dateErrors = form.controls.date.errors;
 
-              <input matInput [min]="tomorrow" [matDatepicker]="datepicker" formControlName="date" />
+              <input
+                matInput
+                [min]="tomorrow"
+                [matDatepicker]="datepicker"
+                formControlName="date"
+              />
               <mat-hint>DD/MM/RRRR</mat-hint>
 
               @if (dateTouched && dateErrors?.['required']) {

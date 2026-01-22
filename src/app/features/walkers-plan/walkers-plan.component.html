@@ -6,23 +6,13 @@
   } @else if (dogsWithReservations.hasValue()) {
     <div class="plan">
       <div class="month-nav">
-        <button
-          type="button"
-          matIconButton
-          aria-label="Poprzedni miesiąc"
-          (click)="shiftMonth(-1)"
-        >
+        <button type="button" matIconButton aria-label="Poprzedni miesiąc" (click)="shiftMonth(-1)">
           <mat-icon>chevron_left</mat-icon>
         </button>
 
         <span class="month-label">{{ monthLabel() }}</span>
 
-        <button
-          type="button"
-          matIconButton
-          aria-label="Następny miesiąc"
-          (click)="shiftMonth(1)"
-        >
+        <button type="button" matIconButton aria-label="Następny miesiąc" (click)="shiftMonth(1)">
           <mat-icon>chevron_right</mat-icon>
         </button>
       </div>

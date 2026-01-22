@@ -1,10 +1,4 @@
-﻿import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import { MatError } from '@angular/material/form-field';
@@ -20,7 +14,7 @@ import { ReservationStatus } from '../../models/reservation.model';
 import { DogApiService } from '../../services/dog-api.service';
 import { ReservationApiService } from '../../services/reservation-api.service';
 
-type PlannedItem = {
+interface PlannedItem {
   reservationId: number;
   date: DateTime;
   dateLabel: string;
@@ -28,7 +22,7 @@ type PlannedItem = {
   dogName: string;
   role: 'owner' | 'walker';
   status: ReservationStatus;
-};
+}
 
 @Component({
   selector: 'app-walkers-plan',
@@ -85,11 +79,13 @@ export default class WalkersPlanComponent {
 
   protected readonly walkerReservations = rxResource({
     stream: () =>
-      this.reservationApi.getWalkerReservations$().pipe(
-        map((reservations) =>
-          reservations.filter(({ status }) => this.visibleStatuses.has(status)),
+      this.reservationApi
+        .getWalkerReservations$()
+        .pipe(
+          map((reservations) =>
+            reservations.filter(({ status }) => this.visibleStatuses.has(status)),
+          ),
         ),
-      ),
   });
 
   protected readonly walkerDogs = rxResource({
@@ -207,14 +203,14 @@ export default class WalkersPlanComponent {
     );
     const plannedByDateKey = this.plannedByDateKey();
 
-    const cells: Array<{
+    const cells: {
       day?: number;
       isOwner: boolean;
       isWalker: boolean;
       isCompleted: boolean;
       reservationId?: number;
       ariaLabel?: string;
-    }> = [];
+    }[] = [];
 
     for (let i = 0; i < rows * 7; i += 1) {
       if (i < firstWeekday) {
