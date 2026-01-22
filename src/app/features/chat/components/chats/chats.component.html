@@ -1,0 +1,49 @@
+@if (!reservations.error()) {
+  <app-section-wrapper header="Wiadomości (właściciel)">
+    @if (reservations.isLoading()) {
+      <mat-spinner />
+    } @else if (reservations.error()) {
+      <mat-error>Wystąpił błąd!</mat-error>
+    } @else if (reservations.hasValue()) {
+      <ul>
+        @for (chat of chats(); track chat.chatId) {
+          <li>
+            <a [routerLink]="['/czat', chat.chatId]">
+              <img
+                class="user-photo-main"
+                [src]="chat.walker | avatar"
+                [alt]="chat.walker.firstName"
+              />
+              {{ chat.walker.firstName }} {{ chat.walker.lastName }}
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </app-section-wrapper>
+}
+
+@if (!walkerReservations.error()) {
+  <app-section-wrapper header="Wiadomości (wyprowadzacz)">
+    @if (walkerReservations.isLoading()) {
+      <mat-spinner />
+    } @else if (walkerReservations.error()) {
+      <mat-error>Wystąpił błąd!</mat-error>
+    } @else if (walkerReservations.hasValue()) {
+      <ul>
+        @for (chat of walkerChats(); track chat.chatId) {
+          <li>
+            <a [routerLink]="['/czat', chat.chatId]">
+              <img
+                class="user-photo-main"
+                [src]="chat.owner | avatar"
+                [alt]="chat.owner.firstName"
+              />
+              {{ chat.owner.firstName }} {{ chat.owner.lastName }}
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </app-section-wrapper>
+}

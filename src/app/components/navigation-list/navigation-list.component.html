@@ -1,4 +1,4 @@
-<ul>
+﻿<ul>
   @if (!loading()) {
     <li>
       @if (!hasOffer()) {
@@ -38,6 +38,18 @@
       <mat-icon>list</mat-icon>
       Oferty</a
     >
+  </li>
+  <li>
+    <a routerLink="/umowione-spacery" routerLinkActive="active-link" (click)="clicked.emit()">
+      <mat-icon>event_available</mat-icon>
+      Umówione spacery
+    </a>
+  </li>
+  <li>
+    <a routerLink="/plan-spacerow" routerLinkActive="active-link" (click)="clicked.emit()">
+      <mat-icon>event</mat-icon>
+      Kalendarz spacerów
+    </a>
   </li>
   <li>
     <a routerLink="/pupile" routerLinkActive="active-link" (click)="clicked.emit()">

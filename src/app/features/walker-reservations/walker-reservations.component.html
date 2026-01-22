@@ -1,0 +1,99 @@
+﻿<app-section-wrapper header="Umówione spacery">
+  <mat-tab-group>
+    <mat-tab label="Spacery Twoich pupili">
+      <div class="tab-content">
+        @if (ownerReservations.isLoading()) {
+          <div class="loading-container">
+            <mat-spinner />
+          </div>
+        } @else if (ownerReservations.error()) {
+          <div class="error-container">
+            <mat-icon class="error-icon">error_outline</mat-icon>
+            <mat-error>Wystąpił błąd podczas pobierania rezerwacji</mat-error>
+          </div>
+        } @else if (ownerReservations.hasValue()) {
+          <app-reservation-grid>
+            @for (reservation of ownerReservations.value(); track reservation.reservationId) {
+              <app-reservation-card [reservation]="reservation" />
+            } @empty {
+              <div class="empty-state">
+                <mat-icon class="empty-icon">event_busy</mat-icon>
+                <h3>Brak rezerwacji</h3>
+                <p>Nie masz jeszcze żadnych umówionych spacerów</p>
+              </div>
+            }
+          </app-reservation-grid>
+        }
+      </div>
+    </mat-tab>
+    <mat-tab label="Twoje spacery">
+      <div class="tab-content">
+        @if (walkerReservations.isLoading()) {
+          <div class="loading-container">
+            <mat-spinner />
+          </div>
+        } @else if (walkerReservations.error()) {
+          <div class="error-container">
+            <mat-icon class="error-icon">error_outline</mat-icon>
+            <mat-error>Wystąpił błąd podczas pobierania rezerwacji</mat-error>
+          </div>
+        } @else if (walkerReservations.hasValue()) {
+          <app-reservation-grid>
+            @for (reservation of walkerReservations.value(); track reservation.reservationId) {
+              <app-reservation-card [reservation]="reservation">
+                @if (reservation.status === 'PENDING' && reservation.walkerId === userId()) {
+                  <div class="buttons">
+                    <button
+                      matButton="outlined"
+                      [disabled]="loading() === reservation.reservationId"
+                      (click)="cancel(reservation.reservationId)"
+                    >
+                      Odrzuć
+                    </button>
+                    <button
+                      matButton="tonal"
+                      [disabled]="loading() === reservation.reservationId"
+                      (click)="confirm(reservation.reservationId)"
+                    >
+                      Zaakceptuj
+                    </button>
+                  </div>
+                }
+
+                <div class="buttons-col">
+                  @if (reservation.status === 'CONFIRMED' && reservation.walkerId === userId()) {
+                    <button matButton="tonal" (click)="startWalk(reservation.reservationId)">
+                      Rozpocznij spacer
+                    </button>
+                  }
+
+                  @if (reservation.status === 'COMPLETED') {
+                    <button
+                      matButton="tonal"
+                      (click)="openReviewDialog(reservation.reservationId, 'DOG')"
+                    >
+                      Dodaj opinię o pupilu
+                    </button>
+
+                    <button
+                      matButton="tonal"
+                      (click)="openReviewDialog(reservation.reservationId, 'WALK')"
+                    >
+                      Dodaj opinię o spacerze
+                    </button>
+                  }
+                </div>
+              </app-reservation-card>
+            } @empty {
+              <div class="empty-state">
+                <mat-icon class="empty-icon">event_busy</mat-icon>
+                <h3>Brak rezerwacji</h3>
+                <p>Nie masz jeszcze żadnych umówionych spacerów</p>
+              </div>
+            }
+          </app-reservation-grid>
+        }
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</app-section-wrapper>

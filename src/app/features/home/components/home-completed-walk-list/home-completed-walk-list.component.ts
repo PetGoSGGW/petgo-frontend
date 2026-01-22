@@ -4,9 +4,16 @@ import { ReservationApiService } from '../../../../services/reservation-api.serv
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatList, MatListItem, MatListItemAvatar, MatListItemTitle } from '@angular/material/list';
 import { SectionWrapperComponent } from '../../../../components/section-wrapper/section-wrapper.component';
-import { LuxonPipe } from '../../../../pipes/luxon.pipe';
+import { ReservationCardComponent } from '../../../../components/reservation-card/reservation-card.component';
+import { ReservationGridComponent } from '../../../../components/reservation-grid/reservation-grid.component';
+import {
+  ReviewDialogComponent,
+  ReviewDialogData,
+} from '../../../../components/review-dialog/review-dialog.component';
+import { Reservation } from '../../../../models/reservation.model';
+import { MatButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-home-completed-walk-list',
@@ -15,16 +22,15 @@ import { LuxonPipe } from '../../../../pipes/luxon.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatProgressSpinner,
-    MatList,
-    MatListItem,
-    MatListItemAvatar,
-    MatListItemTitle,
-    LuxonPipe,
+    MatButton,
     SectionWrapperComponent,
+    ReservationCardComponent,
+    ReservationGridComponent,
   ],
 })
 export class HomeCompletedWalkListComponent {
   private readonly authService = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
   private readonly reservationApi = inject(ReservationApiService);
 
   protected readonly userId = computed(() => this.authService.session()?.userId);
@@ -35,8 +41,17 @@ export class HomeCompletedWalkListComponent {
         .getReservations$()
         .pipe(
           map((reservations) =>
-            reservations.filter((reservation) => reservation.reservationStatus === 'COMPLETED'),
+            reservations.filter((reservation) => reservation.status === 'COMPLETED'),
           ),
         ),
   });
+
+  protected openReviewDialog(reservationId: Reservation['reservationId']) {
+    this.dialog.open(ReviewDialogComponent, {
+      data: {
+        type: 'WALKER',
+        reservationId,
+      } satisfies ReviewDialogData,
+    });
+  }
 }

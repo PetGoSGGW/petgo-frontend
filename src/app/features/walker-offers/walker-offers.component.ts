@@ -9,8 +9,13 @@ import {
   WalkerOfferReservationDialogComponent,
   WalkerOfferReservationDialogData,
 } from './components/walker-offer-reservation-dialog/walker-offer-reservation-dialog.component';
+import {
+  WalkerOfferDetailsDialogComponent,
+  WalkerOfferDetailsDialogData,
+} from './components/walker-offer-details-dialog/walker-offer-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { filter, map, tap } from 'rxjs';
+import { DateTime } from 'luxon';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -24,6 +29,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { FromCentsPipe } from '../../pipes/from-cents.pipe';
 import { LocationService } from '../../services/location.service';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
+import { AuthService } from '../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-walker-offers',
@@ -54,6 +60,9 @@ export class WalkerOffersComponent {
   private readonly offersService = inject(WalkerOffersApiService);
   private readonly dialog = inject(MatDialog);
   private readonly locationService = inject(LocationService);
+  private readonly authService = inject(AuthService);
+
+  private readonly userId = this.authService.userId;
 
   protected readonly loading = signal(true);
 
@@ -65,6 +74,8 @@ export class WalkerOffersComponent {
     ),
   );
 
+  protected readonly pageIndex = signal(0);
+  protected readonly size = signal(10).asReadonly();
   protected readonly radius = signal<number>(2);
 
   protected offers = rxResource({
@@ -73,14 +84,38 @@ export class WalkerOffersComponent {
 
       if (!location) return undefined;
 
-      return { radius: this.radius(), coordinates: location };
+      return {
+        radius: this.radius(),
+        coordinates: location,
+        page: this.pageIndex(),
+      };
     },
-    stream: ({ params: { radius, coordinates } }) =>
-      this.offersService.getOffers({
-        latitude: coordinates.lat,
-        longitude: coordinates.lng,
-        radiusKm: radius,
-      }),
+    stream: ({ params: { radius, coordinates, page } }) =>
+      this.offersService
+        .getOffers({
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          radiusKm: radius,
+          page,
+        })
+        .pipe(
+          map((response) => ({
+            ...response,
+            content: response.content.map((offer) => ({
+              ...offer,
+              slots:
+                offer.slots?.filter(
+                  (s) => DateTime.fromISO(s.startTime) > DateTime.now().plus({ day: 1 }),
+                ) ?? [],
+            })),
+          })),
+          map((response) => ({
+            ...response,
+            content: response.content.filter(
+              (offer) => offer.slots.length > 0 && offer.walkerId !== this.userId(),
+            ),
+          })),
+        ),
   });
 
   protected readonly shouldShowMap = signal(true);
@@ -92,8 +127,6 @@ export class WalkerOffersComponent {
   protected readonly count = computed(() =>
     this.offers.hasValue() ? this.offers.value().number : 0,
   );
-  protected readonly page = signal(1);
-  protected readonly size = signal(10).asReadonly();
 
   protected openReservationDialog({ offerId, slots }: WalkerOffer): void {
     this.dialog
@@ -107,5 +140,14 @@ export class WalkerOffersComponent {
       .afterClosed()
       .pipe(filter(Boolean))
       .subscribe(() => this.offers.reload());
+  }
+
+  protected openDetailsDialog(offer: WalkerOffer): void {
+    const location = this.location();
+
+    this.dialog.open(WalkerOfferDetailsDialogComponent, {
+      width: '700px',
+      data: { offer, userLocation: location ?? null } satisfies WalkerOfferDetailsDialogData,
+    });
   }
 }

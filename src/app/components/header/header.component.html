@@ -10,6 +10,19 @@
   </div>
 
   <div class="profile">
+    <a matIconButton aria-label="Czaty" [routerLink]="['/czat']" class="profile-username">
+      <mat-icon>chat</mat-icon>
+    </a>
+
+    <a
+      matIconButton
+      [routerLink]="['/powiadomienia']"
+      class="profile-username"
+      aria-label="Powiadomienia"
+    >
+      <mat-icon>notifications</mat-icon>
+    </a>
+
     <a
       matIconButton
       [routerLink]="['/uzytkownik/', id()]"

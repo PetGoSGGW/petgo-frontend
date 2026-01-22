@@ -11,6 +11,6 @@ export class LuxonPipe implements PipeTransform {
   ): string | null {
     if (!value) return null;
 
-    return DateTime.fromISO(value).toFormat(format);
+    return DateTime.fromISO(value, { locale: 'pl-PL' }).toFormat(format);
   }
 }

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { EditDogDetailsDialogData } from '../../models/edit-dog-details-dialog-data.model';
+import {
+  DogForm,
+  DogFormComponent,
+} from '../../../../../../components/dog-form/dog-form.component';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { DogApiService } from '../../../../../../services/dog-api.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { Dog } from '../../../../../../models/dog.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-dog-dialog',
@@ -22,55 +31,36 @@ import { EditDogDetailsDialogData } from '../../models/edit-dog-details-dialog-d
     MatInputModule,
     MatSelectModule,
     MatSlideToggleModule,
+    DogFormComponent,
+    MatProgressSpinner,
   ],
   template: `
     <div class="modal-container">
       <h2 mat-dialog-title>Edytuj szczegóły psa</h2>
 
-      <div mat-dialog-content>
-        <form [formGroup]="form" class="dialog-form">
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Imię</mat-label>
-            <input matInput formControlName="name" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Rasa</mat-label>
-            <input matInput formControlName="breed" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Notatki</mat-label>
-            <textarea matInput rows="3" formControlName="notes"></textarea>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Rozmiar</mat-label>
-            <mat-select formControlName="size">
-              <mat-option value="S">S</mat-option>
-              <mat-option value="M">M</mat-option>
-              <mat-option value="L">L</mat-option>
-              <mat-option value="XL">XL</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Waga (kg)</mat-label>
-            <input matInput type="number" formControlName="weightKg" />
-          </mat-form-field>
-
-          <mat-slide-toggle formControlName="isActive">Aktywny</mat-slide-toggle>
-        </form>
+      <div mat-dialog-content class="content">
+        @if (breeds.isLoading()) {
+          <mat-spinner />
+        } @else if (breeds.error()) {
+          <mat-error>Wystąpił błąd!</mat-error>
+        } @else if (breeds.hasValue()) {
+          <app-dog-form
+            [initialData]="initialData"
+            (invalid)="invalid.set($event)"
+            (value)="value.set($event)"
+            [breeds]="breeds.value()"
+          />
+        }
       </div>
 
-      <div mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="close()">Anuluj</button>
+      <div class="actions" mat-dialog-actions align="end">
+        <button matButton="outlined" type="button" (click)="close()">Anuluj</button>
         <button
-          mat-raised-button
+          matButton="tonal"
           color="primary"
           type="button"
           (click)="save()"
-          [disabled]="form.invalid"
+          [disabled]="invalid()"
         >
           Zapisz
         </button>
@@ -92,46 +82,74 @@ import { EditDogDetailsDialogData } from '../../models/edit-dog-details-dialog-d
         overflow-y: auto;
         max-height: 700px;
       }
+
+      .content {
+        margin-top: 1rem;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: flex-end;
+        width: 100%;
+        gap: 1rem;
+
+        button {
+          width: 100%;
+        }
+      }
     `,
   ],
+  providers: [DogApiService],
 })
 export class EditDogDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<EditDogDialogComponent>);
-  private readonly data = inject<EditDogDetailsDialogData>(MAT_DIALOG_DATA);
+  protected readonly data = inject<{ dog: Dog }>(MAT_DIALOG_DATA);
+  private readonly dogApi = inject(DogApiService);
+  private readonly matSnackBar = inject(MatSnackBar);
 
-  public readonly form = new FormGroup<{
-    name: FormControl<string>;
-    breed: FormControl<string>;
-    notes: FormControl<string>;
-    size: FormControl<string>;
-    weightKg: FormControl<number>;
-    isActive: FormControl<boolean>;
-  }>({
-    name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    breed: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    notes: new FormControl<string>('', { nonNullable: true }),
-    size: new FormControl<string>('M', { nonNullable: true }),
-    weightKg: new FormControl<number>(0, { nonNullable: true, validators: [Validators.min(0)] }),
-    isActive: new FormControl<boolean>(true, { nonNullable: true }),
+  protected readonly initialData: EditDogDetailsDialogData = {
+    name: this.data.dog.name,
+    isActive: this.data.dog.isActive,
+    size: this.data.dog.size,
+    weightKg: this.data.dog.weightKg,
+    notes: this.data.dog.notes,
+    breed: this.data.dog.breed,
+  };
+  protected readonly invalid = signal(true);
+  protected readonly value = signal<DogForm | null>(null);
+
+  protected breeds = rxResource({
+    stream: () => this.dogApi.getBreeds$(),
   });
-
-  constructor() {
-    this.form.setValue({
-      name: this.data.name,
-      breed: this.data.breed.name,
-      notes: this.data.notes ?? '',
-      size: this.data.size ?? 'M',
-      weightKg: Number(this.data.weightKg ?? 0),
-      isActive: this.data.isActive,
-    });
-  }
 
   public close(): void {
     this.dialogRef.close();
   }
 
   public save(): void {
-    if (this.form.invalid) return;
-    this.dialogRef.close(this.form.getRawValue());
+    if (this.invalid()) return;
+
+    const value = this.value();
+
+    if (!value) return;
+
+    this.dogApi
+      .updateDog$(this.data.dog.dogId, {
+        name: value.name,
+        isActive: !!value.isActive,
+        size: value.size ?? 'Mały',
+        notes: value.notes,
+        weightKg: value.weight ?? 0,
+        breedCode: this.data.dog.breed.breedCode,
+      })
+      .subscribe({
+        next: () => {
+          this.matSnackBar.open('Zapisano zmiany w profilu psa.', 'OK');
+          this.dialogRef.close(true);
+        },
+        error: () => {
+          this.matSnackBar.open('Nie udało się zapisać zmian.', 'OK');
+        },
+      });
   }
 }

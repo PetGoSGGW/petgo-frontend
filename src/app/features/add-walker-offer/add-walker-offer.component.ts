@@ -156,8 +156,9 @@ export default class AddWalkerOfferComponent {
   }
 
   protected submit(): void {
-    if (this.offerForm.invalid) {
+    if (this.offerForm.invalid || this.slotsControl.value.length === 0) {
       this.offerForm.markAllAsTouched();
+      this.slotForm.markAllAsTouched();
       return;
     }
 

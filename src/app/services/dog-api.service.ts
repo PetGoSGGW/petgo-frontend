@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Dog } from '../models/dog.model';
+import { Dog, DogSize } from '../models/dog.model';
 import { Breed } from '../models/breed.model';
 
 @Injectable({
@@ -12,10 +12,26 @@ export class DogApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
-  public getDogsByUserId(ownerId: number | string): Observable<Dog[]> {
-    return this.http.get<Dog[]>(`${this.apiUrl}/dogs`, {
-      params: { ownerId },
-    });
+  public getDogsByUserId$(ownerId: number | string): Observable<Dog[]> {
+    return this.http.get<Dog[]>(`${this.apiUrl}/dogs/owner/${ownerId}`);
+  }
+
+  public getDog$(id: number): Observable<Dog> {
+    return this.http.get<Dog>(`${this.apiUrl}/dogs/${id}`);
+  }
+
+  public updateDog$(
+    id: number,
+    request: {
+      breedCode: number;
+      name: string;
+      size: DogSize;
+      notes: string;
+      weightKg: number;
+      isActive: boolean;
+    },
+  ): Observable<Dog> {
+    return this.http.patch<Dog>(`${this.apiUrl}/dogs/${id}`, request);
   }
 
   public getDogs$(): Observable<Dog[]> {
@@ -34,5 +50,13 @@ export class DogApiService {
 
   public getBreeds$(): Observable<Breed[]> {
     return this.http.get<Breed[]>(`${this.apiUrl}/dogs/breeds`);
+  }
+
+  public uploadPhoto$(dogId: Dog['dogId'], file: File): Observable<unknown> {
+    const formData: FormData = new FormData();
+
+    formData.append('files', file);
+
+    return this.http.post<unknown>(`${this.apiUrl}/dogs/${dogId}/photos`, formData);
   }
 }

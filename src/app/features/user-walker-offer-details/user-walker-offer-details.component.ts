@@ -1,26 +1,34 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+﻿import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatError, MatFormField, MatHint, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { DateTime } from 'luxon';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, finalize, map, take } from 'rxjs';
-import { LuxonPipe } from '../../pipes/luxon.pipe';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
-import { UserOfferService } from '../../services/user-offer.service';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { SlotDatePipe } from '../add-walker-offer/pipes/slot-date.pipe';
-import { MatIcon } from '@angular/material/icon';
-import { CustomValidator } from '../../uilts/custom-validator';
-import { UserWalkerOfferDetailsApiService } from './services/user-walker-offer-details-api.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { fromCents, toCents } from '../../uilts/format-price';
-import { AvailableSlot } from '../walker-offers/models/available-slot.model';
+import { CustomValidator } from '../../uilts/custom-validator';
+import { LuxonPipe } from '../../pipes/luxon.pipe';
+import { SortSlotsPipe } from '../../pipes/sort-slots.pipe';
 import { LocationService } from '../../services/location.service';
+import { UserOfferService } from '../../services/user-offer.service';
+import { SlotDatePipe } from '../add-walker-offer/pipes/slot-date.pipe';
+import { AvailableSlot } from '../walker-offers/models/available-slot.model';
 import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-offer-details-map/user-walker-offer-details-map.component';
+import { UserWalkerOfferDetailsApiService } from './services/user-walker-offer-details-api.service';
 
 @Component({
   selector: 'app-user-walker-offer-details',
@@ -42,20 +50,19 @@ import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-off
     MatCheckbox,
     UserWalkerOfferDetailsMapComponent,
     MatSuffix,
+    SortSlotsPipe,
   ],
   template: `
     <div class="main" [class.updating]="updating()">
       @if (loading()) {
         <mat-spinner />
       } @else if (error()) {
-        <mat-error>Wystąpił błąd!</mat-error>
+        <mat-error>Wystąpił błąd.</mat-error>
       } @else if (offer(); as offer) {
         <div class="section app-page">
           <h2>Szczegóły oferty</h2>
 
           <form [formGroup]="offerForm">
-            <ng-template matStepLabel>Szczegóły oferty</ng-template>
-
             <mat-form-field>
               @let priceTouched = offerForm.controls.price;
               @let priceErrors = offerForm.controls.price.errors;
@@ -75,8 +82,8 @@ import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-off
             </mat-form-field>
 
             <mat-form-field>
-              @let descriptionTouched = offerForm.controls.price;
-              @let descriptionErrors = offerForm.controls.price.errors;
+              @let descriptionTouched = offerForm.controls.description;
+              @let descriptionErrors = offerForm.controls.description.errors;
 
               <mat-label>Opis</mat-label>
               <textarea matInput formControlName="description"></textarea>
@@ -86,7 +93,7 @@ import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-off
               }
             </mat-form-field>
 
-            <mat-checkbox formControlName="isActive">Check me!</mat-checkbox>
+            <mat-checkbox formControlName="isActive">Oferta aktywna</mat-checkbox>
 
             <button matButton="tonal" [disabled]="loading()" (click)="updateOffer()">
               Zaktualizuj ofertę
@@ -100,20 +107,22 @@ import { UserWalkerOfferDetailsMapComponent } from './components/user-walker-off
           @if (location(); as location) {
             <app-user-walker-offer-details-map
               [userPosition]="location"
-              [availableSlots]="offer.slots"
+              [availableSlots]="futureSlots()"
             />
           }
 
-          <div class="slots">
-            @for (slot of offer.slots; track slot) {
-              <button matButton="tonal" (click)="removeSlot(slot)">
-                <mat-icon>delete</mat-icon>
-                {{ slot | slotDate }}
-              </button>
-            } @empty {
-              <mat-error>Nie dodano slotów dostępności</mat-error>
-            }
-          </div>
+          @if (futureSlots().length) {
+            <div class="slots">
+              @for (slot of futureSlots() | sortSlots; track slot) {
+                <button matButton="tonal" class="slot-button" (click)="removeSlot(slot)">
+                  <mat-icon>delete</mat-icon>
+                  {{ slot | slotDate }}
+                </button>
+              }
+            </div>
+          } @else {
+            <mat-error>Brak przyszłych slotów dostępności</mat-error>
+          }
 
           <form [formGroup]="form">
             <h3>Dodaj slot</h3>
@@ -178,7 +187,6 @@ export default class UserWalkerOfferDetailsComponent {
   public readonly error = this.userOfferSerice.error;
 
   protected readonly updating = signal(false);
-
   protected readonly tomorrow = DateTime.now().plus({ day: 1 }).startOf('day');
 
   protected readonly location = toSignal(
@@ -187,6 +195,14 @@ export default class UserWalkerOfferDetailsComponent {
       filter((coordinates) => !!coordinates),
     ),
   );
+
+  protected readonly futureSlots = computed<AvailableSlot[]>(() => {
+    const offer = this.offer();
+    if (!offer) return [];
+
+    const now = DateTime.now();
+    return offer.slots.filter((slot) => DateTime.fromISO(slot.startTime) >= now);
+  });
 
   protected offerForm = this.fb.group({
     price: this.fb.control<string | null>(null, [
@@ -312,7 +328,7 @@ export default class UserWalkerOfferDetailsComponent {
           this.matSnackBar.open('Dodano slot dostępności', 'OK');
         },
         error: () => {
-          this.matSnackBar.open('Wystąpił bład', 'OK');
+          this.matSnackBar.open('Wystąpił błąd', 'OK');
         },
       });
   }
@@ -339,7 +355,6 @@ export default class UserWalkerOfferDetailsComponent {
       .subscribe({
         next: () => {
           this.userOfferSerice.reload();
-
           this.matSnackBar.open('Zaktualizowano ofertę');
         },
         error: () => {

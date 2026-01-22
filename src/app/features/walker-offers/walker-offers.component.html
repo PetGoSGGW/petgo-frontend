@@ -52,10 +52,18 @@
           </div>
 
           <div class="row">
-            <span>Opis: {{ offer.description }}</span>
+            <span>{{ offer.description }}</span>
           </div>
 
           <div class="item-footer">
+            <button
+              matButton="outlined"
+              class="reserve-btn"
+              (click)="$event.stopImmediatePropagation(); openDetailsDialog(offer)"
+            >
+              Szczegóły oferty
+            </button>
+
             <button
               matButton="filled"
               class="reserve-btn"
@@ -81,7 +89,7 @@
         [length]="total()"
         [pageSize]="size()"
         [pageSizeOptions]="[size()]"
-        (page)="page.set($event.pageIndex + 1)"
+        (page)="pageIndex.set($event.pageIndex)"
         aria-label="Wybierz stronę"
       />
     }

@@ -1,7 +1,17 @@
+export interface WalkerReviewsResponse {
+  reviewDTOList: UserReview[];
+  avgRating: number;
+  type: string;
+  walkerInfoDto: {
+    userId: number;
+    firstName: string;
+    lastName: string;
+  };
+}
 export interface UserReview {
   rating: number;
   comment: string;
-  author: Author;
+  authorDto: Author;
   createdAt: string;
 }
 

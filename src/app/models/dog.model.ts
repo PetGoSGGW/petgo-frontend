@@ -11,7 +11,7 @@ export interface Dog {
   ownerId: number;
   breed: Breed;
   name: string;
-  size: string;
+  size: DogSize;
   notes: string;
   weightKg: number;
   isActive: boolean;
@@ -19,3 +19,5 @@ export interface Dog {
   updatedAt: string;
   photos: Photo[];
 }
+
+export type DogSize = 'Mały' | 'Średni' | 'Duży' | 'Olbrzymi';

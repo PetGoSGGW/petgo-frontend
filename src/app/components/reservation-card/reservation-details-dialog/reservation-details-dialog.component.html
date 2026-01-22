@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>
+  {{ isPendingReservation() ? 'Zaplanowany spacer' : 'Szczegóły spaceru' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <section>
+    <h3>Pies</h3>
+    <p>
+      <strong>{{ data.dog.name }}</strong> – {{ data.dog.breed.name }}
+    </p>
+    <p>{{ data.dog.size }} • {{ data.dog.weightKg }} kg</p>
+  </section>
+
+  <section>
+    <h3>Termin</h3>
+    <p>
+      {{ data.reservation.scheduleStart | luxon: 'dd.LL.yyyy HH:mm' }}
+      –
+      {{ data.reservation.scheduleEnd | luxon: 'HH:mm' }}
+    </p>
+  </section>
+
+  @for (location of locations(); track location.slotId) {
+    <section>
+      <h3>Lokalizacja</h3>
+      <p>
+        <span>{{ location.latitude }} - {{ location.longitude }}</span>
+      </p>
+    </section>
+  }
+
+  <section>
+    <h3>Właściciel</h3>
+    <p>{{ data.owner.firstName }} {{ data.owner.lastName }}</p>
+  </section>
+
+  <section>
+    <h3>Osoba wyprowadzająca</h3>
+    <p>{{ data.walker.firstName }} {{ data.walker.lastName }}</p>
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton="outlined" (click)="close()">Zamknij</button>
+
+  @if (!isPendingReservation() && data.reservation.status !== 'CANCELLED') {
+    <a
+      matButton="tonal"
+      color="primary"
+      [routerLink]="['/czat', data.reservation.reservationId]"
+      (click)="dialogRef.close()"
+    >
+      Przejdź do chatu
+    </a>
+  }
+
+  @if (isPendingReservation()) {
+    <button matButton="tonal" color="primary" (click)="cancelReservation()">Odwołaj spacer</button>
+  }
+</mat-dialog-actions>

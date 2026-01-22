@@ -1,27 +1,9 @@
-/* ==========================================================================
-   1. GŁÓWNY LAYOUT STRONY
-   ========================================================================== */
-.user-details-page {
-  min-height: calc(100vh - 64px);
-  padding: 24px 16px;
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.details-layout {
-  max-width: 128rem;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: 24px;
-}
-
-mat-error {
-  width: 100%;
-  text-align: center;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-/* Responsywność */
 @media (max-width: 96rem) {
   .details-layout {
     grid-template-columns: minmax(0, 3fr) minmax(0, 3fr);
@@ -40,21 +22,6 @@ mat-error {
   gap: 24px;
 }
 
-/* Wspólny styl dla wszystkich kart */
-.content-card {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-  overflow: hidden;
-}
-
-/* ==========================================================================
-   2. LEWA KOLUMNA - PROFIL UŻYTKOWNIKA
-   ========================================================================== */
-.main-info-card {
-  height: fit-content;
-}
-
 .user-header {
   display: flex;
   gap: 16px;
@@ -62,7 +29,6 @@ mat-error {
   padding: 20px;
 }
 
-/* Avatar */
 .user-photo-wrapper {
   width: 100px;
   height: 100px;
@@ -87,7 +53,6 @@ mat-error {
   color: #90a4ae;
 }
 
-/* Teksty nagłówka */
 .user-main-text {
   flex: 1;
 }
@@ -248,6 +213,13 @@ mat-error {
 .reviews-list-container {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+}
+
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* Pojedynczy wiersz */
@@ -375,7 +347,6 @@ mat-error {
   min-width: 50px;
 }
 
-/* Pola tekstowe i przyciski */
 .full-width {
   width: 100%;
 }
@@ -392,8 +363,66 @@ mat-error {
   color: #78909c;
 }
 
-/* Nadpisanie stylu przycisku Angular Material */
-.mat-mdc-raised-button.mat-primary {
-  background-color: #1e88e5;
-  border-radius: 24px;
+.wallet-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+ul {
+  list-style-type: none;
+
+  & > li {
+    background-color: var(--mat-sys-surface-variant);
+    padding: 1rem;
+    border-radius: 1rem;
+
+    & > .label {
+      font-size: 0.875rem;
+      font-weight: bold;
+      color: var(--mat-sys-tertiary);
+    }
+
+    & > .row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      & > .field:last-child {
+        align-items: flex-end;
+      }
+
+      & > .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+    }
+  }
+
+  .list-item-empty {
+    background-color: transparent;
+    padding: 0;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  & > button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  ul > li > .row {
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .buttons > button {
+    width: fit-content;
+  }
 }
