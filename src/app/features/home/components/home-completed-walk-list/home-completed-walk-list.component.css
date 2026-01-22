@@ -44,6 +44,14 @@
   font-weight: bold;
 }
 
+.card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 @media (min-width: 768px) {
   .row {
     flex-direction: row;
