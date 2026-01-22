@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Dog } from '../models/dog.model';
+import { Dog, DogSize } from '../models/dog.model';
 import { Breed } from '../models/breed.model';
 
 @Injectable({
@@ -25,7 +25,7 @@ export class DogApiService {
     request: {
       breedCode: number;
       name: string;
-      size: string;
+      size: DogSize;
       notes: string;
       weightKg: number;
       isActive: boolean;

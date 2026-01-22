@@ -33,6 +33,7 @@
         <button
           matIconButton
           matSuffix
+          type="button"
           (click)="showHide($event, 'password')"
           [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hidePassword()"
@@ -51,7 +52,7 @@
         @let confirmPasswordTouched = accountForm.controls.confirmPassword.touched;
         @let confirmPasswordErrors = accountForm.controls.confirmPassword.errors;
 
-        <mat-label>Potwierdzenie hasło</mat-label>
+        <mat-label>Potwierdzenie hasła</mat-label>
         <input
           matInput
           formControlName="confirmPassword"
@@ -60,6 +61,7 @@
         <button
           matIconButton
           matSuffix
+          type="button"
           (click)="showHide($event, 'password-confirmation')"
           [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hidePasswordConfirmation()"
