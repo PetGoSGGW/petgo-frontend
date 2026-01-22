@@ -10,11 +10,11 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { Breed } from '../../models/breed.model';
-import { EditDogDetailsDialogData } from '../../features/pet-details/components/pet-details/models/edit-dog-details-dialog-data.model';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { DogSize } from '../../models/dog.model';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { EditDogDetailsDialogData } from '../../features/pet-details/components/pet-details/models/edit-dog-details-dialog-data.model';
 
 export interface DogForm {
   name: string;

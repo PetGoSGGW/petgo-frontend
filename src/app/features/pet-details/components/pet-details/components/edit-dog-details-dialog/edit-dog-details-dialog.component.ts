@@ -16,6 +16,8 @@ import {
 import { rxResource } from '@angular/core/rxjs-interop';
 import { DogApiService } from '../../../../../../services/dog-api.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { Dog } from '../../../../../../models/dog.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-dog-dialog',
@@ -43,7 +45,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
           <mat-error>Wystąpił błąd!</mat-error>
         } @else if (breeds.hasValue()) {
           <app-dog-form
-            [initialData]="data"
+            [initialData]="initialData"
             (invalid)="invalid.set($event)"
             (value)="value.set($event)"
             [breeds]="breeds.value()"
@@ -101,9 +103,18 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 })
 export class EditDogDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<EditDogDialogComponent>);
-  protected readonly data = inject<EditDogDetailsDialogData>(MAT_DIALOG_DATA);
+  protected readonly data = inject<{ dog: Dog }>(MAT_DIALOG_DATA);
   private readonly dogApi = inject(DogApiService);
+  private readonly matSnackBar = inject(MatSnackBar);
 
+  protected readonly initialData: EditDogDetailsDialogData = {
+    name: this.data.dog.name,
+    isActive: this.data.dog.isActive,
+    size: this.data.dog.size,
+    weightKg: this.data.dog.weightKg,
+    notes: this.data.dog.notes,
+    breed: this.data.dog.breed,
+  };
   protected readonly invalid = signal(true);
   protected readonly value = signal<DogForm | null>(null);
 
@@ -118,15 +129,27 @@ export class EditDogDialogComponent {
   public save(): void {
     if (this.invalid()) return;
 
-    this.dialogRef.close(this.value());
-  }
-}
+    const value = this.value();
 
-export interface EditDogDialogResult {
-  name: string;
-  breed: string;
-  notes: string;
-  size: string;
-  weightKg: number;
-  isActive: boolean;
+    if (!value) return;
+
+    this.dogApi
+      .updateDog$(this.data.dog.dogId, {
+        name: value.name,
+        isActive: !!value.isActive,
+        size: value.size ?? 'Mały',
+        notes: value.notes,
+        weightKg: value.weight ?? 0,
+        breedCode: this.data.dog.breed.breedCode,
+      })
+      .subscribe({
+        next: () => {
+          this.matSnackBar.open('Zapisano zmiany w profilu psa.', 'OK');
+          this.dialogRef.close(true);
+        },
+        error: () => {
+          this.matSnackBar.open('Nie udało się zapisać zmian.', 'OK');
+        },
+      });
+  }
 }

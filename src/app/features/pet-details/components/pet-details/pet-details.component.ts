@@ -28,12 +28,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { Dog } from '../../../../models/dog.model';
-import { EditDogDetailsDialogData } from './models/edit-dog-details-dialog-data.model';
-import {
-  EditDogDialogComponent,
-  EditDogDialogResult,
-} from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
-import { filter, switchMap } from 'rxjs';
+import { EditDogDialogComponent } from './components/edit-dog-details-dialog/edit-dog-details-dialog.component';
+import { filter } from 'rxjs';
 import { DogApiService } from '../../../../services/dog-api.service';
 import { AuthService } from '../../../../core/auth/services/auth.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -119,31 +115,15 @@ export class PetDetailsComponent {
   public openEditDogDialog(dog: Dog): void {
     const dialogRef = this.dialog.open(EditDogDialogComponent, {
       width: '600px',
-      data: {
-        name: dog.name,
-        breed: dog.breed,
-        notes: dog.notes ?? '',
-        size: dog.size ?? 'M',
-        weightKg: Number(dog.weightKg ?? 0),
-        isActive: dog.isActive,
-      } satisfies EditDogDetailsDialogData,
+      data: { dog },
     });
 
     dialogRef
       .afterClosed()
-      .pipe(
-        filter((result): result is EditDogDialogResult => !!result),
-        switchMap((result) =>
-          this.dogApi.updateDog$(dog.dogId, { ...result, breedCode: dog.breed.breedCode }),
-        ),
-      )
+      .pipe(filter((result) => !!result))
       .subscribe({
         next: () => {
           this.dogResource.reload();
-          this.snackBar.open('Zapisano zmiany w profilu psa.', 'OK');
-        },
-        error: () => {
-          this.snackBar.open('Nie udało się zapisać zmian.', 'OK');
         },
       });
   }
