@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -100,11 +100,11 @@ export interface WalkerOfferReservationDialogData {
 
         @if (form.value.date) {
           <div class="slots">
-            @let slotTouched = form.controls.slot.touched;
-            @let slotErrors = form.controls.slot.errors;
+            @let slotsTouched = form.controls.slots.touched;
+            @let slotsErrors = form.controls.slots.errors;
 
             <mat-label>Dostępne godziny</mat-label>
-            <mat-chip-listbox [value]="form.value.slot" (change)="changeSlot($event)">
+            <mat-chip-listbox [formControl]="form.controls.slots" multiple>
               @for (availableSlot of availableSlots(); track availableSlot) {
                 <mat-chip-option [disabled]="availableSlot.isReserved" [value]="availableSlot">
                   {{ availableSlot.startTime | date: 'dd.MM.yyyy HH:mm' }} -
@@ -115,7 +115,7 @@ export interface WalkerOfferReservationDialogData {
               }
             </mat-chip-listbox>
 
-            @if (slotTouched && slotErrors?.['required'] && slots().length > 0) {
+            @if (slotsTouched && slotsErrors?.['required'] && slots().length > 0) {
               <mat-error>Wybierz slot</mat-error>
             }
           </div>
@@ -178,7 +178,7 @@ export class WalkerOfferReservationDialogComponent {
 
   protected form = this.fb.group({
     date: this.fb.control<string | null>(null, Validators.required),
-    slot: this.fb.control<AvailableSlot | null>(null, {
+    slots: this.fb.control<AvailableSlot[]>([], {
       validators: Validators.required,
     }),
     dog: this.fb.control<Dog | null>(null, Validators.required),
@@ -187,19 +187,7 @@ export class WalkerOfferReservationDialogComponent {
   protected readonly slots = signal(this.data.slots).asReadonly();
 
   private readonly dateValue = toSignal(
-    this.form.controls.date.valueChanges.pipe(
-      tap((date) => {
-        const { slot } = this.form.value;
-
-        if (date && slot) {
-          const { startTime, endTime } = slot;
-
-          if (!this.compareDates(date, startTime) || !this.compareDates(date, endTime)) {
-            this.form.controls.slot.setValue(null);
-          }
-        }
-      }),
-    ),
+    this.form.controls.date.valueChanges.pipe(tap(() => this.form.controls.slots.setValue([]))),
   );
 
   protected readonly availableSlots = computed(() => {
@@ -244,29 +232,11 @@ export class WalkerOfferReservationDialogComponent {
     return firstDateString === secondDateString;
   }
 
-  protected changeSlot({ value }: MatChipListboxChange): void {
-    this.form.controls.slot.setValue(value);
-
-    if (!value && !this.form.value.date) {
-      this.form.controls.slot.markAsUntouched();
-    }
-
-    const slot = value as AvailableSlot | null;
-    if (!slot) return;
-
-    const start = new Date(slot.startTime);
-    const x = new Date(start.getFullYear(), start.getMonth(), start.getDate()); // hours/mins/secs = 0
-
-    if (this.form.value.date !== x.toISOString()) {
-      this.form.controls.date.setValue(x.toISOString());
-    }
-  }
-
   protected resetDate(): void {
     this.form.controls.date.setValue(null);
-    this.form.controls.slot.setValue(null);
-    this.form.controls.slot.markAsUntouched();
-    this.form.controls.slot.markAsPristine();
+    this.form.controls.slots.setValue(null);
+    this.form.controls.slots.markAsUntouched();
+    this.form.controls.slots.markAsPristine();
   }
 
   protected reserve(): void {
@@ -275,9 +245,9 @@ export class WalkerOfferReservationDialogComponent {
       return;
     }
 
-    const { dog, slot: slot } = this.form.value;
+    const { dog, slots } = this.form.value;
 
-    if (!dog || !slot) return;
+    if (!dog || !slots) return;
 
     this.loading.set(true);
 
@@ -285,7 +255,7 @@ export class WalkerOfferReservationDialogComponent {
       .reserve$({
         offerId: this.data.offerId,
         dogId: dog.dogId,
-        availabilitySlotIds: [slot.slotId],
+        availabilitySlotIds: slots.map(({ slotId }) => slotId),
       })
       .pipe(
         switchMap(({ reservationId }) => this.paymentApi.initPayment$({ reservationId })),
