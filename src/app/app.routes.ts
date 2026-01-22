@@ -108,7 +108,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/chat/chat.routes').then((r) => r.chatRoutes),
       },
       {
-        path: 'payment-success',
+        path: '/payments/success',
         loadComponent: () => import('./features/payment-success/payment-success.component'),
       },
     ],
