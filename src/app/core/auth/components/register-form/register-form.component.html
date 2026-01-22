@@ -114,6 +114,25 @@
       </mat-form-field>
 
       <mat-form-field>
+        @let birthTouched = personalDetailsForm.controls.birth.touched;
+        @let birthErrors = personalDetailsForm.controls.birth.errors;
+
+        <mat-label>Data urodzenia</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [formControl]="personalDetailsForm.controls.birth"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+
+        @if (birthTouched && birthErrors?.['required']) {
+          <mat-error>Podaj swoją datę urodzenia.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
         @let usernameTouched = personalDetailsForm.controls.username.touched;
         @let usernameErrors = personalDetailsForm.controls.username.errors;
 
