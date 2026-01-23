@@ -57,7 +57,7 @@ export class HomeCompletedWalkListComponent {
     });
   }
 
-  protected openCompletedDetails(reservationId: Reservation['reservationId']): void {
-    void this.router.navigate(['/spacer/szczegoly', reservationId]);
+  protected async openCompletedDetails(reservationId: Reservation['reservationId']): Promise<void> {
+    await this.router.navigate(['/spacer/szczegoly', reservationId]);
   }
 }

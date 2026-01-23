@@ -85,7 +85,7 @@ export class CompletedWalkDetailsComponent {
       return;
     }
 
-    this.snackBar.open('Dziekujemy za ocene spaceru.', 'OK', { duration: 3000 });
+    this.snackBar.open('Dziekujemy za ocene spaceru.', 'OK');
     this.rating.set(0);
     this.commentControl.reset('');
   }
