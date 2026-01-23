@@ -61,6 +61,12 @@
                 }
 
                 <div class="buttons-col">
+                  @if (reservation.status === 'CONFIRMED' && reservation.walkerId === userId()) {
+                    <button matButton="tonal" (click)="startWalk(reservation.reservationId)">
+                      Rozpocznij spacer
+                    </button>
+                  }
+
                   @if (reservation.status === 'COMPLETED') {
                     <button
                       matButton="tonal"
