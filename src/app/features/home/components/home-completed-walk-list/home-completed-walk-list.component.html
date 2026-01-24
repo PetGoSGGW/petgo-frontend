@@ -7,9 +7,14 @@
     <app-reservation-grid>
       @for (reservation of completedWalks.value(); track reservation.reservationId) {
         <app-reservation-card [reservation]="reservation">
-          <button matButton="tonal" (click)="openReviewDialog(reservation.reservationId)">
-            Oceń wyprowadzacza
-          </button>
+          <div class="card-actions">
+            <button matButton="tonal" (click)="openReviewDialog(reservation.reservationId)">
+              Oceń wyprowadzacza
+            </button>
+            <button matButton="outlined" (click)="openCompletedDetails(reservation.reservationId)">
+              Szczegóły spaceru
+            </button>
+          </div>
         </app-reservation-card>
       } @empty {
         <div empty class="no-walks">Nie masz ukończonych spacerów!</div>
