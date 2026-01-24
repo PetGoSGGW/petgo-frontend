@@ -14,6 +14,7 @@ import {
 import { Reservation } from '../../../../models/reservation.model';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-completed-walk-list',
@@ -32,6 +33,7 @@ export class HomeCompletedWalkListComponent {
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(MatDialog);
   private readonly reservationApi = inject(ReservationApiService);
+  private readonly router = inject(Router);
 
   protected readonly userId = computed(() => this.authService.session()?.userId);
 
@@ -53,5 +55,9 @@ export class HomeCompletedWalkListComponent {
         reservationId,
       } satisfies ReviewDialogData,
     });
+  }
+
+  protected async openCompletedDetails(reservationId: Reservation['reservationId']): Promise<void> {
+    await this.router.navigate(['/spacer/szczegoly', reservationId]);
   }
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatInput, MatSuffix } from '@angular/material/input';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatHint } from '@angular/material/form-field';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatLabel } from '@angular/material/input';
 import { MatError } from '@angular/material/input';
@@ -24,6 +24,7 @@ import {
   MatStepperPrevious,
 } from '@angular/material/stepper';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-register-form',
@@ -46,6 +47,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatStepperNext,
     MatStepperPrevious,
     MatStepLabel,
+    MatDatepickerModule,
+    MatHint,
   ],
 })
 export class RegisterFormComponent {
@@ -59,6 +62,7 @@ export class RegisterFormComponent {
     firstName: this.fb.control<string>('', [Validators.required]),
     lastName: this.fb.control<string>('', [Validators.required]),
     username: this.fb.control<string>('', [Validators.required]),
+    birth: this.fb.control<string>('', [Validators.required]),
   });
 
   protected accountForm = this.fb.group(
@@ -123,9 +127,9 @@ export class RegisterFormComponent {
 
     const { email, password } = this.accountForm.value;
 
-    const { lastName, firstName, username } = this.personalDetailsForm.value;
+    const { lastName, firstName, username, birth } = this.personalDetailsForm.value;
 
-    if (!email || !password || !lastName || !firstName || !username) return;
+    if (!email || !password || !lastName || !firstName || !username || !birth) return;
 
     this.loading.set(true);
 
@@ -136,6 +140,7 @@ export class RegisterFormComponent {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         username: username.trim(),
+        dateOfBirth: birth,
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({

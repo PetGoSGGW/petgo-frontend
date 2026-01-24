@@ -19,6 +19,7 @@ import {
 } from '../../components/review-dialog/review-dialog.component';
 import { ReviewType } from '../../models/review-type.model';
 import { map } from 'rxjs';
+import { Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
@@ -43,6 +44,7 @@ export default class WalkerReservationsComponent {
   private readonly matSnackBar = inject(MatSnackBar);
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
 
   protected readonly loading = signal<Reservation['reservationId'] | null>(null);
 
@@ -102,5 +104,13 @@ export default class WalkerReservationsComponent {
       } satisfies ReviewDialogData,
       width: '600px',
     });
+  }
+
+  protected openCompletedDetails(reservationId: Reservation['reservationId']): void {
+    void this.router.navigate(['/spacer/szczegoly', reservationId]);
+  }
+
+  protected startWalk(reservationId: Reservation['reservationId']): void {
+    void this.router.navigate(['/spacer/sledzenie', reservationId]);
   }
 }

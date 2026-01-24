@@ -7,9 +7,16 @@ export const walkRoutes: Routes = [
     providers: [WalkApiService],
     children: [
       {
-        path: 'sledzenie/:sessionId',
+        path: 'sledzenie/:reservationId',
         loadComponent: () =>
           import('./components/track-walk/track-walk.component').then((c) => c.TrackWalkComponent),
+      },
+      {
+        path: 'szczegoly/:reservationId',
+        loadComponent: () =>
+          import('./components/completed-walk-details/completed-walk-details.component').then(
+            (c) => c.CompletedWalkDetailsComponent,
+          ),
       },
       {
         path: ':reservationId',

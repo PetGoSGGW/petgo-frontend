@@ -14,7 +14,18 @@
         } @else if (ownerReservations.hasValue()) {
           <app-reservation-grid>
             @for (reservation of ownerReservations.value(); track reservation.reservationId) {
-              <app-reservation-card [reservation]="reservation" />
+              <app-reservation-card [reservation]="reservation">
+                @if (reservation.status === 'COMPLETED') {
+                  <div class="buttons-col">
+                    <button
+                      matButton="outlined"
+                      (click)="openCompletedDetails(reservation.reservationId)"
+                    >
+                      Wyświetl szczegóły spaceru
+                    </button>
+                  </div>
+                }
+              </app-reservation-card>
             } @empty {
               <div class="empty-state">
                 <mat-icon class="empty-icon">event_busy</mat-icon>
@@ -61,6 +72,12 @@
                 }
 
                 <div class="buttons-col">
+                  @if (reservation.status === 'CONFIRMED' && reservation.walkerId === userId()) {
+                    <button matButton="tonal" (click)="startWalk(reservation.reservationId)">
+                      Rozpocznij spacer
+                    </button>
+                  }
+
                   @if (reservation.status === 'COMPLETED') {
                     <button
                       matButton="tonal"
@@ -70,10 +87,10 @@
                     </button>
 
                     <button
-                      matButton="tonal"
-                      (click)="openReviewDialog(reservation.reservationId, 'WALK')"
+                      matButton="outlined"
+                      (click)="openCompletedDetails(reservation.reservationId)"
                     >
-                      Dodaj opinię o spacerze
+                      Wyświetl szczegóły spaceru
                     </button>
                   }
                 </div>
