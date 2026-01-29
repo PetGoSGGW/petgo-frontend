@@ -137,6 +137,7 @@ export class TrackWalkComponent implements OnInit {
     this.addUserMarker();
   }
 
+
   protected finishWalk(): void {
     this.sessionService.stopWalk();
   }

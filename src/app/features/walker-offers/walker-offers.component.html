@@ -16,7 +16,7 @@
     <div class="filters">
       <mat-form-field [subscriptSizing]="'dynamic'">
         <mat-label>Zasięg</mat-label>
-        <mat-select [(ngModel)]="radius">
+        <mat-select [ngModel]="radius()" (ngModelChange)="radius.set($event)">
           <mat-option [value]="0">0 km</mat-option>
           <mat-option [value]="1">1 km</mat-option>
           <mat-option [value]="2">2 km</mat-option>
@@ -28,7 +28,9 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-slide-toggle [(ngModel)]="shouldShowMap">Pokaż mapę</mat-slide-toggle>
+      <mat-slide-toggle [ngModel]="shouldShowMap()" (ngModelChange)="shouldShowMap.set($event)"
+        >Pokaż mapę</mat-slide-toggle
+      >
     </div>
 
     <ul

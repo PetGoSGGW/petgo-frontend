@@ -5,6 +5,7 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
 import { WalkerOffer } from './models/walker-offer.model';
+import { AvailableSlot } from './models/available-slot.model';
 import {
   WalkerOfferReservationDialogComponent,
   WalkerOfferReservationDialogData,
@@ -103,10 +104,7 @@ export class WalkerOffersComponent {
             ...response,
             content: response.content.map((offer) => ({
               ...offer,
-              slots:
-                offer.slots?.filter(
-                  (s) => DateTime.fromISO(s.startTime) > DateTime.now().plus({ day: 1 }),
-                ) ?? [],
+              slots: this.filterAvailableSlots(offer.slots ?? [], radius, coordinates),
             })),
           })),
           map((response) => ({
@@ -149,5 +147,60 @@ export class WalkerOffersComponent {
       width: '700px',
       data: { offer, userLocation: location ?? null } satisfies WalkerOfferDetailsDialogData,
     });
+  }
+
+  private filterAvailableSlots(
+    slots: AvailableSlot[],
+    radiusKm: number,
+    coordinates: { lat: number; lng: number },
+  ): AvailableSlot[] {
+    if (!coordinates) {
+      return slots;
+    }
+
+    return slots.filter(
+      (slot) =>
+        DateTime.fromISO(slot.startTime) > DateTime.now().plus({ day: 1 }) &&
+        this.isSlotWithinRadius(slot, coordinates, radiusKm),
+    );
+  }
+
+  private isSlotWithinRadius(
+    slot: AvailableSlot,
+    coordinates: { lat: number; lng: number },
+    radiusKm: number,
+  ): boolean {
+    const distanceKm = this.calculateDistanceKm(
+      slot.latitude,
+      slot.longitude,
+      coordinates.lat,
+      coordinates.lng,
+    );
+
+    return distanceKm <= radiusKm;
+  }
+
+  private calculateDistanceKm(
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number,
+  ): number {
+    const toRadians = (value: number) => (value * Math.PI) / 180;
+    const earthRadiusKm = 6371;
+
+    const deltaLat = toRadians(lat2 - lat1);
+    const deltaLng = toRadians(lng2 - lng1);
+
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(deltaLng / 2) *
+        Math.sin(deltaLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return earthRadiusKm * c;
   }
 }

@@ -28,6 +28,22 @@ mat-card {
   gap: 1rem;
 }
 
+.status-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.status-label {
+  font-weight: 600;
+}
+
+.status-id {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
 .user-info {
   display: flex;
   flex-direction: column;

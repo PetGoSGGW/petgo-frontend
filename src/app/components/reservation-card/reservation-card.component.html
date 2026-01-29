@@ -9,8 +9,9 @@
         <a class="user-info" [routerLink]="['/uzytkownik', reservation().ownerId]">
           <span class="username">{{ owner.value().firstName }} {{ owner.value().lastName }}</span>
         </a>
-        <mat-chip [highlighted]="true" [class]="statusClass()">
-          {{ statusLabel() }}
+        <mat-chip [highlighted]="true" [class]="statusClass()" class="status-chip">
+          <span class="status-label">{{ statusLabel() }}</span>
+          <span class="status-id">#{{ reservation().reservationId }}</span>
         </mat-chip>
       </div>
     </mat-card-header>
