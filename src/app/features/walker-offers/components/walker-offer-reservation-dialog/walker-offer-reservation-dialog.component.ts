@@ -10,7 +10,6 @@ import { finalize, switchMap, tap } from 'rxjs';
 import { Dog } from '../../../../models/dog.model';
 import { WalkerOffer } from '../../models/walker-offer.model';
 import { WalkerOffersApiService } from '../../services/walker-offers-api.service';
-import { DatePipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { AvailableSlot } from '../../models/available-slot.model';
@@ -21,6 +20,7 @@ import { PaymentApiService } from '../../../../services/payment-api.service';
 import { DogApiService } from '../../../../services/dog-api.service';
 import { AuthService } from '../../../../core/auth/services/auth.service';
 import { DateTime } from 'luxon';
+import { LuxonPipe } from '../../../../pipes/luxon.pipe';
 
 export interface WalkerOfferReservationDialogData {
   offerId: WalkerOffer['offerId'];
@@ -36,7 +36,7 @@ export interface WalkerOfferReservationDialogData {
     ReactiveFormsModule,
     FormsModule,
     MatChipsModule,
-    DatePipe,
+    LuxonPipe,
     MatListModule,
     MatFormFieldModule,
     MatDatepickerModule,
@@ -107,8 +107,8 @@ export interface WalkerOfferReservationDialogData {
             <mat-chip-listbox [formControl]="form.controls.slots" multiple>
               @for (availableSlot of availableSlots(); track availableSlot) {
                 <mat-chip-option [disabled]="availableSlot.isReserved" [value]="availableSlot">
-                  {{ availableSlot.startTime | date: 'dd.MM.yyyy HH:mm' }} -
-                  {{ availableSlot.endTime | date: 'HH:mm' }}</mat-chip-option
+                  {{ availableSlot.startTime | luxon: 'dd.LL.yyyy HH:mm' }} -
+                  {{ availableSlot.endTime | luxon: 'HH:mm' }}</mat-chip-option
                 >
               } @empty {
                 <span>Brak dostępnych slotów</span>

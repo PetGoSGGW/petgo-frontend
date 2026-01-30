@@ -17,7 +17,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { filter, map, tap } from 'rxjs';
 import { DateTime } from 'luxon';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatPaginator } from '@angular/material/paginator';
@@ -30,6 +29,7 @@ import { FromCentsPipe } from '../../pipes/from-cents.pipe';
 import { LocationService } from '../../services/location.service';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper.component';
 import { AuthService } from '../../core/auth/services/auth.service';
+import { LuxonPipe } from '../../pipes/luxon.pipe';
 
 @Component({
   selector: 'app-walker-offers',
@@ -38,7 +38,6 @@ import { AuthService } from '../../core/auth/services/auth.service';
     MatProgressSpinner,
     MatButton,
     RouterLink,
-    DatePipe,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -52,6 +51,7 @@ import { AuthService } from '../../core/auth/services/auth.service';
     MatSlideToggle,
     FromCentsPipe,
     SectionWrapperComponent,
+    LuxonPipe,
   ],
   templateUrl: './walker-offers.component.html',
   styleUrl: './walker-offers.component.css',

@@ -38,7 +38,7 @@ import { RouterLink } from '@angular/router';
     `
       .payment-container {
         display: flex;
-        justify_content: center;
+        justify-content: center;
         align-items: center;
         width: 100%;
       }

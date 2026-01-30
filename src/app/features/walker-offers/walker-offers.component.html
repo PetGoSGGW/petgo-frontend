@@ -47,7 +47,7 @@
               <span class="item-price">{{ offer.priceCents | fromCents }}zł</span>
 
               <mat-divider [vertical]="true" />
-              <span class="item-date">{{ offer.createdAt | date: 'dd.MM.yyyy' }}</span>
+              <span class="item-date">{{ offer.createdAt | luxon }}</span>
             </div>
           </div>
 
