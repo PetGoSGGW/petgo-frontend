@@ -95,7 +95,7 @@ export class SessionService {
     };
 
     let cursorX = -0.8;
-    const data: Array<{ latitude: number; longitude: number }> = [];
+    const data: { latitude: number; longitude: number }[] = [];
 
     for (const char of text) {
       if (char === ' ') {

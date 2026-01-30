@@ -180,13 +180,8 @@ export class WalkerOffersComponent {
     return distanceKm <= radiusKm;
   }
 
-  private calculateDistanceKm(
-    lat1: number,
-    lng1: number,
-    lat2: number,
-    lng2: number,
-  ): number {
-    const toRadians = (value: number) => (value * Math.PI) / 180;
+  private calculateDistanceKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const toRadians = (value: number): number => (value * Math.PI) / 180;
     const earthRadiusKm = 6371;
 
     const deltaLat = toRadians(lat2 - lat1);
