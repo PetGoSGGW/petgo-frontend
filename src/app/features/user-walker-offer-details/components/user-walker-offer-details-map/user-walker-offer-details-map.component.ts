@@ -66,15 +66,12 @@ export class UserWalkerOfferDetailsMapComponent implements OnInit {
   private readonly slotDatePipe = inject(SlotDatePipe);
 
   public readonly userPosition = input.required<{ latitude: number; longitude: number }>();
-  // public readonly radiusKm = input.required<number>();
   public readonly availableSlots = input.required<AvailableSlot[]>();
 
   private map: L.Map | undefined;
   private userMarker: L.CircleMarker | undefined;
 
   private readonly isMapInit$ = new ReplaySubject<boolean>(1);
-
-  // public readonly markerClicked = output<AvailableSlot>();
 
   constructor() {
     afterNextRender({

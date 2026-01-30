@@ -25,6 +25,7 @@ import {
 } from '@angular/material/stepper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-register-form',
@@ -140,7 +141,7 @@ export class RegisterFormComponent {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         username: username.trim(),
-        dateOfBirth: birth,
+        dateOfBirth: DateTime.fromISO(birth).toISODate(),
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({

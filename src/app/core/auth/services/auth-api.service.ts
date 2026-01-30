@@ -15,7 +15,7 @@ export class AuthApiService {
     firstName: string;
     lastName: string;
     username: string;
-    dateOfBirth: string;
+    dateOfBirth: string | null;
   }): Observable<Session> {
     return this.http.post<Session>(`${this.apiUrl}/auth/register`, body);
   }

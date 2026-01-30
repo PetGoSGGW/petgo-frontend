@@ -1,4 +1,4 @@
-﻿import {
+import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -154,7 +154,7 @@ import { UserWalkerOfferDetailsApiService } from './services/user-walker-offer-d
                 [matDatepicker]="datepicker"
                 formControlName="date"
               />
-              <mat-hint>DD/MM/RRRR</mat-hint>
+              <mat-hint>DD.MM.RRRR</mat-hint>
 
               @if (dateTouched && dateErrors?.['required']) {
                 <mat-error>Wybierz datę.</mat-error>
